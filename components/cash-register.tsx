@@ -181,7 +181,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
       <div className="flex flex-col">
         <h2 className="text-2xl font-bold mb-4">Select Tickets</h2>
         <ScrollArea className="flex-1">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
             {products.map((product) => (
               <Card
                 key={product.id}
@@ -190,7 +190,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
               >
                 <CardContent className="p-4 flex flex-col items-center justify-center text-center">
                   <p className="font-semibold">{product.name}</p>
-                  <p className="text-sm text-muted-foreground">${product.price.toFixed(2)}</p>
+                  <p className="text-sm text-muted-foreground">{product.price.toFixed(2)}€</p>
                 </CardContent>
               </Card>
             ))}
@@ -232,7 +232,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
                       >
                         <div>
                           <p className="font-semibold">{item.product.name}</p>
-                          <p className="text-sm text-muted-foreground">${item.product.price.toFixed(2)}</p>
+                          <p className="text-sm text-muted-foreground">{item.product.price.toFixed(2)}€</p>
                         </div>
                         <div className="flex items-center gap-2">
                           <Button
@@ -271,7 +271,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
         <div className="mt-6 pt-6 border-t">
           <div className="flex justify-between items-center text-xl font-bold mb-4">
             <span>Total</span>
-            <span>${calculateTotal().toFixed(2)}</span>
+            <span>{calculateTotal().toFixed(2)}€</span>
           </div>
           <Button
             className="w-full text-lg py-6"
