@@ -39,7 +39,7 @@ export default function OrderList({ initialOrders }: { initialOrders: Order[] })
                     </TableCell>
                     <TableCell>{new Date(order.createdAt).toLocaleString()}</TableCell>
                     <TableCell>{order.items.reduce((sum, item) => sum + item.quantity, 0)}</TableCell>
-                    <TableCell className="text-right">${calculateOrderTotal(order).toFixed(2)}</TableCell>
+                    <TableCell className="text-right">{calculateOrderTotal(order).toFixed(2)}€</TableCell>
                   </TableRow>
                 ))
             ) : (

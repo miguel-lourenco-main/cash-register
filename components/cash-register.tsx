@@ -7,24 +7,21 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { toast } from "sonner"
-import type { Product, OrderItem } from "@/lib/types"
+import type { AppProduct, AppOrderItem } from "@/lib/types"
 import { createOrder } from "@/lib/actions"
 
-export default function CashRegister({ products }: { products: Product[] }) {
-  const [orderItems, setOrderItems] = useState<OrderItem[]>([])
+export default function CashRegister({ products }: { products: AppProduct[] }) {
+  const [orderItems, setOrderItems] = useState<AppOrderItem[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [stickyItemIndex, setStickyItemIndex] = useState<number | null>(null)
   const [isScrolling, setIsScrolling] = useState(false)
-  const [isAutoScrolling, setIsAutoScrolling] = useState(false)
   const router = useRouter()
   
-  const observerRef = useRef<IntersectionObserver | null>(null)
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const autoScrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const scrollAreaRef = useRef<HTMLDivElement | null>(null)
 
-  const handleAddToOrder = (product: Product) => {
+  const handleAddToOrder = (product: AppProduct) => {
     setOrderItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.product.id === product.id)
       if (existingItem) {
@@ -81,141 +78,94 @@ export default function CashRegister({ products }: { products: Product[] }) {
 
 
 
-  // Auto-scroll to bottom when new items are added and keep last item sticky
+  // Auto-scroll to bottom when new items are added and highlight the new item
   useEffect(() => {
     const scrollViewport = scrollAreaRef.current?.querySelector('[data-slot="scroll-area-viewport"]')
     
     if (!scrollViewport || orderItems.length === 0) return
 
-    // Auto-scroll to bottom when items are added
-    const scrollToBottom = () => {
-      setIsAutoScrolling(true)
+    // Auto-scroll to bottom when items are added and highlight the new item
+    const scrollToBottomAndHighlight = () => {
       scrollViewport.scrollTo({
         top: scrollViewport.scrollHeight,
         behavior: 'smooth'
       })
       
-      // Clear auto-scroll flag after animation completes
-      if (autoScrollTimeoutRef.current) {
-        clearTimeout(autoScrollTimeoutRef.current)
-      }
-      autoScrollTimeoutRef.current = setTimeout(() => {
-        setIsAutoScrolling(false)
-      }, 600) // Longer timeout to ensure smooth scroll completes
-    }
-
-    // Small delay to ensure DOM is updated
-    const timeoutId = setTimeout(scrollToBottom, 50)
-
-    // Set up intersection observer to track when items go out of view
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        // Don't update sticky states during auto-scroll to prevent visual conflicts
-        if (isAutoScrolling) return
-        
-        entries.forEach(entry => {
-          const index = parseInt(entry.target.getAttribute('data-index') || '0')
-          
-          // If the last item goes out of view at the bottom, auto-scroll to keep it visible
-          if (!entry.isIntersecting && index === orderItems.length - 1) {
-            const targetRect = entry.target.getBoundingClientRect()
-            const rootRect = scrollViewport.getBoundingClientRect()
-            
-            // If item went below the visible area, scroll down to keep it at bottom
-            if (targetRect.top > rootRect.bottom) {
-              setIsAutoScrolling(true)
-              entry.target.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'end',
-                inline: 'nearest'
-              })
-              
-              // Set sticky state after scroll completes
-              setTimeout(() => {
-                setStickyItemIndex(index)
-                setIsScrolling(true)
-                setIsAutoScrolling(false)
-                
-                if (scrollTimeoutRef.current) {
-                  clearTimeout(scrollTimeoutRef.current)
-                }
-                
-                scrollTimeoutRef.current = setTimeout(() => {
-                  setIsScrolling(false)
-                }, 200)
-              }, 400)
-            }
-          }
-        })
-      },
-      {
-        root: scrollViewport,
-        threshold: [0, 1],
-        rootMargin: '0px 0px -50px 0px' // Trigger when item is 50px from bottom
-      }
-    )
-
-    // Observe all items
-    itemRefs.current.forEach((ref) => {
-      if (ref && observerRef.current) {
-        observerRef.current.observe(ref)
-      }
-    })
-
-    return () => {
-      clearTimeout(timeoutId)
-      if (observerRef.current) {
-        observerRef.current.disconnect()
-      }
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current)
-      }
-      if (autoScrollTimeoutRef.current) {
-        clearTimeout(autoScrollTimeoutRef.current)
-      }
-    }
-  }, [orderItems.length, isAutoScrolling])
-
-  // Track manually scrolled position and highlight bottom-most visible item
-  useEffect(() => {
-    const scrollViewport = scrollAreaRef.current?.querySelector('[data-slot="scroll-area-viewport"]')
-    
-    if (!scrollViewport) return
-
-    const handleManualScroll = () => {
-      // Don't update sticky states during auto-scroll to prevent visual conflicts
-      if (isAutoScrolling) return
-      
+      // Highlight the newly added item (last item in the array)
+      const newItemIndex = orderItems.length - 1
+      setStickyItemIndex(newItemIndex)
       setIsScrolling(true)
-      
-      // Find which item is at the bottom of the visible area
-      const items = itemRefs.current.filter(Boolean)
-      let bottomMostIndex = -1
-      
-      items.forEach((item, index) => {
-        if (item) {
-          const rect = item.getBoundingClientRect()
-          const viewportRect = scrollViewport.getBoundingClientRect()
-          
-          // Check if item is visible and closest to bottom
-          if (rect.bottom <= viewportRect.bottom && rect.top >= viewportRect.top) {
-            bottomMostIndex = Math.max(bottomMostIndex, index)
-          }
-        }
-      })
-      
-      if (bottomMostIndex >= 0) {
-        setStickyItemIndex(bottomMostIndex)
-      }
       
       // Clear existing timeout
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current)
       }
       
+      // Keep the highlight for a bit longer to show the new item animation
       scrollTimeoutRef.current = setTimeout(() => {
         setIsScrolling(false)
-      }, 200)
+      }, 600)
+    }
+
+    // Small delay to ensure DOM is updated
+    const timeoutId = setTimeout(scrollToBottomAndHighlight, 50)
+
+    return () => {
+      clearTimeout(timeoutId)
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
+    }
+  }, [orderItems.length])
+
+  // Track manually scrolled position and highlight bottom-most visible item
+  useEffect(() => {
+    const scrollViewport = scrollAreaRef.current?.querySelector('[data-slot="scroll-area-viewport"]')
+    
+    if (!scrollViewport || orderItems.length === 0) return
+
+    const handleManualScroll = () => {
+      // Only update sticky index during manual scrolling, not during auto-scroll
+      // Add a small delay to avoid interfering with auto-scroll animations
+      setTimeout(() => {
+        setIsScrolling(true)
+        
+        // Find which item is at the bottom of the visible area
+        const viewportRect = scrollViewport.getBoundingClientRect()
+        let bottomMostIndex = -1
+        let closestDistance = Infinity
+        
+        itemRefs.current.forEach((item, index) => {
+          if (item) {
+            const rect = item.getBoundingClientRect()
+            
+            // Check if item is visible
+            if (rect.bottom <= viewportRect.bottom + 10 && rect.top >= viewportRect.top - 10) {
+              // Calculate distance from bottom of viewport
+              const distanceFromBottom = Math.abs(rect.bottom - viewportRect.bottom)
+              
+              // Find the item closest to the bottom of the viewport
+              if (distanceFromBottom < closestDistance) {
+                closestDistance = distanceFromBottom
+                bottomMostIndex = index
+              }
+            }
+          }
+        })
+        
+        if (bottomMostIndex >= 0) {
+          setStickyItemIndex(bottomMostIndex)
+        }
+        
+        // Clear existing timeout
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current)
+        }
+        
+        scrollTimeoutRef.current = setTimeout(() => {
+          setIsScrolling(false)
+        }, 200)
+      }, 100)
     }
 
     scrollViewport.addEventListener('scroll', handleManualScroll, { passive: true })
@@ -223,7 +173,7 @@ export default function CashRegister({ products }: { products: Product[] }) {
     return () => {
       scrollViewport.removeEventListener('scroll', handleManualScroll)
     }
-  }, [orderItems.length, isAutoScrolling])
+  }, [orderItems.length])
 
   return (
     <div className="grid md:grid-cols-2 gap-8 h-[calc(100vh-5rem)] py-6">
@@ -231,7 +181,7 @@ export default function CashRegister({ products }: { products: Product[] }) {
       <div className="flex flex-col">
         <h2 className="text-2xl font-bold mb-4">Select Tickets</h2>
         <ScrollArea className="flex-1">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
             {products.map((product) => (
               <Card
                 key={product.id}
@@ -240,7 +190,7 @@ export default function CashRegister({ products }: { products: Product[] }) {
               >
                 <CardContent className="p-4 flex flex-col items-center justify-center text-center">
                   <p className="font-semibold">{product.name}</p>
-                  <p className="text-sm text-muted-foreground">${product.price.toFixed(2)}</p>
+                  <p className="text-sm text-muted-foreground">{product.price.toFixed(2)}€</p>
                 </CardContent>
               </Card>
             ))}
@@ -263,7 +213,7 @@ export default function CashRegister({ products }: { products: Product[] }) {
               ) : (
                 <div className="space-y-4">
                   {orderItems.map((item, index) => {
-                    const isSticky = stickyItemIndex === index && isScrolling && !isAutoScrolling
+                    const isSticky = stickyItemIndex === index && isScrolling
                     
                     return (
                       <div 
@@ -273,20 +223,16 @@ export default function CashRegister({ products }: { products: Product[] }) {
                         }}
                         data-index={index}
                         className={`
-                          flex items-center justify-between p-3 rounded-lg 
-                          ${isAutoScrolling 
-                            ? 'transition-none' 
-                            : 'transition-all duration-200 ease-out'
-                          }
+                          flex items-center justify-between p-3 transition-all duration-200 ease-out
                           ${isSticky
-                            ? 'bg-accent/50 border-l-4 border-l-primary shadow-lg scale-[1.01]' 
+                            ? 'bg-accent/50 border-l-4 border-l-primary shadow-lg scale-[1.02]' 
                             : 'hover:bg-accent/20'
                           }
                         `}
                       >
                         <div>
                           <p className="font-semibold">{item.product.name}</p>
-                          <p className="text-sm text-muted-foreground">${item.product.price.toFixed(2)}</p>
+                          <p className="text-sm text-muted-foreground">{item.product.price.toFixed(2)}€</p>
                         </div>
                         <div className="flex items-center gap-2">
                           <Button
@@ -321,17 +267,11 @@ export default function CashRegister({ products }: { products: Product[] }) {
             </div>
           </ScrollArea>
           
-          {/* Sticky bottom item indicator */}
-          {stickyItemIndex !== null && isScrolling && !isAutoScrolling && orderItems.length > 0 && (
-            <div className="absolute bottom-0 left-0 right-0 bg-primary/10 border-t border-primary/20 p-2 text-sm text-muted-foreground text-center rounded-b-lg">
-              Viewing item {stickyItemIndex + 1} of {orderItems.length} - {orderItems[stickyItemIndex]?.product.name}
-            </div>
-          )}
         </div>
         <div className="mt-6 pt-6 border-t">
           <div className="flex justify-between items-center text-xl font-bold mb-4">
             <span>Total</span>
-            <span>${calculateTotal().toFixed(2)}</span>
+            <span>{calculateTotal().toFixed(2)}€</span>
           </div>
           <Button
             className="w-full text-lg py-6"

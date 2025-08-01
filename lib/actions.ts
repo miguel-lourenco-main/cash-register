@@ -1,23 +1,49 @@
 "use server"
 
-import type { Order, OrderItem } from "./types"
+import type { Order, AppOrderItem, OrderItemWithProduct } from "./types"
+import { supabase } from "./supabase"
 
-// This is a simple in-memory store for demonstration purposes.
-// In a real application, you would use a database like Supabase, Neon, or MongoDB.
-const orders: Order[] = []
-
-export async function createOrder(items: OrderItem[]): Promise<{ success: boolean; order?: Order }> {
+export async function createOrder(items: AppOrderItem[]): Promise<{ success: boolean; order?: Order }> {
   try {
-    // Simulate async operation
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    // Generate a unique order ID
+    const orderId = Math.random().toString(36).substr(2, 9)
+    
+    // Create the order
+    const { data: orderData, error: orderError } = await supabase
+      .from('orders')
+      .insert([{ id: orderId }])
+      .select()
+      .single()
 
-    const newOrder: Order = {
-      id: Math.random().toString(36).substr(2, 9),
-      items,
-      createdAt: new Date(),
+    if (orderError) {
+      console.error("Failed to create order:", orderError)
+      return { success: false }
     }
 
-    orders.push(newOrder)
+    // Create order items
+    const orderItems = items.map(item => ({
+      order_id: orderId,
+      product_id: item.product.id,
+      quantity: item.quantity
+    }))
+
+    const { error: itemsError } = await supabase
+      .from('order_items')
+      .insert(orderItems)
+
+    if (itemsError) {
+      console.error("Failed to create order items:", itemsError)
+      // Clean up the order if items failed to insert
+      await supabase.from('orders').delete().eq('id', orderId)
+      return { success: false }
+    }
+
+    const newOrder: Order = {
+      id: orderData.id,
+      items,
+      createdAt: new Date()
+    }
+
     return { success: true, order: newOrder }
   } catch (error) {
     console.error("Failed to create order:", error)
@@ -26,13 +52,74 @@ export async function createOrder(items: OrderItem[]): Promise<{ success: boolea
 }
 
 export async function getOrders(): Promise<Order[]> {
-  // Simulate async operation
-  await new Promise((resolve) => setTimeout(resolve, 100))
-  return JSON.parse(JSON.stringify(orders)) // Return a copy
+  try {
+    const { data: ordersData, error: ordersError } = await supabase
+      .from('orders')
+      .select(`
+        *,
+        order_items (
+          *,
+          products (*)
+        )
+      `)
+      .order('created_at', { ascending: false })
+
+    if (ordersError) {
+      console.error("Failed to fetch orders:", ordersError)
+      return []
+    }
+
+    return ordersData.map(order => ({
+      id: order.id,
+      createdAt: new Date(order.created_at || ''),
+      items: order.order_items.map((item: OrderItemWithProduct) => ({
+        product: {
+          id: item.products.id,
+          name: item.products.name,
+          price: item.products.price
+        },
+        quantity: item.quantity
+      }))
+    }))
+  } catch (error) {
+    console.error("Failed to fetch orders:", error)
+    return []
+  }
 }
 
 export async function getOrderById(id: string): Promise<Order | undefined> {
-  // Simulate async operation
-  await new Promise((resolve) => setTimeout(resolve, 100))
-  return orders.find((order) => order.id === id)
+  try {
+    const { data: orderData, error: orderError } = await supabase
+      .from('orders')
+      .select(`
+        *,
+        order_items (
+          *,
+          products (*)
+        )
+      `)
+      .eq('id', id)
+      .single()
+
+    if (orderError || !orderData) {
+      console.error("Failed to fetch order:", orderError)
+      return undefined
+    }
+
+    return {
+      id: orderData.id,
+      createdAt: new Date(orderData.created_at || ''),
+      items: orderData.order_items.map((item: OrderItemWithProduct) => ({
+        product: {
+          id: item.products.id,
+          name: item.products.name,
+          price: item.products.price
+        },
+        quantity: item.quantity
+      }))
+    }
+  } catch (error) {
+    console.error("Failed to fetch order:", error)
+    return undefined
+  }
 }
