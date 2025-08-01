@@ -7,11 +7,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { toast } from "sonner"
-import type { Product, OrderItem } from "@/lib/types"
+import type { AppProduct, AppOrderItem } from "@/lib/types"
 import { createOrder } from "@/lib/actions"
 
-export default function CashRegister({ products }: { products: Product[] }) {
-  const [orderItems, setOrderItems] = useState<OrderItem[]>([])
+export default function CashRegister({ products }: { products: AppProduct[] }) {
+  const [orderItems, setOrderItems] = useState<AppOrderItem[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [stickyItemIndex, setStickyItemIndex] = useState<number | null>(null)
   const [isScrolling, setIsScrolling] = useState(false)
@@ -21,7 +21,7 @@ export default function CashRegister({ products }: { products: Product[] }) {
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const scrollAreaRef = useRef<HTMLDivElement | null>(null)
 
-  const handleAddToOrder = (product: Product) => {
+  const handleAddToOrder = (product: AppProduct) => {
     setOrderItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.product.id === product.id)
       if (existingItem) {

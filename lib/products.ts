@@ -1,8 +1,8 @@
-import type { Product } from "./types"
+import type { AppProduct } from "./types"
 import { supabase } from "./supabase"
 
 // This function now fetches products from Supabase
-export const getProducts = async (): Promise<Product[]> => {
+export const getProducts = async (): Promise<AppProduct[]> => {
   const { data, error } = await supabase
     .from('products')
     .select('*')
@@ -21,7 +21,7 @@ export const getProducts = async (): Promise<Product[]> => {
 }
 
 // Function to get a single product by ID
-export const getProductById = async (id: string): Promise<Product | null> => {
+export const getProductById = async (id: string): Promise<AppProduct | null> => {
   const { data, error } = await supabase
     .from('products')
     .select('*')

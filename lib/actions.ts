@@ -1,9 +1,9 @@
 "use server"
 
-import type { Order, OrderItem } from "./types"
+import type { Order, AppOrderItem, OrderItemWithProduct } from "./types"
 import { supabase } from "./supabase"
 
-export async function createOrder(items: OrderItem[]): Promise<{ success: boolean; order?: Order }> {
+export async function createOrder(items: AppOrderItem[]): Promise<{ success: boolean; order?: Order }> {
   try {
     // Generate a unique order ID
     const orderId = Math.random().toString(36).substr(2, 9)
@@ -41,7 +41,7 @@ export async function createOrder(items: OrderItem[]): Promise<{ success: boolea
     const newOrder: Order = {
       id: orderData.id,
       items,
-      createdAt: new Date(orderData.created_at)
+      createdAt: new Date()
     }
 
     return { success: true, order: newOrder }
@@ -71,8 +71,8 @@ export async function getOrders(): Promise<Order[]> {
 
     return ordersData.map(order => ({
       id: order.id,
-      createdAt: new Date(order.created_at),
-      items: order.order_items.map((item: any) => ({
+      createdAt: new Date(order.created_at || ''),
+      items: order.order_items.map((item: OrderItemWithProduct) => ({
         product: {
           id: item.products.id,
           name: item.products.name,
@@ -108,8 +108,8 @@ export async function getOrderById(id: string): Promise<Order | undefined> {
 
     return {
       id: orderData.id,
-      createdAt: new Date(orderData.created_at),
-      items: orderData.order_items.map((item: any) => ({
+      createdAt: new Date(orderData.created_at || ''),
+      items: orderData.order_items.map((item: OrderItemWithProduct) => ({
         product: {
           id: item.products.id,
           name: item.products.name,
