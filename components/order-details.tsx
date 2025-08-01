@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator"
 import type { Order } from "@/lib/types"
 
 export default function OrderDetails({ order }: { order: Order }) {
+
   const calculateTotal = () => {
     return order.items.reduce((total, item) => total + item.product.price * item.quantity, 0)
   }
@@ -17,7 +18,7 @@ export default function OrderDetails({ order }: { order: Order }) {
             Order #{order.id} - Placed on {new Date(order.createdAt).toLocaleString()}
           </CardDescription>
         </CardHeader>
-        <CardContent>
+                <CardContent>
           <Table>
             <TableHeader>
               <TableRow>

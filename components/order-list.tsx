@@ -1,14 +1,16 @@
 "use client"
 
-import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import type { Order } from "@/lib/types"
+import { useRouter } from "next/navigation"
 
 export default function OrderList({ initialOrders }: { initialOrders: Order[] }) {
   const calculateOrderTotal = (order: Order) => {
     return order.items.reduce((total, item) => total + item.product.price * item.quantity, 0)
   }
+
+  const router = useRouter()
 
   return (
     <Card>
@@ -31,11 +33,9 @@ export default function OrderList({ initialOrders }: { initialOrders: Order[] })
               initialOrders
                 .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                 .map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-medium">
-                      <Link href={`/orders/${order.id}`} className="text-primary hover:underline">
-                        #{order.id}
-                      </Link>
+                  <TableRow key={order.id} onClick={() => router.push(`/orders/${order.id}`)}>
+                    <TableCell className="font-medium cursor-pointer">
+                      #{order.id}
                     </TableCell>
                     <TableCell>{new Date(order.createdAt).toLocaleString()}</TableCell>
                     <TableCell>{order.items.reduce((sum, item) => sum + item.quantity, 0)}</TableCell>
