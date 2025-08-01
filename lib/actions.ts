@@ -76,7 +76,8 @@ export async function getOrders(): Promise<Order[]> {
         product: {
           id: item.products.id,
           name: item.products.name,
-          price: item.products.price
+          price: item.products.price,
+          category: item.products.category
         },
         quantity: item.quantity
       }))
@@ -113,7 +114,8 @@ export async function getOrderById(id: string): Promise<Order | undefined> {
         product: {
           id: item.products.id,
           name: item.products.name,
-          price: item.products.price
+          price: item.products.price,
+          category: item.products.category
         },
         quantity: item.quantity
       }))
