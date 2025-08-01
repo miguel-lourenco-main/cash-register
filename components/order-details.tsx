@@ -18,7 +18,7 @@ export default function OrderDetails({ order }: { order: Order }) {
             Order #{order.id} - Placed on {new Date(order.createdAt).toLocaleString()}
           </CardDescription>
         </CardHeader>
-                <CardContent>
+        <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
