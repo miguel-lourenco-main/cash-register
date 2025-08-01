@@ -13,18 +13,18 @@ export default function OrderDetails({ order }: { order: Order }) {
     <div className="max-w-4xl mx-auto py-8">
       <Card>
         <CardHeader>
-          <CardTitle>Order Details</CardTitle>
+          <CardTitle>Detalhes do Pedido</CardTitle>
           <CardDescription>
-            Order #{order.id} - Placed on {new Date(order.createdAt).toLocaleString()}
+            Pedido #{order.id} - Realizado em {new Date(order.createdAt).toLocaleString()}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Product</TableHead>
-                <TableHead className="text-center">Quantity</TableHead>
-                <TableHead className="text-right">Unit Price</TableHead>
+                <TableHead>Produto</TableHead>
+                <TableHead className="text-center">Quantidade</TableHead>
+                <TableHead className="text-right">Preço Unitário</TableHead>
                 <TableHead className="text-right">Subtotal</TableHead>
               </TableRow>
             </TableHeader>

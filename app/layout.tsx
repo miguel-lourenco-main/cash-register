@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname()
   return (
-    <html lang="en">
+    <html lang="pt">
       <body className={inter.className}>
         <div className="flex flex-col min-h-screen">
           <header className="sticky top-0 z-50 flex items-center justify-between h-16 px-4 border-b shrink-0 md:px-6 bg-background">
@@ -31,13 +31,13 @@ export default function RootLayout({
                 className={cn("text-sm font-medium hover:underline underline-offset-4", pathname !== "/" && "text-muted-foreground")}
                 href="/"
               >
-                Register
+                Caixa
               </Link>
               <Link
                 className={cn("text-sm font-medium hover:underline underline-offset-4", pathname !== "/orders" && "text-muted-foreground")}
                 href="/orders"
               >
-                Orders
+                Pedidos
               </Link>
             </nav>
           </header>

@@ -15,16 +15,16 @@ export default function OrderList({ initialOrders }: { initialOrders: Order[] })
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Orders</CardTitle>
-        <CardDescription>A list of all confirmed orders.</CardDescription>
+        <CardTitle>Pedidos</CardTitle>
+        <CardDescription>Lista de todos os pedidos confirmados.</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Order ID</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Items</TableHead>
+              <TableHead>ID do Pedido</TableHead>
+              <TableHead>Data</TableHead>
+              <TableHead>Itens</TableHead>
               <TableHead className="text-right">Total</TableHead>
             </TableRow>
           </TableHeader>
@@ -45,7 +45,7 @@ export default function OrderList({ initialOrders }: { initialOrders: Order[] })
             ) : (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center">
-                  No orders found.
+                  Nenhum pedido encontrado.
                 </TableCell>
               </TableRow>
             )}

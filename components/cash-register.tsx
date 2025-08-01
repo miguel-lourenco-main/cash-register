@@ -53,8 +53,8 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
 
   const handleConfirmOrder = async () => {
     if (orderItems.length === 0) {
-      toast.error("Empty Order", {
-        description: "Please add items to the order before confirming.",
+      toast.error("Pedido Vazio", {
+        description: "Por favor adicione itens ao pedido antes de confirmar.",
       })
       return
     }
@@ -64,14 +64,14 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
     setIsSubmitting(false)
 
     if (result.success && result.order) {
-      toast.success("Order Confirmed!", {
-        description: `Order #${result.order.id} has been successfully created.`,
+      toast.success("Pedido Confirmado!", {
+        description: `Pedido #${result.order.id} foi criado com sucesso.`,
       })
       setOrderItems([]) // Clear for next order
       router.refresh() // Refresh server components to update order list
     } else {
-      toast.error("Error", {
-        description: "There was a problem confirming the order.",
+      toast.error("Erro", {
+        description: "Houve um problema ao confirmar o pedido.",
       })
     }
   }
@@ -179,7 +179,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
     <div className="grid md:grid-cols-2 gap-8 h-[calc(100vh-5rem)] py-6">
       {/* Products Section */}
       <div className="flex flex-col">
-        <h2 className="text-2xl font-bold mb-4">Select Tickets</h2>
+        <h2 className="text-2xl font-bold mb-4">Selecionar Produtos</h2>
         <ScrollArea className="flex-1">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
             {products.map((product) => (
@@ -200,15 +200,15 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
 
       {/* Current Order Section */}
       <div className="flex flex-col h-[80vh] bg-muted/40 p-6 rounded-lg">
-        <h2 className="text-2xl font-bold mb-4">Current Order</h2>
+        <h2 className="text-2xl font-bold mb-4">Pedido Atual</h2>
         <div className="flex-1 min-h-0 overflow-hidden relative">
           <ScrollArea ref={scrollAreaRef} className="h-full">
             <div className="pr-6">
               {orderItems.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
                   <ShoppingCart className="w-16 h-16 mb-4" />
-                  <p>No items in order.</p>
-                  <p className="text-sm">Click on a ticket to add it.</p>
+                  <p>Nenhum item no pedido.</p>
+                  <p className="text-sm">Clique num produto para adicionar.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -278,7 +278,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
             onClick={handleConfirmOrder}
             disabled={isSubmitting || orderItems.length === 0}
           >
-            {isSubmitting ? "Processing..." : "Confirm Order"}
+            {isSubmitting ? "A processar..." : "Confirmar Pedido"}
           </Button>
         </div>
       </div>
