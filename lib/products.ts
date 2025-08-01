@@ -2,7 +2,7 @@ import type { AppProduct } from "./types"
 import { supabase } from "./supabase"
 
 // Define the desired product order based on the CSV
-const PRODUCT_ORDER = [
+const BEBIDAS = [
   'cerveja',
   'metro-cerveja-11-imperiais',
   'sidra',
@@ -24,6 +24,9 @@ const PRODUCT_ORDER = [
   'whiskey-agua-pedras',
   'gin-tonico',
   'cafe-descafeinado',
+]
+
+const COMIDA = [
   'batata-fritas',
   'bifanas',
   'pica-pau',
@@ -32,7 +35,7 @@ const PRODUCT_ORDER = [
   'chupa-caramelo'
 ]
 
-// This function now fetches products from Supabase and orders them according to PRODUCT_ORDER
+// This function now fetches products from Supabase and orders them according to predefined arrays
 export const getProducts = async (): Promise<AppProduct[]> => {
   const { data, error } = await supabase
     .from('products')
@@ -46,24 +49,35 @@ export const getProducts = async (): Promise<AppProduct[]> => {
   const products = data.map(product => ({
     id: product.id,
     name: product.name,
-    price: product.price
+    price: product.price,
+    category: product.category as 'comida' | 'bebida'
   }))
 
-  // Sort products according to the predefined order
+  // Sort products according to the predefined order arrays
   const sortedProducts = products.sort((a, b) => {
-    const indexA = PRODUCT_ORDER.indexOf(a.id)
-    const indexB = PRODUCT_ORDER.indexOf(b.id)
+    // Check if both products are in BEBIDAS array
+    const indexA = BEBIDAS.indexOf(a.id)
+    const indexB = BEBIDAS.indexOf(b.id)
     
-    // If both products are in the order array, sort by their position
     if (indexA !== -1 && indexB !== -1) {
       return indexA - indexB
     }
     
-    // If only one is in the order array, prioritize it
-    if (indexA !== -1) return -1
-    if (indexB !== -1) return 1
+    // Check if both products are in COMIDA array
+    const indexAComida = COMIDA.indexOf(a.id)
+    const indexBComida = COMIDA.indexOf(b.id)
     
-    // If neither is in the order array, maintain alphabetical order
+    if (indexAComida !== -1 && indexBComida !== -1) {
+      return indexAComida - indexBComida
+    }
+    
+    // If one is in BEBIDAS and one is in COMIDA, prioritize BEBIDAS
+    if (indexA !== -1) return -1
+    if (indexB !== -1) return -1
+    if (indexAComida !== -1) return 1
+    if (indexBComida !== -1) return 1
+    
+    // If neither is in the order arrays, maintain alphabetical order
     return a.name.localeCompare(b.name)
   })
 
@@ -86,6 +100,7 @@ export const getProductById = async (id: string): Promise<AppProduct | null> => 
   return {
     id: data.id,
     name: data.name,
-    price: data.price
+    price: data.price,
+    category: data.category as 'comida' | 'bebida'
   }
 }

@@ -16,6 +16,7 @@ export interface AppProduct {
   id: string
   name: string
   price: number
+  category: 'comida' | 'bebida'
 }
 
 export interface AppOrderItem {

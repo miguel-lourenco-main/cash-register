@@ -17,6 +17,12 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
   const [isScrolling, setIsScrolling] = useState(false)
   const router = useRouter()
   
+  // Group products by category
+  const productsByCategory = {
+    bebida: products.filter(p => p.category === 'bebida'),
+    comida: products.filter(p => p.category === 'comida')
+  }
+  
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const scrollAreaRef = useRef<HTMLDivElement | null>(null)
@@ -181,19 +187,60 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
       <div className="flex flex-col">
         <h2 className="text-2xl font-bold mb-4">Selecionar Produtos</h2>
         <ScrollArea className="flex-1">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
-            {products.map((product) => (
-              <Card
-                key={product.id}
-                className="cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() => handleAddToOrder(product)}
-              >
-                <CardContent className="p-4 flex flex-col items-center justify-center text-center">
-                  <p className="font-semibold">{product.name}</p>
-                  <p className="text-sm text-muted-foreground">{product.price.toFixed(2)}€</p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="space-y-8 mb-8">
+            {/* Bebidas Section */}
+            {productsByCategory.bebida.length > 0 && (
+              <div>
+                <div className="flex items-center mb-4">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-blue-600 font-bold text-sm">🍺</span>
+                  </div>
+                  <h3 className="text-xl font-semibold text-blue-700">Bebidas</h3>
+                  <div className="flex-1 h-px bg-blue-200 ml-4"></div>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {productsByCategory.bebida.map((product) => (
+                    <Card
+                      key={product.id}
+                      className="cursor-pointer hover:shadow-lg transition-shadow border-blue-100 hover:border-blue-300"
+                      onClick={() => handleAddToOrder(product)}
+                    >
+                      <CardContent className="p-4 flex flex-col items-center justify-center text-center">
+                        <p className="font-semibold">{product.name}</p>
+                        <p className="text-sm text-muted-foreground">{product.price.toFixed(2)}€</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Comida Section */}
+            {productsByCategory.comida.length > 0 && (
+              <div>
+                <div className="flex items-center mb-4">
+                  <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-orange-600 font-bold text-sm">🍽️</span>
+                  </div>
+                  <h3 className="text-xl font-semibold text-orange-700">Comida</h3>
+                  <div className="flex-1 h-px bg-orange-200 ml-4"></div>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {productsByCategory.comida.map((product) => (
+                    <Card
+                      key={product.id}
+                      className="cursor-pointer hover:shadow-lg transition-shadow border-orange-100 hover:border-orange-300"
+                      onClick={() => handleAddToOrder(product)}
+                    >
+                      <CardContent className="p-4 flex flex-col items-center justify-center text-center">
+                        <p className="font-semibold">{product.name}</p>
+                        <p className="text-sm text-muted-foreground">{product.price.toFixed(2)}€</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </ScrollArea>
       </div>
