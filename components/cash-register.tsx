@@ -218,7 +218,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
   }, [])
 
   return (
-    <div className="grid md:grid-cols-2 gap-8 h-[calc(100vh-5rem)] py-6 pb-24 md:pb-6">
+    <div className="grid md:grid-cols-2 gap-8 py-6 lg:pb-24 md:pb-6">
       {/* Products Section */}
       <div className="flex flex-col">
         <h2 className="text-2xl font-bold mb-4">Selecionar Produtos</h2>
