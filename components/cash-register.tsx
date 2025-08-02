@@ -6,6 +6,7 @@ import { PlusCircle, MinusCircle, XCircle, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { FloatingCartButton } from "@/components/ui/floating-cart-button"
 import { toast } from "sonner"
 import type { AppProduct, AppOrderItem } from "@/lib/types"
 import { createOrder } from "@/lib/actions"
@@ -15,6 +16,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [stickyItemIndex, setStickyItemIndex] = useState<number | null>(null)
   const [isScrolling, setIsScrolling] = useState(false)
+  const [isOrderInView, setIsOrderInView] = useState(false)
   const router = useRouter()
   
   // Group products by category
@@ -26,6 +28,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const scrollAreaRef = useRef<HTMLDivElement | null>(null)
+  const orderSectionRef = useRef<HTMLDivElement | null>(null)
 
   const handleAddToOrder = (product: AppProduct) => {
     setOrderItems((prevItems) => {
@@ -80,6 +83,19 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
         description: "Houve um problema ao confirmar o pedido.",
       })
     }
+  }
+
+  const handleScrollToOrder = () => {
+    // Scroll to the end of the window to show the order summary in full view
+    // Add a small offset to ensure the order summary is fully visible
+    const scrollHeight = document.documentElement.scrollHeight
+    const viewportHeight = window.innerHeight
+    const scrollPosition = scrollHeight - viewportHeight
+    
+    window.scrollTo({
+      top: scrollPosition,
+      behavior: 'smooth'
+    })
   }
 
 
@@ -181,8 +197,28 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
     }
   }, [orderItems.length])
 
+  // Track if order section is in view
+  useEffect(() => {
+    const handleWindowScroll = () => {
+      if (orderSectionRef.current) {
+        const rect = orderSectionRef.current.getBoundingClientRect()
+        // Consider the order section "in view" when it takes up most of the viewport
+        const threshold = window.innerHeight * 0.3 // 30% of viewport height
+        const isInView = rect.top <= threshold && rect.bottom >= threshold
+        setIsOrderInView(isInView)
+      }
+    }
+
+    window.addEventListener('scroll', handleWindowScroll, { passive: true })
+    handleWindowScroll() // Check initial state
+
+    return () => {
+      window.removeEventListener('scroll', handleWindowScroll)
+    }
+  }, [])
+
   return (
-    <div className="grid md:grid-cols-2 gap-8 h-[calc(100vh-5rem)] py-6">
+    <div className="grid md:grid-cols-2 gap-8 h-[calc(100vh-5rem)] py-6 pb-24 md:pb-6">
       {/* Products Section */}
       <div className="flex flex-col">
         <h2 className="text-2xl font-bold mb-4">Selecionar Produtos</h2>
@@ -246,7 +282,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
       </div>
 
       {/* Current Order Section */}
-      <div className="flex flex-col h-[80vh] bg-muted/40 p-6 rounded-lg">
+      <div ref={orderSectionRef} className="flex flex-col h-[80vh] md:h-[80vh] bg-muted/40 p-6 rounded-lg">
         <h2 className="text-2xl font-bold mb-4">Pedido Atual</h2>
         <div className="flex-1 min-h-0 overflow-hidden relative">
           <ScrollArea ref={scrollAreaRef} className="h-full">
@@ -329,6 +365,13 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
           </Button>
         </div>
       </div>
+      
+      {/* Floating Cart Button for Mobile */}
+      <FloatingCartButton 
+        itemCount={orderItems.reduce((total, item) => total + item.quantity, 0)}
+        onScrollToOrder={handleScrollToOrder}
+        isOrderInView={isOrderInView}
+      />
     </div>
   )
 }

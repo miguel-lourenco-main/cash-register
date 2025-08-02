@@ -1,4 +1,21 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cash Register App
+
+A modern cash register application built with Next.js, TypeScript, and Supabase. Features a responsive design with mobile-optimized floating cart functionality.
+
+## Features
+
+- **Product Management**: Add and manage products with categories (bebidas/comidas)
+- **Order Processing**: Create and manage orders with real-time updates
+- **Mobile-First Design**: Responsive layout with floating cart button on mobile devices
+- **Real-time Updates**: Live order tracking and status updates
+
+### Mobile Experience
+
+On mobile devices, when products are added to the cart, a floating cart button appears in the bottom-right corner. This button:
+- Shows the number of items in the cart
+- Provides quick access to the order summary
+- Includes smooth scroll animation to the order section
+- Features visual feedback with pulse animations
 
 ## Getting Started
 
