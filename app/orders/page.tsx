@@ -1,14 +1,8 @@
-import OrderList from "@/components/order-list"
-import { getOrders } from "@/lib/actions"
+import OrdersClient from "@/components/orders-client"
 
-// Force dynamic rendering to always fetch fresh data
-export const dynamic = 'force-dynamic'
+// Enable static export
+export const dynamic = 'force-static'
 
-export default async function OrdersPage() {
-  const orders = await getOrders()
-  return (
-    <div className="py-6">
-      <OrderList initialOrders={orders} />
-    </div>
-  )
+export default function OrdersPage() {
+  return <OrdersClient />
 }

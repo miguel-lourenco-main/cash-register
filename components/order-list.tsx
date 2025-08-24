@@ -93,7 +93,7 @@ export default function OrderList({ initialOrders }: { initialOrders: Order[] })
             <TableBody>
               {currentOrders.length > 0 ? (
                 currentOrders.map((order) => (
-                  <TableRow key={order.id} onClick={() => router.push(`/orders/${order.id}`)}>
+                  <TableRow key={order.id} onClick={() => router.push(`/orders?orderId=${order.id}`)}>
                     <TableCell className="font-medium cursor-pointer">
                       #{order.id}
                     </TableCell>

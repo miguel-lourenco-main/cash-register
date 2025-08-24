@@ -1,8 +1,15 @@
-# GitLab CI/CD for Next.js (GitLab Pages)
-# - Builds on every commit to main
-# - Tries to statically export; if not possible, publishes a fallback page that explains
+image: node:18
 
-image: node:20-bullseye
+# Define variables
+variables:
+  NODE_ENV: production
+  CI_COMMIT_REF_SLUG: $CI_COMMIT_REF_SLUG
+
+# Cache node_modules for faster builds
+cache:
+  paths:
+    - node_modules/
+    - .next/cache/
 
 variables:
   PNPM_HOME: "$CI_PROJECT_DIR/.pnpm"
@@ -52,60 +59,33 @@ build:
     - pnpm run build
   artifacts:
     paths:
-      - .next/
+      - out/
     expire_in: 1 day
 
+# Deploy to GitLab Pages - Production (main branch)
 pages:
-  stage: pages
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-  needs:
-    - job: install
-      artifacts: true
-    - job: build
-      artifacts: true
-  before_script:
-    - *pnpm_setup
+  stage: deploy
   script:
-    - |
-      set -euo pipefail
-      # Prepare public directory for Pages
-      rm -rf public_pages
-      mkdir -p public_pages
-
-      # Attempt static export (Next 15): `next export` is supported for static routes
-      # If export fails, generate a simple info page
-      if pnpm exec next export -o public_pages; then
-        echo "Static export succeeded"
-      else
-        echo "Static export failed; creating fallback page"
-        cat > public_pages/index.html << 'EOF'
-        <!doctype html>
-        <html lang="en">
-        <head>
-          <meta charset="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <title>Cash Register</title>
-          <style>
-            body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji"; padding: 2rem; line-height: 1.5; }
-            .wrap { max-width: 720px; margin: 0 auto; }
-            code { background: #f2f2f2; padding: 0.1rem 0.3rem; border-radius: 4px; }
-          </style>
-        </head>
-        <body>
-          <div class="wrap">
-            <h1>Cash Register</h1>
-            <p>This project is a Next.js app which relies on server-side features and Supabase. It cannot be fully exported to static HTML for GitLab Pages.</p>
-            <p>The CI pipeline validated the build successfully. To run the dynamic app, deploy to a Node.js runtime (e.g., GitLab Auto DevOps, Railway, Vercel, or a custom server) and run <code>pnpm start</code> after <code>pnpm build</code>.</p>
-            <p>Source commit: ${CI_COMMIT_SHORT_SHA}</p>
-          </div>
-        </body>
-        </html>
-        EOF
-      fi
-    - mv public_pages public
+    - echo "Deploying to GitLab Pages Production..."
+    - echo "Production URL - ${CI_PAGES_URL}"
+    - ls -la out/  # Debug: List contents of out directory
+    - mkdir -p public
+    - cp -r out/* public/  # Copy contents of out directory to public directory
+    - ls -la public/  # Debug: List contents of public directory
+    - ls -la public/_next/static/chunks/ || echo "No chunks directory found"
   artifacts:
     paths:
-      - public
+      - public/
+    expire_in: never
+  dependencies:
+    - build
+    #- test
+  environment:
+    name: production
+    url: $CI_PAGES_URL
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 

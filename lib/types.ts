@@ -6,9 +6,14 @@ export type OrderItem = Tables<'order_items'>
 
 export type OrderRow = Tables<'orders'>
 
-// Type for OrderItem with joined product data from Supabase queries
-export type OrderItemWithProduct = OrderItem & {
-  products: Product
+
+export type OrderItemWithProduct = {
+  id: string
+  order_id: string
+  product_id: string
+  quantity: number
+  created_at: string | null
+  product: Product
 }
 
 // Application-level types

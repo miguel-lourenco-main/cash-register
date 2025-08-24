@@ -1,5 +1,3 @@
-"use server"
-
 import type { Order, AppOrderItem, OrderItemWithProduct } from "./types"
 import { supabase } from "./supabase"
 
@@ -59,7 +57,7 @@ export async function getOrders(): Promise<Order[]> {
         *,
         order_items (
           *,
-          products (*)
+          product:products (*)
         )
       `)
       .order('created_at', { ascending: false })
@@ -74,10 +72,10 @@ export async function getOrders(): Promise<Order[]> {
       createdAt: new Date(order.created_at || ''),
       items: order.order_items.map((item: OrderItemWithProduct) => ({
         product: {
-          id: item.products.id,
-          name: item.products.name,
-          price: item.products.price,
-          category: item.products.category
+          id: item.product.id,
+          name: item.product.name,
+          price: item.product.price,
+          category: item.product.category
         },
         quantity: item.quantity
       }))
@@ -96,7 +94,7 @@ export async function getOrderById(id: string): Promise<Order | undefined> {
         *,
         order_items (
           *,
-          products (*)
+          product:products (*)
         )
       `)
       .eq('id', id)
@@ -112,10 +110,10 @@ export async function getOrderById(id: string): Promise<Order | undefined> {
       createdAt: new Date(orderData.created_at || ''),
       items: orderData.order_items.map((item: OrderItemWithProduct) => ({
         product: {
-          id: item.products.id,
-          name: item.products.name,
-          price: item.products.price,
-          category: item.products.category
+          id: item.product.id,
+          name: item.product.name,
+          price: item.product.price,
+          category: item.product.category
         },
         quantity: item.quantity
       }))

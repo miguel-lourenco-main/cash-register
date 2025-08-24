@@ -1,10 +1,8 @@
-import CashRegister from "@/components/cash-register"
-import { getProducts } from "@/lib/products"
+import CashRegisterClient from "@/components/cash-register-client"
 
-// Force dynamic rendering to always fetch fresh data
-export const dynamic = 'force-dynamic'
+// Enable static export
+export const dynamic = 'force-static'
 
-export default async function Home() {
-  const products = await getProducts()
-  return <CashRegister products={products} />
+export default function Home() {
+  return <CashRegisterClient />
 }
