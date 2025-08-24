@@ -64,7 +64,7 @@ build:
 
 # Deploy to GitLab Pages - Production (main branch)
 pages:
-  stage: deploy
+  stage: pages
   script:
     - echo "Deploying to GitLab Pages Production..."
     - echo "Production URL - ${CI_PAGES_URL}"
