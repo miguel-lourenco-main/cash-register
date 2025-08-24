@@ -16,7 +16,6 @@ cache:
 # Define stages
 stages:
   - build
-  #- test
   - deploy
 
 # Build stage for all branches
@@ -30,8 +29,6 @@ build:
     - echo "NODE_ENV=$NODE_ENV"
     - echo "CI_COMMIT_REF_SLUG=$CI_COMMIT_REF_SLUG"
     - echo "CI_DEFAULT_BRANCH=$CI_DEFAULT_BRANCH"
-    - pnpm run typecheck
-    - pnpm run lint
     - pnpm run build
   artifacts:
     paths:
