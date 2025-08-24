@@ -1,3 +1,5 @@
+# GitLab CI/CD configuration for Next.js static export to GitLab Pages
+# Uses GitLab Pages Parallel Deployments for branch-specific preview URLs
 image: node:18
 
 # Define variables
@@ -11,60 +13,38 @@ cache:
     - node_modules/
     - .next/cache/
 
-variables:
-  PNPM_HOME: "$CI_PROJECT_DIR/.pnpm"
-  PATH: "$PNPM_HOME:$PATH"
-  NEXT_TELEMETRY_DISABLED: "1"
-  # Next.js cache dir
-  NEXT_CACHE_DIR: ".next/cache"
-
-cache:
-  key: "${CI_COMMIT_REF_SLUG}"
-  paths:
-    - node_modules/
-    - .next/cache/
-    - .pnpm-store/
-
+# Define stages
 stages:
-  - install
   - build
-  - pages
+  #- test
+  - deploy
 
-.pnpm_setup: &pnpm_setup |
-  corepack enable
-  corepack prepare pnpm@latest --activate
-
-install:
-  stage: install
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-  before_script:
-    - *pnpm_setup
-  script:
-    - pnpm install --frozen-lockfile
-  artifacts:
-    paths:
-      - node_modules/
-      - pnpm-lock.yaml
-    expire_in: 1 day
-
+# Build stage for all branches
 build:
   stage: build
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-  needs: ["install"]
   before_script:
-    - *pnpm_setup
+    - npm install -g pnpm@10.14.0
+    - pnpm install --frozen-lockfile
   script:
+    - echo "Environment variables for debugging:"
+    - echo "NODE_ENV=$NODE_ENV"
+    - echo "CI_COMMIT_REF_SLUG=$CI_COMMIT_REF_SLUG"
+    - echo "CI_DEFAULT_BRANCH=$CI_DEFAULT_BRANCH"
+    - pnpm run typecheck
+    - pnpm run lint
     - pnpm run build
   artifacts:
     paths:
       - out/
-    expire_in: 1 day
+    expire_in: 1 hour
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - when: always
 
 # Deploy to GitLab Pages - Production (main branch)
 pages:
-  stage: pages
+  stage: deploy
   script:
     - echo "Deploying to GitLab Pages Production..."
     - echo "Production URL - ${CI_PAGES_URL}"
@@ -87,5 +67,3 @@ pages:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
-
