@@ -22,6 +22,25 @@ export default function RootLayout({
 
   return (
     <html lang="pt" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const theme = localStorage.getItem('cash-register-theme') || 'system';
+                if (theme === 'system') {
+                  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  document.documentElement.classList.add(systemTheme);
+                } else {
+                  document.documentElement.classList.add(theme);
+                }
+              } catch (e) {
+                document.documentElement.classList.add('light');
+              }
+            `,
+          }}
+        />
+      </head>
       <body className={inter.className}>
         <ThemeProvider
           defaultTheme="system"
