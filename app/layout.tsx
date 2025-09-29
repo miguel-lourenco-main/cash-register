@@ -8,6 +8,8 @@ import { Toaster } from "sonner"
 import { Package2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
+import { ThemeProvider } from "@/lib/theme-provider"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -19,32 +21,40 @@ export default function RootLayout({
   const pathname = usePathname()
 
   return (
-    <html lang="pt">
+    <html lang="pt" suppressHydrationWarning>
       <body className={inter.className}>
-        <div className="flex flex-col min-h-screen">
-          <header className="sticky top-0 z-50 flex items-center justify-between h-16 px-4 border-b shrink-0 md:px-6 bg-background">
-            <Link href="/" className="flex items-center gap-2 text-lg font-semibold sm:text-base">
-              <Package2 className="w-6 h-6" />
-              <span className="sr-only">Ticket POS</span>
-            </Link>
-            <nav className="flex gap-4 sm:gap-6">
-              <Link
-                className={cn("text-sm font-medium hover:underline underline-offset-4", pathname !== "/" && "text-muted-foreground")}
-                href="/"
-              >
-                Caixa
+        <ThemeProvider
+          defaultTheme="system"
+          storageKey="cash-register-theme"
+        >
+          <div className="flex flex-col min-h-screen">
+            <header className="sticky top-0 z-50 flex items-center justify-between h-16 px-4 border-b shrink-0 md:px-6 bg-background">
+              <Link href="/" className="flex items-center gap-2 text-lg font-semibold sm:text-base">
+                <Package2 className="w-6 h-6" />
+                <span className="sr-only">Ticket POS</span>
               </Link>
-              <Link
-                className={cn("text-sm font-medium hover:underline underline-offset-4", pathname !== "/orders" && "text-muted-foreground")}
-                href="/orders"
-              >
-                Pedidos
-              </Link>
-            </nav>
-          </header>
-          <main className="flex-1 p-4 sm:px-6 sm:py-0 md:gap-8">{children}</main>
-        </div>
-        <Toaster richColors />
+              <div className="flex items-center gap-4">
+                <nav className="flex gap-4 sm:gap-6">
+                  <Link
+                    className={cn("text-sm font-medium hover:underline underline-offset-4", pathname !== "/" && "text-muted-foreground")}
+                    href="/"
+                  >
+                    Caixa
+                  </Link>
+                  <Link
+                    className={cn("text-sm font-medium hover:underline underline-offset-4", pathname !== "/orders" && "text-muted-foreground")}
+                    href="/orders"
+                  >
+                    Pedidos
+                  </Link>
+                </nav>
+                <ThemeToggle />
+              </div>
+            </header>
+            <main className="flex-1 p-4 sm:px-6 sm:py-0 md:gap-8">{children}</main>
+          </div>
+          <Toaster richColors />
+        </ThemeProvider>
       </body>
     </html>
   )

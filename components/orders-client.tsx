@@ -6,6 +6,7 @@ import OrderList from "@/components/order-list"
 import OrderDetails from "@/components/order-details"
 import { getOrders, getOrderById } from "@/lib/actions"
 import type { Order } from "@/lib/types"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 export default function OrdersClient() {
   const searchParams = useSearchParams()
@@ -54,7 +55,14 @@ export default function OrdersClient() {
   }, [orderId])
 
   if (loading) {
-    return <div className="py-6">Carregando...</div>
+    return (
+      <div className="py-6 flex items-center justify-center">
+        <LoadingSpinner 
+          size="sm"
+          text="Carregando..."
+        />
+      </div>
+    )
   }
 
   if (orderId && order) {
@@ -62,7 +70,15 @@ export default function OrdersClient() {
   }
 
   if (orderId && !order) {
-    return <div className="py-6">Pedido não encontrado.</div>
+    return (
+      <div className="py-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🔍</div>
+          <h2 className="text-xl font-semibold text-foreground mb-2">Pedido não encontrado</h2>
+          <p className="text-muted-foreground">O pedido que você está procurando não existe ou foi removido.</p>
+        </div>
+      </div>
+    )
   }
 
   return (
