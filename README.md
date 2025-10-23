@@ -1,53 +1,117 @@
-# Cash Register App
+# 🏪 Cash Register System
 
-A modern cash register application built with Next.js, TypeScript, and Supabase. Features a responsive design with mobile-optimized floating cart functionality.
+> **Real-world Production Application** | Built in under 5 hours for a village religious event
 
-## Features
+A modern, full-stack cash register application built with Next.js 15, TypeScript, and Supabase. This project demonstrates rapid development skills, real-world problem-solving, and the ability to deliver production-ready software under tight deadlines.
 
-- **Product Management**: Add and manage products with categories (bebidas/comidas)
-- **Order Processing**: Create and manage orders with real-time updates
-- **Mobile-First Design**: Responsive layout with floating cart button on mobile devices
-- **Real-time Updates**: Live order tracking and status updates
+## 🚀 Project Overview
 
-### Mobile Experience
+This application was developed as an urgent solution for a village religious event where traditional cash register software was needed. The entire system was designed, coded, and deployed with a complete database in less than 5 hours, showcasing exceptional development velocity and problem-solving skills.
 
-On mobile devices, when products are added to the cart, a floating cart button appears in the bottom-right corner. This button:
-- Shows the number of items in the cart
-- Provides quick access to the order summary
-- Includes smooth scroll animation to the order section
-- Features visual feedback with pulse animations
+### Key Achievements
+- ⚡ **Rapid Development**: Complete application built in under 5 hours
+- 🎯 **Real-world Impact**: Successfully used during multi-day religious event
+- 📱 **Mobile-First Design**: Optimized for tablet/mobile use in event environment
+- 🔄 **Iterative Improvement**: Continuous user feedback integration during event
+- 🚀 **Production Ready**: Deployed and stable for immediate use
 
-## Getting Started
+## 🛠️ Technical Stack
 
-First, run the development server:
+### Frontend
+- **Next.js 15** - React framework with App Router
+- **TypeScript** - Full type safety across the application
+- **Tailwind CSS v4** - Modern utility-first styling
+- **Radix UI** - Accessible component primitives
+- **Lucide React** - Modern icon library
+
+### Backend & Database
+- **Supabase** - PostgreSQL database with real-time capabilities
+- **Row Level Security (RLS)** - Secure data access policies
+- **TypeScript Integration** - Auto-generated database types
+
+### Key Features
+- **Real-time Order Management** - Live order processing
+- **Product Catalog** - Categorized food and beverage items
+- **Order History** - Complete transaction tracking
+- **Responsive Design** - Works on all device sizes
+- **Theme System** - Light/dark mode support
+- **Error Handling** - Robust error management
+- **Loading States** - Smooth user experience
+
+## 📱 Application Features
+
+### Cash Register Interface
+- **Product Selection**: Visual grid of categorized products (food/beverages)
+- **Order Management**: Add/remove items with quantity controls
+- **Real-time Totals**: Automatic price calculations
+- **Order Confirmation**: Secure order processing with unique IDs
+- **Mobile Optimization**: Touch-friendly interface for tablet use
+
+### Order Management
+- **Order History**: Complete list of all transactions
+- **Order Details**: Detailed view of individual orders
+- **Search & Filter**: Easy order lookup by ID
+- **Status Tracking**: Real-time order status updates
+
+## 🚀 Development Process
+
+### Phase 1: Rapid Prototyping (2 hours)
+- Database schema design and implementation
+- Core cash register functionality
+- Basic UI components
+
+### Phase 2: Feature Development (2 hours)
+- Order management system
+- Product catalog with categories
+- Mobile-responsive design
+
+### Phase 3: Production Deployment (1 hour)
+- Database deployment
+- Application hosting
+- Real-world testing
+
+### Phase 4: User Feedback Integration
+- Continuous improvement during event
+- UI/UX refinements based on user feedback
+- Performance optimizations
+
+## 🛠️ Development Commands
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Install dependencies
+pnpm install
+
+# Start development server
 pnpm dev
-# or
-bun dev
+
+# Build for production
+pnpm build
+
+# Start production server
+pnpm start
+
+# Database operations
+pnpm supabase:start
+pnpm supabase:stop
+pnpm supabase:reset
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔧 Configuration
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment Setup
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Database Setup
+```bash
+# Start Supabase locally
+npx supabase start
 
-## Learn More
+# Apply migrations
+npx supabase db reset
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Generate types
+npx supabase gen types typescript --local > lib/database.types.ts
+```
