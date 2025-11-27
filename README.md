@@ -2,7 +2,7 @@
 
 > **Real-world Production Application** | Built in under 5 hours for a village religious event
 
-A modern, full-stack cash register application built with Next.js 15, TypeScript, and Supabase. This project demonstrates rapid development skills, real-world problem-solving, and the ability to deliver production-ready software under tight deadlines.
+A simple, full-stack cash register application built with Next.js 15, TypeScript, and Supabase. This project demonstrates rapid development skills, real-world problem-solving, and the ability to deliver production-ready software under tight deadlines.
 
 ## 🚀 Project Overview
 
