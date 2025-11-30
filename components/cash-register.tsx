@@ -224,7 +224,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
         <h2 className="text-2xl font-bold mb-4">Selecionar Produtos</h2>
 
         {productsByCategory.bebida.length === 0 && productsByCategory.comida.length === 0 ? (
-          <div className="flex flex-col items-center justify-center size-full text-muted-foreground">
+          <div className="flex flex-col items-center justify-center flex-1 text-muted-foreground">
             Nenhum produto encontrado. É possível que a base de dados esteja em pausa/parada. Contacte o administrador.
           </div>
         ) : (
