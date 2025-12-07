@@ -92,3 +92,22 @@ npx supabase db reset
 # Generate types
 npx supabase gen types typescript --local > lib/database.types.ts
 ```
+
+## 🤖 Automated Code Documentation
+
+This project uses an automated code documentation workflow powered by **n8n**:
+
+### Overview
+An n8n workflow runs on an Azure VM that automatically analyzes code changes on every push to the repository. The workflow:
+- **Triggers on Push**: Automatically runs when code is pushed to the repository
+- **Code Analysis**: Scans the codebase for uncommented code sections
+- **Comment Generation**: Automatically generates helpful comments based on the code logic
+- **Azure VM Deployment**: Runs reliably on a dedicated Azure virtual machine
+
+### Benefits
+- 📝 **Consistent Documentation**: Ensures code remains well-documented without manual effort
+- 🔄 **Automated Process**: No need to remember to add comments manually
+- 🎯 **Quality Assurance**: Helps maintain code quality standards across the project
+- ⚡ **Zero Overhead**: Runs in the background without impacting development workflow
+
+This automation helps maintain high code quality and documentation standards throughout the project lifecycle.
