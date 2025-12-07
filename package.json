@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit",
     "supabase:types": "npx supabase gen types typescript --local > ./lib/database.types.ts",
     "supabase:start": "npx supabase start",
     "supabase:stop": "npx supabase stop",

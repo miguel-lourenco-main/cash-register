@@ -10,12 +10,13 @@ interface PriceBreakdown {
 }
 
 /**
- * @function calculatePriceBreakdown
- * @description Calculates the price breakdown including subtotal, tax, discount, and total for a list of items, applying a tax rate and optional discount code.
- * @param {Array} items - The list of items to calculate the price for.
- * @param {number} taxRate - The tax rate to apply to the subtotal.
- * @param {string} [discountCode] - Optional discount code for additional discount.
- * @returns {PriceBreakdown} The calculated price breakdown.
+ * Calculates the price breakdown including subtotal, tax, discount, and total for a list of items,
+ * applying a tax rate and optional discount code.
+ *
+ * @param items - The list of items to calculate the price for.
+ * @param taxRate - The tax rate to apply to the subtotal.
+ * @param discountCode - Optional discount code for additional discount.
+ * @returns The calculated price breakdown.
  */
 export function calculatePriceBreakdown(
   items: Array<{ price: number; quantity: number }>,
@@ -37,40 +38,28 @@ export function calculatePriceBreakdown(
   const total = discountedSubtotal + tax;
   
   return {
-    /**
- * @function roundToTwoDecimals
- * @description Rounds a number to two decimal places.
- * @param {number} value - The number to round.
- * @returns {number} The rounded value.
- */
     subtotal,
     tax,
     discount,
     total: Math.round(total * 100) / 100,
-  /**
- * @function calculateItemTotal
- * @description Calculates the total for a single item based on its price and quantity, rounded to two decimal places.
- 
- * Rounds a number to two decimal places.
- * @param {number} value - The number to round.
- * @returns {number} The rounded number.
- * @param {number} price - The price of the item.
- * @param {number} quantity - The quantity of the item.
- * @returns {number} The total amount for the item.
- */
-  
- * Calculates the total for a single item based on its price and quantity, rounded to two decimal places.
- * @param {number} price - The price of the item.
- * @param {number} quantity - The quantity of the item.
- * @returns {number} The total cost for the item.
   };
 }
 
+/**
+ * Rounds a number to two decimal places.
+ * @param value - The number to round.
+ * @returns The rounded value.
+ */
 export function roundToTwoDecimals(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
+/**
+ * Calculates the total for a single item based on its price and quantity, rounded to two decimal places.
+ * @param price - The price of the item.
+ * @param quantity - The quantity of the item.
+ * @returns The total amount for the item.
+ */
 export function calculateItemTotal(price: number, quantity: number): number {
   return roundToTwoDecimals(price * quantity);
 }
-

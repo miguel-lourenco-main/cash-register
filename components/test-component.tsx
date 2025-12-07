@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-@interface TestComponentProps - Defines the props for the TestComponent, including an optional initial value.
 
+// Defines the props for the TestComponent, including an optional initial value.
 interface TestComponentProps {
   initialValue?: number;
 }
-@function TestComponent - A component that displays a counter with start/pause and reset functionality.
 
+// A component that displays a counter with start/pause and reset functionality.
 export function TestComponent({ initialValue = 0 }: TestComponentProps) {
   const [count, setCount] = useState(initialValue);
   const [isActive, setIsActive] = useState(false);
@@ -20,14 +20,14 @@ export function TestComponent({ initialValue = 0 }: TestComponentProps) {
       return () => clearInterval(interval);
     }
   }, [isActive]);
-@function handleReset - Function to reset the counter and deactivate the counter.
 
+  // Function to reset the counter and deactivate the counter.
   const handleReset = () => {
     setCount(0);
     setIsActive(false);
   };
-@function handleToggle - Function to toggle the active state of the counter.
 
+  // Function to toggle the active state of the counter.
   const handleToggle = () => {
     setIsActive((prev) => !prev);
   };
@@ -52,4 +52,3 @@ export function TestComponent({ initialValue = 0 }: TestComponentProps) {
     </div>
   );
 }
-

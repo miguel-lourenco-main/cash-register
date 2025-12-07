@@ -42,44 +42,20 @@ export function processOrderData(rawData: unknown): {
       };
     });
 
-  /**
- * Sanitizes a string input by trimming whitespace, removing special characters,
- /**
- * Sanitizes a string input by trimming whitespace, removing special characters, and limiting the length.
- * @param {string} input - The input string to be sanitized.
- * @returns {string} The sanitized string.
- */
- 
- * Sanitizes a string input by trimming whitespace, removing special characters, and limiting the length.
- * @param {string} input - The string to be sanitized.
- * @returns {string} The sanitized string.
- 
- * and limiting the length to prevent injection attacks.
- *
- * @param {string} input - The input string to sanitize.
- * @returns {string} The sanitized string.
- */
   const total = processedItems.reduce((sum, item) => sum + item.price, 0);
-
- * Parses a date string into a Date object and returns null if parsing fails.
- * @param {string} dateString - The date string to parse.
- * @returns {Date|null} The parsed Date object or null if parsing fails.
- 
 
   return {
     id: data.id as string,
     items: processedItems,
-    /**
- * Parses a date string into a Date object.
- * Returns null if the date string is invalid or cannot be parsed.
- *
- * @param {string} dateString - The date string to parse.
- * @returns {Date|null} A Date object or null if parsing fails.
- */
     total: Math.round(total * 100) / 100,
   };
 }
 
+/**
+ * Sanitizes a string input by trimming whitespace, removing special characters, and limiting the length.
+ * @param {string} input - The input string to be sanitized.
+ * @returns {string} The sanitized string.
+ */
 export function sanitizeInput(input: string): string {
   return input
     .trim()
@@ -88,6 +64,11 @@ export function sanitizeInput(input: string): string {
     .substring(0, 255);
 }
 
+/**
+ * Parses a date string into a Date object and returns null if parsing fails.
+ * @param {string} dateStr - The date string to parse.
+ * @returns {Date|null} The parsed Date object or null if parsing fails.
+ */
 export function parseDateString(dateStr: string): Date | null {
   const parsed = Date.parse(dateStr);
   if (isNaN(parsed)) {
@@ -95,4 +76,3 @@ export function parseDateString(dateStr: string): Date | null {
   }
   return new Date(parsed);
 }
-
