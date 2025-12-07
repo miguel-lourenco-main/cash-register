@@ -44,6 +44,11 @@ export function processOrderData(rawData: unknown): {
 
   /**
  * Sanitizes a string input by trimming whitespace, removing special characters,
+ /**
+ * Sanitizes a string input by trimming whitespace, removing special characters, and limiting the length.
+ * @param {string} input - The input string to be sanitized.
+ * @returns {string} The sanitized string.
+ */
  * and limiting the length to prevent injection attacks.
  *
  * @param {string} input - The input string to sanitize.
