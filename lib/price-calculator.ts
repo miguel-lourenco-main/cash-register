@@ -50,10 +50,19 @@ export function calculatePriceBreakdown(
   /**
  * @function calculateItemTotal
  * @description Calculates the total for a single item based on its price and quantity, rounded to two decimal places.
+ 
+ * Rounds a number to two decimal places.
+ * @param {number} value - The number to round.
+ * @returns {number} The rounded number.
  * @param {number} price - The price of the item.
  * @param {number} quantity - The quantity of the item.
  * @returns {number} The total amount for the item.
  */
+  
+ * Calculates the total for a single item based on its price and quantity, rounded to two decimal places.
+ * @param {number} price - The price of the item.
+ * @param {number} quantity - The quantity of the item.
+ * @returns {number} The total cost for the item.
   };
 }
 
