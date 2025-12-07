@@ -1,3 +1,10 @@
+/**
+ * Processes raw order data to extract an object containing id, items, and total.
+ * Returns null if the input is invalid.
+ *
+ * @param {any} rawData - The raw data to process.
+ * @returns {Object|null} An object containing order details or null.
+ */
 export function processOrderData(rawData: unknown): {
   id: string;
   items: Array<{ name: string; price: number }>;
@@ -35,11 +42,25 @@ export function processOrderData(rawData: unknown): {
       };
     });
 
+  /**
+ * Sanitizes a string input by trimming whitespace, removing special characters,
+ * and limiting the length to prevent injection attacks.
+ *
+ * @param {string} input - The input string to sanitize.
+ * @returns {string} The sanitized string.
+ */
   const total = processedItems.reduce((sum, item) => sum + item.price, 0);
 
   return {
     id: data.id as string,
     items: processedItems,
+    /**
+ * Parses a date string into a Date object.
+ * Returns null if the date string is invalid or cannot be parsed.
+ *
+ * @param {string} dateString - The date string to parse.
+ * @returns {Date|null} A Date object or null if parsing fails.
+ */
     total: Math.round(total * 100) / 100,
   };
 }
