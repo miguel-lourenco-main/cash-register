@@ -3,13 +3,14 @@
 import type React from "react"
 import { Inter } from "next/font/google"
 import Link from "next/link"
+import Image from "next/image"
 import "./globals.css"
 import { Toaster } from "sonner"
-import { Package2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
 import { ThemeProvider } from "@/lib/theme-provider"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
+import icon from "./icon.png"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -49,7 +50,13 @@ export default function RootLayout({
           <div className="flex flex-col min-h-screen">
             <header className="sticky top-0 z-50 flex items-center justify-between h-16 px-4 border-b shrink-0 md:px-6 bg-background">
               <Link href="/" className="flex items-center gap-2 text-lg font-semibold sm:text-base">
-                <Package2 className="w-6 h-6" />
+                <Image 
+                  src={icon} 
+                  alt="Ticket POS Logo" 
+                  width={24} 
+                  height={24}
+                  className="w-6 h-6"
+                />
                 <span className="sr-only">Ticket POS</span>
               </Link>
               <div className="flex items-center gap-4">
