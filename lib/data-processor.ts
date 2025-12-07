@@ -49,12 +49,22 @@ export function processOrderData(rawData: unknown): {
  * @param {string} input - The input string to be sanitized.
  * @returns {string} The sanitized string.
  */
+ 
+ * Sanitizes a string input by trimming whitespace, removing special characters, and limiting the length.
+ * @param {string} input - The string to be sanitized.
+ * @returns {string} The sanitized string.
+ 
  * and limiting the length to prevent injection attacks.
  *
  * @param {string} input - The input string to sanitize.
  * @returns {string} The sanitized string.
  */
   const total = processedItems.reduce((sum, item) => sum + item.price, 0);
+
+ * Parses a date string into a Date object and returns null if parsing fails.
+ * @param {string} dateString - The date string to parse.
+ * @returns {Date|null} The parsed Date object or null if parsing fails.
+ 
 
   return {
     id: data.id as string,
