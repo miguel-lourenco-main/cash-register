@@ -38,6 +38,16 @@ export function isValidCreditCard(cardNumber: string): boolean {
     if (isEven) {
       digit *= 2;
       if (digit > 9) {
+        
+  /**
+   * Validates a product object ensuring it has a proper name, a valid price, and optionally, a valid category.
+   * @param {Object} product - The product object to validate.
+   * @param {string} product.name - The name of the product.
+   * @param {number} product.price - The price of the product.
+   * @param {string} [product.category] - The optional category of the product.
+   * @returns {boolean} True if the product data is valid, otherwise false.
+   */
+
         digit -= 9;
       }
     }
