@@ -1,6 +1,6 @@
 # GitLab CI/CD configuration for Next.js static export to GitLab Pages
 # Uses GitLab Pages Parallel Deployments for branch-specific preview URLs
-image: node:18
+image: node:20.18.0
 
 # Define variables
 variables:
@@ -23,7 +23,9 @@ stages:
 # Lint stage
 lint:
   stage: lint
+  image: node:20.18.0
   before_script:
+    - node --version
     - npm install -g pnpm@10.14.0
     - pnpm install --frozen-lockfile
   script:
@@ -36,7 +38,9 @@ lint:
 # Typecheck stage
 typecheck:
   stage: typecheck
+  image: node:20.18.0
   before_script:
+    - node --version
     - npm install -g pnpm@10.14.0
     - pnpm install --frozen-lockfile
   script:
@@ -49,7 +53,9 @@ typecheck:
 # Build stage for all branches
 build:
   stage: build
+  image: node:20.18.0
   before_script:
+    - node --version
     - npm install -g pnpm@10.14.0
     - pnpm install --frozen-lockfile
   script:
@@ -70,6 +76,7 @@ build:
 # Deploy to GitLab Pages - Production (main branch)
 pages:
   stage: deploy
+  image: node:20.18.0
   script:
     - echo "Deploying to GitLab Pages Production..."
     - echo "Production URL - ${CI_PAGES_URL}"
