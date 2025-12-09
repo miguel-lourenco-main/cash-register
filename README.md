@@ -2,8 +2,6 @@
 
 > **Real-world Production Application** | Built in under 5 hours for a village religious event
 
-A simple, full-stack cash register application built with Next.js 15, TypeScript, and Supabase. This project demonstrates rapid development skills, real-world problem-solving, and the ability to deliver production-ready software under tight deadlines.
-
 [![Next.js](https://img.shields.io/badge/Next.js-15.2.4-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1.11-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
