@@ -2,14 +2,14 @@
 
 > **Real-world Production Application** | Built in under 5 hours for a village religious event
 
+## 🔗 **Live Demo**
+
+[Cash Register](https://cash-register-a85839.gitlab.io/)
+
 [![Next.js](https://img.shields.io/badge/Next.js-15.2.4-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1.11-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
 [![Playwright](https://img.shields.io/badge/Playwright-Testing-green?style=flat-square&logo=playwright)](https://playwright.dev/)
-
-## 🔗 **Live Demo**
-
-🌍 : [Cash Register](https://cash-register-a85839.gitlab.io/)
 
 ## 🚀 Project Overview
 
