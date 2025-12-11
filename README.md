@@ -14,7 +14,6 @@
 [![Radix UI](https://img.shields.io/badge/Radix_UI-Component_Library-9E7DD7?style=flat-square&logo=radix-ui)](https://www.radix-ui.com/)
 
 
-
 ---
 
 ## 🚀 Project Overview
@@ -42,6 +41,7 @@ This application was developed as an urgent solution for a village religious eve
 - **Search & Filter**: Easy order lookup by ID
 - **Status Tracking**: Real-time order status updates
 
+
 ---
 
 ## 🛠️ Development Commands
@@ -65,6 +65,7 @@ pnpm supabase:stop
 pnpm supabase:reset
 ```
 
+
 ---
 
 ## 🔧 Configuration
@@ -86,6 +87,7 @@ npx supabase db reset
 # Generate types
 npx supabase gen types typescript --local > lib/database.types.ts
 ```
+
 
 ---
 
