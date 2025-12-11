@@ -10,6 +10,12 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1.11-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
 [![Playwright](https://img.shields.io/badge/Playwright-Testing-green?style=flat-square&logo=playwright)](https://playwright.dev/)
+[![Supabase](https://img.shields.io/badge/Supabase-Database-3FCF8E?style=flat-square&logo=supabase)](https://supabase.com/)
+[![Radix UI](https://img.shields.io/badge/Radix_UI-Component_Library-9E7DD7?style=flat-square&logo=radix-ui)](https://www.radix-ui.com/)
+
+
+
+---
 
 ## 🚀 Project Overview
 
@@ -20,29 +26,6 @@ This application was developed as an urgent solution for a village religious eve
 - 🎯 **Real-world Impact**: Successfully used during multi-day religious event
 - 📱 **Mobile-First Design**: Optimized for tablet/mobile use in event environment
 - 🔄 **Iterative Improvement**: Continuous user feedback integration during event
-
-## 🛠️ Technical Stack
-
-### Frontend
-- **Next.js 15** - React framework with App Router
-- **TypeScript** - Full type safety across the application
-- **Tailwind CSS v4** - Modern utility-first styling
-- **Radix UI** - Accessible component primitives
-- **Lucide React** - Modern icon library
-
-### Backend & Database
-- **Supabase** - PostgreSQL database with real-time capabilities
-- **Row Level Security (RLS)** - Secure data access policies
-- **TypeScript Integration** - Auto-generated database types
-
-### Key Features
-- **Real-time Order Management** - Live order processing
-- **Product Catalog** - Categorized food and beverage items
-- **Order History** - Complete transaction tracking
-- **Responsive Design** - Works on all device sizes
-- **Theme System** - Light/dark mode support
-- **Error Handling** - Robust error management
-- **Loading States** - Smooth user experience
 
 ## 📱 Application Features
 
@@ -58,6 +41,8 @@ This application was developed as an urgent solution for a village religious eve
 - **Order Details**: Detailed view of individual orders
 - **Search & Filter**: Easy order lookup by ID
 - **Status Tracking**: Real-time order status updates
+
+---
 
 ## 🛠️ Development Commands
 
@@ -80,6 +65,8 @@ pnpm supabase:stop
 pnpm supabase:reset
 ```
 
+---
+
 ## 🔧 Configuration
 
 ### Environment Setup
@@ -100,6 +87,8 @@ npx supabase db reset
 npx supabase gen types typescript --local > lib/database.types.ts
 ```
 
+---
+
 ## 🤖 Automated Code Documentation
 
 This project uses an automated code documentation workflow powered by **n8n**:
@@ -118,3 +107,21 @@ An n8n workflow runs on an Azure VM that automatically analyzes code changes on 
 - ⚡ **Zero Overhead**: Runs in the background without impacting development workflow
 
 This automation helps maintain high code quality and documentation standards throughout the project lifecycle.
+
+---
+
+## 🤝 Contributing
+
+This is a personal portfolio project, but **ideas, issues, and suggestions are always welcome**. Feel free to open an issue or submit a merge request if you see something that could be improved.
+
+---
+
+## 📄 License
+
+This project is for personal portfolio purposes. **All rights reserved.**
+
+---
+
+**Contact**: [LinkedIn](https://www.linkedin.com/in/miguel-louren%C3%A7o-395335355/) · [GitLab](https://gitlab.com/miguel-lourenco-main) · [Email](mailto:migasoulou@gmail.com)
+
+**Built with ❤️ by Miguel Lourenço**
