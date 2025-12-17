@@ -11,8 +11,6 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-Language-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-Styling-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
 [![Supabase](https://img.shields.io/badge/Supabase-Database-3FCF8E?style=flat-square&logo=supabase)](https://supabase.com/)
-[![Radix UI](https://img.shields.io/badge/Radix_UI-Component_Library-9E7DD7?style=flat-square&logo=radix-ui)](https://www.radix-ui.com/)
-
 
 ---
 
