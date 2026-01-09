@@ -1,6 +1,6 @@
 # 🏪 Cash Register System
 
-> **Real-world Production Application** | Built in under 5 hours for a village religious event
+> **Real-world Production Application** | Built in under 8 hours for a village religious event
 
 ## 🔗 **Live Demo**
 
@@ -16,10 +16,10 @@
 
 ## 🚀 Project Overview
 
-This application was developed as an urgent solution for a village religious event where traditional cash register software was needed. The entire system was designed, coded, and deployed with a complete database in less than 5 hours, showcasing exceptional development velocity and problem-solving skills.
+This application was developed as an urgent solution for a village religious event, that I was participating in, where a cash register software was needed. The entire system was designed, coded, and deployed with a complete database in less than 8 hours, showcasing exceptional development velocity and problem-solving skills.
 
 ### Key Achievements
-- ⚡ **Rapid Development**: Complete application built in under 5 hours
+- ⚡ **Rapid Development**: Complete application built in under 8 hours
 - 🎯 **Real-world Impact**: Successfully used during multi-day religious event
 - 📱 **Mobile-First Design**: Optimized for tablet/mobile use in event environment
 - 🔄 **Iterative Improvement**: Continuous user feedback integration during event
