@@ -14,7 +14,6 @@ export function PinLogin() {
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
-  const selectedOperator = operators.find((o) => o.id === selectedId)
   const canSubmit = Boolean(selectedId) && pin.length >= 4 && !submitting
 
   const handleSubmit = async (e?: React.FormEvent) => {

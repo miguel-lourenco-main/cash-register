@@ -1,7 +1,6 @@
 "use client"
 
 import { MaterialIcon } from "@/components/ui/material-icon"
-import { Button } from "@/components/ui/button"
 import type { Order } from "@/lib/types"
 
 interface OrderDetailsProps {
@@ -9,7 +8,7 @@ interface OrderDetailsProps {
   onBack?: () => void
 }
 
-export default function OrderDetails({ order, onBack }: OrderDetailsProps) {
+export default function OrderDetails({ order }: OrderDetailsProps) {
   const calculateTotal = () =>
     order.items.reduce(
       (total, item) => total + item.product.price * item.quantity,
