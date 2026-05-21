@@ -6,7 +6,6 @@ export type OrderItem = Tables<'order_items'>
 
 export type OrderRow = Tables<'orders'>
 
-
 export type OrderItemWithProduct = {
   id: string
   order_id: string
@@ -16,12 +15,13 @@ export type OrderItemWithProduct = {
   product: Product
 }
 
-// Application-level types
 export interface AppProduct {
   id: string
   name: string
   price: number
   category: 'comida' | 'bebida'
+  imageUrl?: string | null
+  description?: string | null
 }
 
 export interface AppOrderItem {
@@ -29,8 +29,20 @@ export interface AppOrderItem {
   quantity: number
 }
 
+export interface OrderRegisteredBy {
+  id: string
+  name: string
+}
+
 export interface Order {
   id: string
   createdAt: Date
   items: AppOrderItem[]
+  registeredBy?: OrderRegisteredBy | null
+  shiftId?: string | null
+}
+
+export interface CreateOrderContext {
+  operatorId: string
+  shiftId: string
 }

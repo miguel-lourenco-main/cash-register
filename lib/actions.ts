@@ -1,15 +1,20 @@
-import type { Order, AppOrderItem, OrderItemWithProduct } from "./types"
+import type { Order, AppOrderItem, OrderItemWithProduct, CreateOrderContext } from "./types"
 import { supabase } from "./supabase"
 
-export async function createOrder(items: AppOrderItem[]): Promise<{ success: boolean; order?: Order }> {
+export async function createOrder(
+  items: AppOrderItem[],
+  context: CreateOrderContext
+): Promise<{ success: boolean; order?: Order }> {
   try {
-    // Generate a unique order ID
     const orderId = Math.random().toString(36).substr(2, 9)
-    
-    // Create the order
+
     const { data: orderData, error: orderError } = await supabase
       .from('orders')
-      .insert([{ id: orderId }])
+      .insert([{
+        id: orderId,
+        registered_by: context.operatorId,
+        shift_id: context.shiftId,
+      }])
       .select()
       .single()
 
@@ -18,7 +23,6 @@ export async function createOrder(items: AppOrderItem[]): Promise<{ success: boo
       return { success: false }
     }
 
-    // Create order items
     const orderItems = items.map(item => ({
       order_id: orderId,
       product_id: item.product.id,
@@ -31,7 +35,6 @@ export async function createOrder(items: AppOrderItem[]): Promise<{ success: boo
 
     if (itemsError) {
       console.error("Failed to create order items:", itemsError)
-      // Clean up the order if items failed to insert
       await supabase.from('orders').delete().eq('id', orderId)
       return { success: false }
     }
@@ -39,13 +42,58 @@ export async function createOrder(items: AppOrderItem[]): Promise<{ success: boo
     const newOrder: Order = {
       id: orderData.id,
       items,
-      createdAt: new Date()
+      createdAt: new Date(orderData.created_at || ''),
+      registeredBy: {
+        id: context.operatorId,
+        name: '',
+      },
+      shiftId: context.shiftId,
     }
 
     return { success: true, order: newOrder }
   } catch (error) {
     console.error("Failed to create order:", error)
     return { success: false }
+  }
+}
+
+function resolveOperator(
+  order: Record<string, unknown>
+): { id: string; name: string } | null {
+  const op =
+    order.operator ??
+    order.operators
+  if (!op || typeof op !== "object") return null
+  const row = op as { id?: string; name?: string }
+  if (!row.id || !row.name) return null
+  return { id: row.id, name: row.name }
+}
+
+function mapOrderRow(order: {
+  id: string
+  created_at: string | null
+  registered_by: string | null
+  shift_id: string | null
+  order_items: OrderItemWithProduct[]
+  [key: string]: unknown
+}): Order {
+  const operator = resolveOperator(order)
+  return {
+    id: order.id,
+    createdAt: new Date(order.created_at || ''),
+    registeredBy: operator,
+    shiftId: order.shift_id,
+    items: order.order_items.map((item: OrderItemWithProduct) => ({
+      product: {
+        id: item.product.id,
+        name: item.product.name,
+        price: Number(item.product.price),
+        category: item.product.category as 'comida' | 'bebida',
+        imageUrl: item.product.image_url ?? null,
+        description: item.product.description ?? null,
+      },
+      quantity: item.quantity
+    }))
   }
 }
 
@@ -58,7 +106,8 @@ export async function getOrders(): Promise<Order[]> {
         order_items (
           *,
           product:products (*)
-        )
+        ),
+        operator:operators (id, name)
       `)
       .order('created_at', { ascending: false })
 
@@ -67,19 +116,7 @@ export async function getOrders(): Promise<Order[]> {
       return []
     }
 
-    return ordersData.map(order => ({
-      id: order.id,
-      createdAt: new Date(order.created_at || ''),
-      items: order.order_items.map((item: OrderItemWithProduct) => ({
-        product: {
-          id: item.product.id,
-          name: item.product.name,
-          price: item.product.price,
-          category: item.product.category
-        },
-        quantity: item.quantity
-      }))
-    }))
+    return ordersData.map(mapOrderRow)
   } catch (error) {
     console.error("Failed to fetch orders:", error)
     return []
@@ -95,7 +132,8 @@ export async function getOrderById(id: string): Promise<Order | undefined> {
         order_items (
           *,
           product:products (*)
-        )
+        ),
+        operator:operators (id, name)
       `)
       .eq('id', id)
       .single()
@@ -105,19 +143,7 @@ export async function getOrderById(id: string): Promise<Order | undefined> {
       return undefined
     }
 
-    return {
-      id: orderData.id,
-      createdAt: new Date(orderData.created_at || ''),
-      items: orderData.order_items.map((item: OrderItemWithProduct) => ({
-        product: {
-          id: item.product.id,
-          name: item.product.name,
-          price: item.product.price,
-          category: item.product.category
-        },
-        quantity: item.quantity
-      }))
-    }
+    return mapOrderRow(orderData)
   } catch (error) {
     console.error("Failed to fetch order:", error)
     return undefined

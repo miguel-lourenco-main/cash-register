@@ -1,73 +1,69 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Separator } from "@/components/ui/separator"
+import { MaterialIcon } from "@/components/ui/material-icon"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
-import { useRouter } from "next/navigation"
 import type { Order } from "@/lib/types"
 
-export default function OrderDetails({ order }: { order: Order }) {
-  const router = useRouter()
+interface OrderDetailsProps {
+  order: Order
+  onBack?: () => void
+}
 
-  const calculateTotal = () => {
-    return order.items.reduce((total, item) => total + item.product.price * item.quantity, 0)
-  }
+export default function OrderDetails({ order, onBack }: OrderDetailsProps) {
+  const calculateTotal = () =>
+    order.items.reduce(
+      (total, item) => total + item.product.price * item.quantity,
+      0
+    )
 
-  const handleBack = () => {
-    router.push('/orders')
-  }
+  const operatorLabel = order.registeredBy?.name ?? "Desconhecido"
 
   return (
-    <div className="max-w-4xl mx-auto py-8">
-      <div className="mb-6">
-        <Button
-          variant="outline"
-          onClick={handleBack}
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Voltar aos Pedidos
-        </Button>
-      </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Detalhes do Pedido</CardTitle>
-          <CardDescription>
-            Pedido #{order.id} - Realizado em {new Date(order.createdAt).toLocaleString()}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Produto</TableHead>
-                <TableHead className="text-center">Quantidade</TableHead>
-                <TableHead className="text-right">Preço Unitário</TableHead>
-                <TableHead className="text-right">Subtotal</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {order.items.map((item) => (
-                <TableRow key={item.product.id}>
-                  <TableCell className="font-medium">{item.product.name}</TableCell>
-                  <TableCell className="text-center">{item.quantity}</TableCell>
-                  <TableCell className="text-right">{item.product.price.toFixed(2)}€</TableCell>
-                  <TableCell className="text-right">{(item.product.price * item.quantity).toFixed(2)}€</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-        <Separator />
-        <CardFooter className="flex justify-end p-6">
-          <div className="grid gap-2 text-right">
-            <div className="font-semibold text-lg">Total</div>
-            <div className="font-bold text-2xl">{calculateTotal().toFixed(2)}€</div>
+    <div className="max-w-4xl mx-auto">
+      <div className="bg-card rounded-xl shadow-festa-card border border-festa-outline-variant/30 overflow-hidden">
+        <div className="p-6 border-b border-festa-outline-variant bg-festa-surface-container-low">
+          <h2 className="text-headline-lg-mobile font-display text-festa-on-surface">
+            Detalhes do Pedido
+          </h2>
+          <p className="text-festa-on-surface-variant mt-1">
+            Pedido #{order.id} — {new Date(order.createdAt).toLocaleString("pt-PT")}
+          </p>
+          <p className="text-sm text-festa-on-surface-variant mt-2 flex items-center gap-1">
+            <MaterialIcon name="person" className="text-sm" />
+            Registado por: <span className="font-bold text-festa-on-surface">{operatorLabel}</span>
+          </p>
+        </div>
+
+        <div className="p-6 space-y-4">
+          {order.items.map((item) => (
+            <div
+              key={item.product.id}
+              className="flex justify-between items-center py-3 border-b border-festa-surface-container-high last:border-0"
+            >
+              <div>
+                <p className="font-bold text-festa-on-surface">
+                  {item.product.name}
+                </p>
+                <p className="text-sm text-festa-on-surface-variant">
+                  {item.quantity} × {item.product.price.toFixed(2)}€
+                </p>
+              </div>
+              <span className="font-bold text-festa-accent">
+                {(item.product.price * item.quantity).toFixed(2)}€
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div className="p-6 bg-festa-surface-container-low border-t border-festa-outline-variant flex justify-end">
+          <div className="text-right">
+            <p className="text-festa-on-surface-variant text-label-xl mb-1">Total</p>
+            <p className="text-price-display text-festa-primary-emphasis">
+              {calculateTotal().toFixed(2)}€
+            </p>
           </div>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }

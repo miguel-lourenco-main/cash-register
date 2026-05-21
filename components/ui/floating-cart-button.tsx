@@ -65,7 +65,7 @@ export function FloatingCartButton({
         
         {/* Item count badge */}
         {itemCount > 0 && (
-          <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center animate-in zoom-in-50 duration-200">
+          <div className="absolute -top-2 -right-2 bg-festa-error text-festa-on-error text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center animate-in zoom-in-50 duration-200">
             {itemCount > 99 ? '99+' : itemCount}
           </div>
         )}

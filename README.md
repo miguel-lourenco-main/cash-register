@@ -34,11 +34,28 @@ This application was developed as an urgent solution for a village religious eve
 - **Mobile Optimization**: Touch-friendly interface for tablet use
 
 ### Order Management
-- **Order History**: Complete list of all transactions
-- **Order Details**: Detailed view of individual orders
-- **Search & Filter**: Easy order lookup by ID
-- **Status Tracking**: Real-time order status updates
+- **Order History**: Card grid with revenue stats and ticket médio
+- **Order Details**: Slide-over panel (desktop) or full-page (mobile)
+- **Operator Accountability**: Each order records who registered it and which shift
 
+### Operator Sessions
+- **PIN login**: Volunteers select their name and enter a 4-digit PIN to start a shift
+- **Encerrar Turno**: Ends the shift and clears the session
+- Demo PINs (after migration seed): `1234` for Carlos, Maria, João; `5678` for Ana (admin)
+
+---
+
+## Data Model
+
+| Table | Purpose |
+|-------|---------|
+| `products` | Menu items (`id`, `name`, `price`, `category`, optional `image_url`, `description`) |
+| `orders` | Confirmed orders (`id`, `registered_by`, `shift_id`, timestamps) |
+| `order_items` | Line items per order |
+| `operators` | Staff accounts (`name`, `pin_hash`, `role`, `active`) |
+| `shifts` | Work sessions (`operator_id`, `started_at`, `ended_at`) |
+
+RPC functions: `authenticate_operator`, `list_active_operators`, `start_shift`, `end_shift`.
 
 ---
 
@@ -61,6 +78,9 @@ pnpm start
 pnpm supabase:start
 pnpm supabase:stop
 pnpm supabase:reset
+
+# Apply migrations to hosted Supabase (required for operator PIN login)
+pnpm supabase db push
 ```
 
 
@@ -69,22 +89,32 @@ pnpm supabase:reset
 ## 🔧 Configuration
 
 ### Environment Setup
+
+Local Supabase uses custom ports (see `lib/local-supabase.ts`):
+
+| Service | Port |
+|---------|------|
+| API | 54621 |
+| DB | 54622 |
+| Studio | 54623 |
+| Inbucket | 54624 |
+
 ```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54621
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_local_anon_key
 ```
+
+After `pnpm supabase:start`, run `pnpm supabase:env-sync` to write `.env.local`, or copy `.env.example`.
 
 ### Database Setup
 ```bash
-# Start Supabase locally
-npx supabase start
-
-# Apply migrations
-npx supabase db reset
-
-# Generate types
-npx supabase gen types typescript --local > lib/database.types.ts
+pnpm supabase:start
+pnpm supabase:reset
+pnpm supabase:env-sync   # sync .env.local with running instance
+pnpm supabase:types
 ```
+
+Studio: http://127.0.0.1:54623
 
 
 ---

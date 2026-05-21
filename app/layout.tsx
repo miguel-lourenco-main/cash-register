@@ -1,29 +1,37 @@
 "use client"
 
 import type React from "react"
-import { Inter } from "next/font/google"
-import Link from "next/link"
-import Image from "next/image"
+import { Plus_Jakarta_Sans, Work_Sans } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "sonner"
-import { cn } from "@/lib/utils"
-import { usePathname } from "next/navigation"
 import { ThemeProvider } from "@/lib/theme-provider"
-import { ThemeToggle } from "@/components/ui/theme-toggle"
-import icon from "./icon.png"
+import { OperatorProvider } from "@/lib/operator-provider"
+import { AppShell } from "@/components/layout/app-shell"
 
-const inter = Inter({ subsets: ["latin"] })
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-plus-jakarta",
+  weight: ["400", "600", "700", "800"],
+})
+
+const workSans = Work_Sans({
+  subsets: ["latin"],
+  variable: "--font-work-sans",
+  weight: ["400", "500", "700"],
+})
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const pathname = usePathname()
-
   return (
-    <html lang="pt" suppressHydrationWarning>
+    <html lang="pt" suppressHydrationWarning className="no-scrollbar">
       <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+          rel="stylesheet"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -42,43 +50,11 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={inter.className}>
-        <ThemeProvider
-          defaultTheme="system"
-          storageKey="cash-register-theme"
-        >
-          <div className="flex flex-col min-h-screen">
-            <header className="sticky top-0 z-50 flex items-center justify-between h-16 px-4 border-b shrink-0 md:px-6 bg-background">
-              <Link href="/" className="flex items-center gap-2 text-lg font-semibold sm:text-base">
-                <Image 
-                  src={icon} 
-                  alt="Ticket POS Logo" 
-                  width={24} 
-                  height={24}
-                  className="w-6 h-6"
-                />
-                <span className="sr-only">Ticket POS</span>
-              </Link>
-              <div className="flex items-center gap-4">
-                <nav className="flex gap-4 sm:gap-6">
-                  <Link
-                    className={cn("text-sm font-medium hover:underline underline-offset-4", pathname !== "/" && "text-muted-foreground")}
-                    href="/"
-                  >
-                    Caixa
-                  </Link>
-                  <Link
-                    className={cn("text-sm font-medium hover:underline underline-offset-4", pathname !== "/orders" && "text-muted-foreground")}
-                    href="/orders"
-                  >
-                    Pedidos
-                  </Link>
-                </nav>
-                <ThemeToggle />
-              </div>
-            </header>
-            <main className="flex-1 p-4 sm:px-6 sm:py-0 md:gap-8">{children}</main>
-          </div>
+      <body className={`${workSans.variable} ${plusJakarta.variable} font-sans antialiased`}>
+        <ThemeProvider defaultTheme="system" storageKey="cash-register-theme">
+          <OperatorProvider>
+            <AppShell>{children}</AppShell>
+          </OperatorProvider>
           <Toaster richColors />
         </ThemeProvider>
       </body>

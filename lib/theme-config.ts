@@ -1,47 +1,44 @@
+import { festaColors } from "./design-tokens"
+
 export const themeConfig = {
-  // Theme storage key
   storageKey: "cash-register-theme",
-  
-  // Default theme
   defaultTheme: "system" as const,
-  
-  // Available themes
+
   themes: [
-    { value: "light", label: "Light", icon: "☀️" },
-    { value: "dark", label: "Dark", icon: "🌙" },
-    { value: "system", label: "System", icon: "💻" },
+    { value: "light", label: "Claro", icon: "light_mode" },
+    { value: "dark", label: "Escuro", icon: "dark_mode" },
+    { value: "system", label: "Sistema", icon: "brightness_auto" },
   ],
-  
-  // Theme-specific configurations
+
   light: {
-    name: "Light Mode",
-    description: "Clean and bright interface",
+    name: "Modo Claro",
+    description: "Warm Pearl festa kiosk palette",
     colors: {
-      primary: "oklch(0.205 0 0)",
-      background: "oklch(1 0 0)",
-      foreground: "oklch(0.145 0 0)",
-    }
+      primary: festaColors.primaryContainer,
+      background: festaColors.surface,
+      foreground: festaColors.onSurface,
+    },
   },
-  
+
   dark: {
-    name: "Dark Mode", 
-    description: "Easy on the eyes in low light",
+    name: "Modo Escuro",
+    description: "Evening service — warm charcoal surfaces",
     colors: {
-      primary: "oklch(0.922 0 0)",
-      background: "oklch(0.145 0 0)",
-      foreground: "oklch(0.985 0 0)",
-    }
+      primary: festaColors.primaryFixedDim,
+      background: festaColors.inverseSurface,
+      foreground: festaColors.inverseOnSurface,
+    },
   },
-  
+
   system: {
-    name: "System",
-    description: "Follows your system preference",
+    name: "Sistema",
+    description: "Segue a preferência do dispositivo",
     colors: {
       primary: "var(--primary)",
-      background: "var(--background)", 
+      background: "var(--background)",
       foreground: "var(--foreground)",
-    }
-  }
+    },
+  },
 } as const
 
-export type Theme = keyof typeof themeConfig.themes[number]["value"]
+export type Theme = (typeof themeConfig.themes)[number]["value"]

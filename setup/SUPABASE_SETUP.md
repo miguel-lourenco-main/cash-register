@@ -1,73 +1,65 @@
 # Supabase Local Development Setup
 
+## Local ports (this project)
+
+Defined in `supabase/config.toml` and `lib/local-supabase.ts` — **not** the Supabase defaults:
+
+| Service | Port | URL |
+|---------|------|-----|
+| API (REST) | 54621 | http://127.0.0.1:54621 |
+| Database | 54622 | `postgresql://postgres:postgres@127.0.0.1:54622/postgres` |
+| Studio | 54623 | http://127.0.0.1:54623 |
+| Inbucket (email) | 54624 | http://127.0.0.1:54624 |
+| Pooler | 54629 | (disabled by default) |
+| Analytics | 54627 | (internal) |
+
 ## Environment Variables
 
-Create a `.env.local` file in your project root with the following content:
+Create `.env.local` (or run `pnpm supabase:env-sync` after start):
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54621
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
 ```
 
+Or copy from the CLI: `npx supabase status -o env`
+
 ## Database Schema
 
-The following tables have been created:
-
 ### Products Table
-- `id` (TEXT) - Primary key
-- `name` (TEXT) - Product name
-- `price` (DECIMAL) - Product price
-- `created_at` (TIMESTAMP) - Creation timestamp
-- `updated_at` (TIMESTAMP) - Update timestamp
+- `id`, `name`, `price`, `category`, `image_url`, `description`
 
-### Orders Table  
-- `id` (TEXT) - Primary key
-- `created_at` (TIMESTAMP) - Order creation time
-- `updated_at` (TIMESTAMP) - Update timestamp
+### Orders Table
+- `id`, `created_at`, `registered_by`, `shift_id`
 
 ### Order Items Table
-- `id` (UUID) - Primary key
-- `order_id` (TEXT) - Foreign key to orders
-- `product_id` (TEXT) - Foreign key to products
-- `quantity` (INTEGER) - Item quantity
-- `created_at` (TIMESTAMP) - Creation timestamp
+- `id`, `order_id`, `product_id`, `quantity`
+
+### Operators & Shifts
+- PIN-based staff login; see migration `20250801030130_add_operators_and_shifts.sql`
 
 ## Commands
 
-### Start Supabase
 ```bash
-npx supabase start
+pnpm supabase:start      # Start local stack
+pnpm supabase:reset      # Migrations + seed
+pnpm supabase:stop
+pnpm supabase:env-sync   # Write .env.local from `supabase status`
+pnpm supabase:types      # Regenerate lib/database.types.ts
 ```
 
-### Reset Database (with migrations and seed data)
-```bash
-npx supabase db reset
-```
+### Supabase Studio
 
-### Stop Supabase
-```bash
-npx supabase stop
-```
-
-### Generate TypeScript Types
-```bash
-npx supabase gen types typescript --local > lib/database.types.ts
-```
-*Run this command whenever you modify the database schema to update the TypeScript types.*
-
-### Access Supabase Studio
-Open http://127.0.0.1:54323 in your browser to manage your database through the web interface.
+Open **http://127.0.0.1:54623** to manage the database in the browser.
 
 ## Seed Data
 
-The database comes pre-seeded with:
-- 15 products (tickets and add-ons)
-- 3 sample orders with order items
-
-You can view and modify the seed data in `supabase/seed.sql`.
+- Products (bebidas + comida) in `supabase/seed.sql`
+- Sample orders
+- Operators seeded in migration (PIN `1234` / `5678` for demo)
 
 ## TypeScript Integration
 
-- **`lib/database.types.ts`**: Auto-generated TypeScript types from your database schema
-- **`lib/supabase.ts`**: Configured Supabase client with full type safety
-- The types are automatically generated from your database schema and provide full IntelliSense support 
+- **`lib/database.types.ts`**: Auto-generated types
+- **`lib/supabase.ts`**: Client (defaults from `lib/local-supabase.ts`)
+- **`lib/local-supabase.ts`**: Single source of truth for local ports/URLs

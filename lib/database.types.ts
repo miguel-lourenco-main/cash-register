@@ -73,23 +73,70 @@ export type Database = {
           },
         ]
       }
+      operators: {
+        Row: {
+          id: string
+          name: string
+          role: string
+          active: boolean
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          name: string
+          pin_hash: string
+          role?: string
+          active?: boolean
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          name?: string
+          pin_hash?: string
+          role?: string
+          active?: boolean
+          created_at?: string | null
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           created_at: string | null
           id: string
           updated_at: string | null
+          registered_by: string | null
+          shift_id: string | null
         }
         Insert: {
           created_at?: string | null
           id: string
           updated_at?: string | null
+          registered_by?: string | null
+          shift_id?: string | null
         }
         Update: {
           created_at?: string | null
           id?: string
           updated_at?: string | null
+          registered_by?: string | null
+          shift_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "orders_registered_by_fkey"
+            columns: ["registered_by"]
+            isOneToOne: false
+            referencedRelation: "operators"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_shift_id_fkey"
+            columns: ["shift_id"]
+            isOneToOne: false
+            referencedRelation: "shifts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       products: {
         Row: {
@@ -99,6 +146,8 @@ export type Database = {
           name: string
           price: number
           updated_at: string | null
+          image_url: string | null
+          description: string | null
         }
         Insert: {
           category?: Database["public"]["Enums"]["product_category"]
@@ -107,6 +156,8 @@ export type Database = {
           name: string
           price: number
           updated_at?: string | null
+          image_url?: string | null
+          description?: string | null
         }
         Update: {
           category?: Database["public"]["Enums"]["product_category"]
@@ -115,15 +166,61 @@ export type Database = {
           name?: string
           price?: number
           updated_at?: string | null
+          image_url?: string | null
+          description?: string | null
         }
         Relationships: []
+      }
+      shifts: {
+        Row: {
+          id: string
+          operator_id: string
+          started_at: string
+          ended_at: string | null
+        }
+        Insert: {
+          id?: string
+          operator_id: string
+          started_at?: string
+          ended_at?: string | null
+        }
+        Update: {
+          id?: string
+          operator_id?: string
+          started_at?: string
+          ended_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shifts_operator_id_fkey"
+            columns: ["operator_id"]
+            isOneToOne: false
+            referencedRelation: "operators"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      authenticate_operator: {
+        Args: { p_operator_id: string; p_pin: string }
+        Returns: { id: string; name: string; role: string }[]
+      }
+      list_active_operators: {
+        Args: Record<string, never>
+        Returns: { id: string; name: string; role: string }[]
+      }
+      start_shift: {
+        Args: { p_operator_id: string }
+        Returns: string
+      }
+      end_shift: {
+        Args: { p_shift_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       product_category: "comida" | "bebida"
