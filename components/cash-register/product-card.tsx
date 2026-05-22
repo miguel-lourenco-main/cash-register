@@ -64,7 +64,7 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
         )}
         <div
           className={cn(
-            "absolute top-2 right-2 text-festa-on-primary-container text-label-xl px-3 py-1 rounded-full font-bold",
+            "absolute top-2 right-2 text-festa-on-primary-container px-3 py-1 rounded-full font-bold",
             isBebida ? "bg-festa-festival-blue" : "bg-festa-primary",
             "lg:block hidden"
           )}

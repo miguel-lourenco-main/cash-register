@@ -14,7 +14,8 @@
     "supabase:reset": "npx supabase db reset",
     "supabase:env-sync": "node scripts/sync-env-local.mjs",
     "supabase:status": "npx supabase status",
-    "supabase:deploy": "npx supabase link --project-ref dvgwvjlrapcdbygfvadf && npx supabase db push"
+    "supabase:deploy": "npx supabase link --project-ref dvgwvjlrapcdbygfvadf && npx supabase db push",
+    "seed:generate": "node scripts/generate-seed-sql.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.16",

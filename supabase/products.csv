@@ -1,0 +1,28 @@
+id,name,price,category,image_url,description
+cerveja,Cerveja,1.00,bebida,,Imperial de cerveja
+metro-cerveja-11-imperiais,Metro de cerveja (11 imperiais),10.00,bebida,,Metro com 11 imperiais
+sidra,Sidra,1.50,bebida,,Copo de sidra
+vinho-copo,Vinho (copo),0.50,bebida,,Copo de vinho tinto ou branco
+jarra-vinho,Jarra de Vinho,4.50,bebida,,Jarra de vinho para partilhar
+garrafa-vinho-monte-velho,Garrafa de Vinho Monte Velho,6.50,bebida,,Garrafa de vinho Monte Velho
+cerveja-sem-alcool,Cerveja s/ álcool,1.50,bebida,,Cerveja sem álcool
+agua-33cl,Água 33cl,0.80,bebida,,Garrafa de água 33cl
+agua-com-gas,Água c/ gás,1.20,bebida,,Água com gás
+coca-cola-ice-tea-sumo,Coca-cola/ Ice Tea/ Sumo lata,1.50,bebida,,Refrigerante ou sumo em lata
+ginja-copo-chocolate,Ginja em copo de chocolate,1.20,bebida,,Ginja servida num copo comestível de chocolate
+vinho-porto,Vinho do Porto,1.50,bebida,,Copo de vinho do Porto
+favaios,Favaios,1.00,bebida,,Copo de vinho moscatel de Favaios
+licor-beirao,Licor Beirão,3.00,bebida,,Copo de Licor Beirão
+shot,Shot,1.50,bebida,,Shot de licor à escolha
+caipirao,Caipirão,3.50,bebida,,Caipirinha com Licor Beirão
+porto-tonico,Porto tónico,3.50,bebida,,Vinho do Porto com tónico
+whiskey,Whiskey,3.00,bebida,,Copo de whiskey
+whiskey-agua-pedras,Whiskey c/ água das pedras,3.50,bebida,,Whiskey com água das pedras
+gin-tonico,Gin tónico,4.00,bebida,,Gin com tónico
+cafe-descafeinado,Café/ descafeínado,0.80,bebida,,Café ou descafeinado
+batata-fritas,Batata Fritas,2.40,comida,,Porção de batatas fritas
+bifanas,Bifanas,3.00,comida,,Bifana no pão
+pica-pau,Pica pau,5.00,comida,,Prato de carne em cubos com molho
+moelas,Moelas,3.50,comida,,Moelas de frango em molho picante
+gelado,Gelado,1.50,comida,,Gelado individual
+chupa-caramelo,"Chupa, Caramelo",0.50,comida,,Chupa-chupa ou caramelo

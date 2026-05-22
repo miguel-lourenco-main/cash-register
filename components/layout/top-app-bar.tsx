@@ -18,6 +18,11 @@ const pageMeta: Record<string, { title: string; subtitle: string; icon: string }
     subtitle: "Histórico e estatísticas",
     icon: "receipt_long",
   },
+  "/products": {
+    title: "Produtos",
+    subtitle: "Gestão do menu",
+    icon: "inventory_2",
+  },
 }
 
 const defaultPage = {

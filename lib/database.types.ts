@@ -221,6 +221,27 @@ export type Database = {
         Args: { p_shift_id: string }
         Returns: boolean
       }
+      upsert_product: {
+        Args: {
+          p_operator_id: string
+          p_id: string
+          p_name: string
+          p_price: number
+          p_category: Database["public"]["Enums"]["product_category"]
+          p_description?: string | null
+          p_image_url?: string | null
+        }
+        Returns: {
+          id: string
+          name: string
+          price: number
+          category: Database["public"]["Enums"]["product_category"]
+          description: string | null
+          image_url: string | null
+          created_at: string | null
+          updated_at: string | null
+        }[]
+      }
     }
     Enums: {
       product_category: "comida" | "bebida"

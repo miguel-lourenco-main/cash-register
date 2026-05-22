@@ -43,13 +43,18 @@ This application was developed as an urgent solution for a village religious eve
 - **Encerrar Turno**: Ends the shift and clears the session
 - Demo PINs (after migration seed): `1234` for Carlos, Maria, João; `5678` for Ana (admin)
 
+### Product Management (admin)
+- **`/products` route**: Create and edit menu items (name, price, category, description)
+- **Photo upload**: Optional product image via Supabase Storage (`product-images` bucket)
+- **Access control**: Admin role required (RPC `upsert_product`)
+
 ---
 
 ## Data Model
 
 | Table | Purpose |
 |-------|---------|
-| `products` | Menu items (`id`, `name`, `price`, `category`, optional `image_url`, `description`) |
+| `products` | Menu items (`id`, `name`, `price`, `category`, optional `image_url`, `description`). Seed catalog: `lib/seed-products.json` → `pnpm seed:generate` → `supabase/seed.sql`. Admins manage products in-app at `/products` via `upsert_product` RPC |
 | `orders` | Confirmed orders (`id`, `registered_by`, `shift_id`, timestamps) |
 | `order_items` | Line items per order |
 | `operators` | Staff accounts (`name`, `pin_hash`, `role`, `active`) |

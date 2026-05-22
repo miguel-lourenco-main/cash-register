@@ -5,15 +5,12 @@ import { usePathname } from "next/navigation"
 import { MaterialIcon } from "@/components/ui/material-icon"
 import { cn } from "@/lib/utils"
 import { useOperator } from "@/lib/operator-provider"
-
-const navItems = [
-  { href: "/", label: "Caixa", icon: "point_of_sale" },
-  { href: "/orders", label: "Pedidos", icon: "receipt_long" },
-] as const
+import { getNavItemsForRole } from "@/lib/nav-items"
 
 export function SideNav() {
   const pathname = usePathname()
   const { session } = useOperator()
+  const items = getNavItemsForRole(session?.operatorRole)
 
   return (
     <aside className="hidden md:flex fixed left-0 top-0 h-full w-24 lg:w-32 z-40 bg-festa-surface-container-low border-r-4 border-festa-primary-container flex-col items-center py-margin-page gap-gutter">
@@ -21,7 +18,7 @@ export function SideNav() {
         F
       </div>
       <nav className="flex flex-col gap-4 w-full px-2">
-        {navItems.map((item) => {
+        {items.map((item) => {
           const active = pathname === item.href
           return (
             <Link

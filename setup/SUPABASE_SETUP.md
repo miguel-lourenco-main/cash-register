@@ -28,6 +28,8 @@ Or copy from the CLI: `npx supabase status -o env`
 
 ### Products Table
 - `id`, `name`, `price`, `category`, `image_url`, `description`
+- Admin CRUD via RPC `upsert_product` (requires admin operator)
+- Product images stored in Supabase Storage bucket `product-images` (public read)
 
 ### Orders Table
 - `id`, `created_at`, `registered_by`, `shift_id`
@@ -54,7 +56,7 @@ Open **http://127.0.0.1:54623** to manage the database in the browser.
 
 ## Seed Data
 
-- Products (bebidas + comida) in `supabase/seed.sql`
+- Products (bebidas + comida): edit `lib/seed-products.json`, then `pnpm seed:generate` to update `supabase/seed.sql`
 - Sample orders
 - Operators seeded in migration (PIN `1234` / `5678` for demo)
 

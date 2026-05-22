@@ -1,38 +1,6 @@
 import type { AppProduct } from "./types"
+import { BEBIDAS, COMIDA } from "./seed-products"
 import { supabase } from "./supabase"
-
-const BEBIDAS = [
-  'cerveja',
-  'metro-cerveja-11-imperiais',
-  'sidra',
-  'vinho-copo',
-  'jarra-vinho',
-  'garrafa-vinho-monte-velho',
-  'cerveja-sem-alcool',
-  'agua-33cl',
-  'agua-com-gas',
-  'coca-cola-ice-tea-sumo',
-  'ginja-copo-chocolate',
-  'vinho-porto',
-  'favaios',
-  'licor-beirao',
-  'shot',
-  'caipirao',
-  'porto-tonico',
-  'whiskey',
-  'whiskey-agua-pedras',
-  'gin-tonico',
-  'cafe-descafeinado',
-]
-
-const COMIDA = [
-  'batata-fritas',
-  'bifanas',
-  'pica-pau',
-  'moelas',
-  'gelado',
-  'chupa-caramelo'
-]
 
 export const getProducts = async (): Promise<AppProduct[]> => {
   const { data, error } = await supabase
