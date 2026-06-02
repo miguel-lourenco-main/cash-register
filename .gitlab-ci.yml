@@ -2,13 +2,23 @@
 # Pin `ref` to match: `git ls-tree HEAD infra` (update both when bumping the submodule).
 include:
   - project: public-work4/infra
-    ref: 3a308229f9bd8bd61daca0223b98f2d832c0e17c
+    ref: 95aef70b4254565487a72a4b30e8465eaa4e7b13
     file:
       - ci/templates/base.gitlab-ci.yml
       - ci/templates/jobs-quality.gitlab-ci.yml
       - ci/templates/deploy-gitlab-pages.gitlab-ci.yml
+      - ci/templates/jobs-comment-mirror.gitlab-ci.yml
 
 variables:
+  GIT_SUBMODULE_STRATEGY: none
   ENABLE_VERCEL_DEPLOY: "0"
-  ENABLE_COMMENT_MIRROR: "0"
+  ENABLE_COMMENT_MIRROR: "1"
   ENABLE_CI_FIX: "0"
+
+comment_mirror:
+  # comment_mirror runs `node infra/ci/scripts/...`; fetch the infra submodule only
+  # for this job (other jobs use the lightweight no-submodule checkout).
+  dependencies: []
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    COMMENT_MIRROR_ALLOWED_PATH_PREFIXES: "app/,components/,lib/,types/"
