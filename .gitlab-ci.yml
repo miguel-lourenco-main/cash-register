@@ -7,8 +7,18 @@ include:
       - ci/templates/base.gitlab-ci.yml
       - ci/templates/jobs-quality.gitlab-ci.yml
       - ci/templates/deploy-gitlab-pages.gitlab-ci.yml
+      - ci/templates/jobs-comment-mirror.gitlab-ci.yml
 
 variables:
+  GIT_SUBMODULE_STRATEGY: none
   ENABLE_VERCEL_DEPLOY: "0"
-  ENABLE_COMMENT_MIRROR: "0"
+  ENABLE_COMMENT_MIRROR: "1"
   ENABLE_CI_FIX: "0"
+
+comment_mirror:
+  # comment_mirror runs `node infra/ci/scripts/...`; fetch the infra submodule only
+  # for this job (other jobs use the lightweight no-submodule checkout).
+  dependencies: []
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    COMMENT_MIRROR_ALLOWED_PATH_PREFIXES: "app/,components/,lib/,types/"

@@ -1,4 +1,4 @@
 [submodule "infra"]
 	path = infra
-	url = git@gitlab.com-personal:public-work4/infra.git
+	url = https://gitlab.com/public-work4/infra.git
 	branch = consumer/cash_register
