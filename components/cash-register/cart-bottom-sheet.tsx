@@ -58,6 +58,7 @@ export function CartBottomSheet({
     if (!isOpen) setFooterReady(false)
   }, [isOpen])
 
+  // Defer footer visibility until expand animation completes (avoids layout jump)
   useEffect(() => {
     onExpandedChange?.(isOpen && !dismissed && itemCount > 0)
   }, [isOpen, dismissed, itemCount, onExpandedChange])
@@ -98,6 +99,7 @@ export function CartBottomSheet({
           dragConstraints={{ top: 0, bottom: 0 }}
           dragElastic={{ top: 0, bottom: 0.5 }}
           onDragEnd={(_, info) => {
+            // Swipe down far/fast enough → collapse to the floating cart FAB
             if (info.offset.y > 80 || info.velocity.y > 600) {
               setIsOpen(false)
               onDismissedChange(true)

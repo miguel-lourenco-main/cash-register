@@ -59,6 +59,7 @@ function mapProductError(error: { code?: string; message?: string }): string {
   return error.message ?? "Não foi possível guardar o produto."
 }
 
+/** Admin product write path — authorization enforced inside the upsert_product RPC. */
 export async function upsertProduct(
   input: UpsertProductInput
 ): Promise<ProductMutationResult> {
@@ -96,6 +97,7 @@ export function validateProductImageFile(file: File): string | null {
   return null
 }
 
+/** Upload to Supabase Storage under product-images/{id}/ — returns a public URL. */
 export async function uploadProductImage(
   productId: string,
   file: File

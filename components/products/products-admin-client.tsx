@@ -11,6 +11,7 @@ import { useOperator } from "@/lib/operator-provider"
 import { getProducts } from "@/lib/products"
 import type { AppProduct } from "@/lib/types"
 
+/** Admin-only product CRUD — non-admins see AdminAccessDenied. */
 export default function ProductsAdminClient() {
   const { session } = useOperator()
   const [products, setProducts] = useState<AppProduct[]>([])

@@ -1,5 +1,6 @@
 import type { Tables } from "./database.types"
 
+/** Supabase row types — use App* interfaces below in UI code. */
 export type Product = Tables<'products'>
 
 export type OrderItem = Tables<'order_items'>

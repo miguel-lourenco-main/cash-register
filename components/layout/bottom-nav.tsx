@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import { useOperator } from "@/lib/operator-provider"
 import { getNavItemsForRole } from "@/lib/nav-items"
 
+/** Mobile-only tab bar — hidden on md+ where SideNav is shown. */
 export function BottomNav() {
   const pathname = usePathname()
   const { session } = useOperator()

@@ -19,6 +19,7 @@ interface CartPanelProps {
   onConfirm: () => void
 }
 
+/** Desktop cart sidebar — lg+ only; mobile uses CartBottomSheet instead. */
 export function CartPanel({
   items,
   total,

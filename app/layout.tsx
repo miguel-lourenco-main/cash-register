@@ -16,6 +16,7 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 })
 
+// Body font for UI copy; Space Grotesk (above) is used for display/price text
 const workSans = Work_Sans({
   subsets: ["latin"],
   variable: "--font-work-sans",
@@ -35,6 +36,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,500,0..1,0"
           rel="stylesheet"
         />
+        {/* Blocking script: apply saved theme before paint to avoid light/dark flash */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -55,6 +57,7 @@ export default function RootLayout({
       </head>
       <body className={`${workSans.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
         <MotionConfig reducedMotion="user">
+          {/* Theme + operator session wrap every route; AppShell gates on PIN login */}
           <ThemeProvider defaultTheme="system" storageKey="cash-register-theme">
             <OperatorProvider>
               <AppShell>{children}</AppShell>

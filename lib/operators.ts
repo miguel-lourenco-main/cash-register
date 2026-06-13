@@ -97,6 +97,7 @@ async function listOperatorsFromTable(): Promise<OperatorListResult> {
   return { operators: (data ?? []) as OperatorPublic[] }
 }
 
+/** Prefer RPC; fall back to a direct table read when migrations haven't been applied yet. */
 export async function listActiveOperators(): Promise<OperatorListResult> {
   const { data, error } = await supabase.rpc("list_active_operators")
 
@@ -198,6 +199,7 @@ export async function loginWithPin(
     return { success: false, error: INVALID_OPERATOR_CREDENTIALS_MSG }
   }
 
+  // Successful auth opens a new shift row and persists the session locally
   const { shiftId, rpcMissing: shiftRpcMissing, error: shiftError } =
     await startShift(operator.id)
 

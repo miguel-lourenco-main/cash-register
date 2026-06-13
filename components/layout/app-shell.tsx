@@ -9,6 +9,7 @@ import { SideNav } from "@/components/layout/side-nav"
 import { TopAppBar } from "@/components/layout/top-app-bar"
 import { useOperator } from "@/lib/operator-provider"
 
+/** App chrome: PIN gate when logged out; nav + page shell when a shift is active. */
 export function AppShell({ children }: { children: ReactNode }) {
   const { session, isLoading } = useOperator()
 

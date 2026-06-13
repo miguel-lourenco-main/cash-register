@@ -1,5 +1,6 @@
 import { OPERATOR_SESSION_KEY } from "./design-tokens"
 
+/** Active shift persisted in localStorage so a page refresh keeps the operator signed in. */
 export interface OperatorSession {
   operatorId: string
   operatorName: string

@@ -25,6 +25,7 @@ function SummaryStat({ label, value }: { label: string; value: string }) {
   )
 }
 
+/** End-of-shift review — stats are fetched before the shift row is closed in the DB. */
 export function ShiftSummaryOverlay() {
   const { pendingLogout, confirmLogout, cancelLogout } = useOperator()
   const summary = pendingLogout?.summary ?? null

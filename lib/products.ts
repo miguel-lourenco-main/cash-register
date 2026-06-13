@@ -21,6 +21,7 @@ export const getProducts = async (): Promise<AppProduct[]> => {
     description: product.description ?? null,
   }))
 
+  // Preserve the seeded menu order (BEBIDAS then COMIDA); unknown ids sort alphabetically
   const sortedProducts = products.sort((a, b) => {
     const indexA = BEBIDAS.indexOf(a.id)
     const indexB = BEBIDAS.indexOf(b.id)

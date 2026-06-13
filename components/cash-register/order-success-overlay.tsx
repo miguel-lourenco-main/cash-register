@@ -15,6 +15,7 @@ interface OrderSuccessOverlayProps {
 
 const AUTO_DISMISS_MS = 6000
 
+/** Post-sale confirmation — auto-returns to cart so the next sale starts quickly. */
 export function OrderSuccessOverlay({
   show,
   orderId,
@@ -23,6 +24,7 @@ export function OrderSuccessOverlay({
 }: OrderSuccessOverlayProps) {
   useEffect(() => {
     if (!show) return
+    // Return to the product grid without requiring a tap between sales
     const timer = window.setTimeout(onNewOrder, AUTO_DISMISS_MS)
     return () => window.clearTimeout(timer)
   }, [show, onNewOrder])

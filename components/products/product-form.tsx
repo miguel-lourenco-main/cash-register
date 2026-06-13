@@ -58,6 +58,7 @@ export function ProductForm({ session, product, onSaved, onCancel }: ProductForm
 
   useEffect(() => {
     if (isEditing || idTouched) return
+    // Auto-fill slug from name until the admin manually edits the id field
     setValues((current) => ({
       ...current,
       id: slugifyProductName(current.name),

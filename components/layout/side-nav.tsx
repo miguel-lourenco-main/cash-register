@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import { useOperator } from "@/lib/operator-provider"
 import { getNavItemsForRole } from "@/lib/nav-items"
 
+/** Tablet/desktop primary nav — mirrors BottomNav routes with shared layoutId animation. */
 export function SideNav() {
   const pathname = usePathname()
   const { session } = useOperator()

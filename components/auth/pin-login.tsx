@@ -15,6 +15,7 @@ export function PinLogin() {
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
+  // PINs are 4 digits; operator must be picked from the active roster
   const canSubmit = Boolean(selectedId) && pin.length >= 4 && !submitting
 
   const handleSubmit = async (e?: React.FormEvent) => {

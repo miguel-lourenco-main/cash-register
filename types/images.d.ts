@@ -1,3 +1,4 @@
+/** Static asset imports resolve to public URLs at build time. */
 declare module "*.png" {
   const value: string;
   export default value;

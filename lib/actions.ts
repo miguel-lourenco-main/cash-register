@@ -1,6 +1,7 @@
 import type { Order, AppOrderItem, OrderItemWithProduct, CreateOrderContext, OrderPayment } from "./types"
 import { supabase } from "./supabase"
 
+/** Persist a sale: header row first, then line items; rolls back the header if items fail. */
 export async function createOrder(
   items: AppOrderItem[],
   context: CreateOrderContext,
@@ -40,6 +41,7 @@ export async function createOrder(
 
     if (itemsError) {
       console.error("Failed to create order items:", itemsError)
+      // Orphan header would skew analytics — delete it before returning failure
       await supabase.from('orders').delete().eq('id', orderId)
       return { success: false }
     }
@@ -65,6 +67,7 @@ export async function createOrder(
   }
 }
 
+/** Supabase join alias varies (`operator` vs `operators`) depending on the select shape. */
 function resolveOperator(
   order: Record<string, unknown>
 ): { id: string; name: string } | null {
@@ -77,6 +80,7 @@ function resolveOperator(
   return { id: row.id, name: row.name }
 }
 
+/** Normalize a joined DB row into the app-level Order shape (camelCase + Date). */
 function mapOrderRow(order: {
   id: string
   created_at: string | null

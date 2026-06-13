@@ -1,5 +1,6 @@
 import { festaColors } from "./design-tokens"
 
+/** Theme picker metadata — actual CSS variables live in app/globals.css */
 export const themeConfig = {
   storageKey: "cash-register-theme",
   defaultTheme: "system" as const,

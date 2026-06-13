@@ -13,6 +13,7 @@ import {
 } from "@/lib/order-analytics"
 import type { Order } from "@/lib/types"
 
+/** Charts derived from the currently filtered order set (not the full history). */
 export function AnalyticsSection({ orders }: { orders: Order[] }) {
   const hourly = useMemo(() => revenueByHour(orders), [orders])
   const products = useMemo(() => topProducts(orders), [orders])

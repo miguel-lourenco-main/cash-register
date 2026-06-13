@@ -9,6 +9,7 @@ interface OrderDetailsProps {
   onBack?: () => void
 }
 
+/** Read-only receipt view — uses unitPrice snapshots for historical accuracy. */
 export default function OrderDetails({ order }: OrderDetailsProps) {
   const operatorLabel = order.registeredBy?.name ?? "Desconhecido"
 

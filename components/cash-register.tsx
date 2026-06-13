@@ -28,6 +28,7 @@ function normalizeText(value: string): string {
     .replace(/\p{Diacritic}/gu, "")
 }
 
+/** Single-screen checkout flow: cart → tender → success overlay. */
 export default function CashRegister({ products }: { products: AppProduct[] }) {
   const [orderItems, setOrderItems] = useState<AppOrderItem[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
