@@ -1,6 +1,8 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { motion } from "motion/react"
+import { MaterialIcon } from "@/components/ui/material-icon"
+import { springs } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 
 export type ProductCategory = "bebida" | "comida"
@@ -10,54 +12,43 @@ interface CategoryTabsProps {
   onChange: (category: ProductCategory) => void
 }
 
+const tabs: { value: ProductCategory; label: string; icon: string }[] = [
+  { value: "bebida", label: "Bebidas", icon: "local_bar" },
+  { value: "comida", label: "Comida", icon: "restaurant" },
+]
+
 export function CategoryTabs({ active, onChange }: CategoryTabsProps) {
-  const bebidaRef = useRef<HTMLButtonElement>(null)
-  const comidaRef = useRef<HTMLButtonElement>(null)
-  const [indicator, setIndicator] = useState({ width: 0, left: 0 })
-
-  useEffect(() => {
-    const btn = active === "bebida" ? bebidaRef.current : comidaRef.current
-    if (btn?.parentElement) {
-      setIndicator({
-        width: btn.offsetWidth,
-        left: btn.offsetLeft,
-      })
-    }
-  }, [active])
-
   return (
-    <nav className="sticky top-touch-target-min md:top-20 z-20 bg-festa-surface px-gutter pt-4 pb-2">
-      <div className="flex gap-6 md:gap-8 border-b border-festa-outline-variant relative">
-        <button
-          ref={bebidaRef}
-          type="button"
-          onClick={() => onChange("bebida")}
-          className={cn(
-            "pb-3 px-1 text-title-md transition-colors relative",
-            active === "bebida"
-              ? "text-festa-accent font-bold"
-              : "text-festa-on-surface-variant font-semibold"
-          )}
-        >
-          Bebidas
-        </button>
-        <button
-          ref={comidaRef}
-          type="button"
-          onClick={() => onChange("comida")}
-          className={cn(
-            "pb-3 px-1 text-title-md transition-colors relative",
-            active === "comida"
-              ? "text-festa-accent font-bold"
-              : "text-festa-on-surface-variant font-semibold"
-          )}
-        >
-          Comida
-        </button>
-        <div
-          className="absolute bottom-0 h-1 bg-festa-primary-container transition-all duration-300 ease-out rounded-full"
-          style={{ width: indicator.width, left: indicator.left }}
-        />
+    <nav className="shrink-0">
+      <div className="inline-flex gap-1 rounded-lg border-2 border-festa-border bg-festa-paper p-1 shadow-block-sm">
+        {tabs.map((tab) => {
+          const isActive = active === tab.value
+          return (
+            <button
+              key={tab.value}
+              type="button"
+              onClick={() => onChange(tab.value)}
+              className={cn(
+                "relative flex h-12 items-center gap-2 rounded-md px-5 md:px-6 font-display text-base font-bold uppercase tracking-wide cursor-pointer transition-colors duration-200",
+                isActive
+                  ? "text-festa-ink"
+                  : "text-festa-on-surface-variant hover:bg-festa-surface-high"
+              )}
+              aria-pressed={isActive}
+            >
+              {isActive && (
+                <motion.span
+                  layoutId="category-tab-pill"
+                  transition={springs.snappy}
+                  className="absolute inset-0 rounded-md bg-festa-amber border-2 border-festa-border"
+                  aria-hidden
+                />
+              )}
+              <MaterialIcon name={tab.icon} filled={isActive} className="relative text-xl" />
+              <span className="relative">{tab.label}</span>
+            </button>
+          )
+        })}
       </div>
     </nav>
   )

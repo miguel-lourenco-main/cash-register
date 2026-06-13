@@ -22,11 +22,11 @@ export function LoadingSpinner({
   return (
     <div className={cn("flex flex-col items-center gap-4", className)}>
       <div className={cn(
-        "border-2 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin",
+        "border-4 border-festa-border border-t-festa-amber rounded-md animate-spin",
         sizeClasses[size]
       )} />
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-2">{text}</h2>
+        <h2 className="font-display text-lg font-bold text-foreground mb-2">{text}</h2>
         {description && (
           <p className="text-sm text-muted-foreground">{description}</p>
         )}

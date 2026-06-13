@@ -17,10 +17,10 @@ export type Database = {
     Functions: {
       graphql: {
         Args: {
+          extensions?: Json
           operationName?: string
           query?: string
           variables?: Json
-          extensions?: Json
         }
         Returns: Json
       }
@@ -34,6 +34,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      operators: {
+        Row: {
+          active: boolean
+          created_at: string | null
+          id: string
+          name: string
+          pin_hash: string
+          role: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string | null
+          id?: string
+          name: string
+          pin_hash: string
+          role?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string | null
+          id?: string
+          name?: string
+          pin_hash?: string
+          role?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string | null
@@ -41,6 +68,7 @@ export type Database = {
           order_id: string
           product_id: string
           quantity: number
+          unit_price: number | null
         }
         Insert: {
           created_at?: string | null
@@ -48,6 +76,7 @@ export type Database = {
           order_id: string
           product_id: string
           quantity: number
+          unit_price?: number | null
         }
         Update: {
           created_at?: string | null
@@ -55,6 +84,7 @@ export type Database = {
           order_id?: string
           product_id?: string
           quantity?: number
+          unit_price?: number | null
         }
         Relationships: [
           {
@@ -73,53 +103,36 @@ export type Database = {
           },
         ]
       }
-      operators: {
-        Row: {
-          id: string
-          name: string
-          role: string
-          active: boolean
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          name: string
-          pin_hash: string
-          role?: string
-          active?: boolean
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          name?: string
-          pin_hash?: string
-          role?: string
-          active?: boolean
-          created_at?: string | null
-        }
-        Relationships: []
-      }
       orders: {
         Row: {
+          amount_tendered: number | null
+          change_due: number | null
           created_at: string | null
           id: string
-          updated_at: string | null
           registered_by: string | null
           shift_id: string | null
+          total: number | null
+          updated_at: string | null
         }
         Insert: {
+          amount_tendered?: number | null
+          change_due?: number | null
           created_at?: string | null
           id: string
-          updated_at?: string | null
           registered_by?: string | null
           shift_id?: string | null
+          total?: number | null
+          updated_at?: string | null
         }
         Update: {
+          amount_tendered?: number | null
+          change_due?: number | null
           created_at?: string | null
           id?: string
-          updated_at?: string | null
           registered_by?: string | null
           shift_id?: string | null
+          total?: number | null
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -142,53 +155,53 @@ export type Database = {
         Row: {
           category: Database["public"]["Enums"]["product_category"]
           created_at: string | null
+          description: string | null
           id: string
+          image_url: string | null
           name: string
           price: number
           updated_at: string | null
-          image_url: string | null
-          description: string | null
         }
         Insert: {
           category?: Database["public"]["Enums"]["product_category"]
           created_at?: string | null
+          description?: string | null
           id: string
+          image_url?: string | null
           name: string
           price: number
           updated_at?: string | null
-          image_url?: string | null
-          description?: string | null
         }
         Update: {
           category?: Database["public"]["Enums"]["product_category"]
           created_at?: string | null
+          description?: string | null
           id?: string
+          image_url?: string | null
           name?: string
           price?: number
           updated_at?: string | null
-          image_url?: string | null
-          description?: string | null
         }
         Relationships: []
       }
       shifts: {
         Row: {
+          ended_at: string | null
           id: string
           operator_id: string
           started_at: string
-          ended_at: string | null
         }
         Insert: {
+          ended_at?: string | null
           id?: string
           operator_id: string
           started_at?: string
-          ended_at?: string | null
         }
         Update: {
+          ended_at?: string | null
           id?: string
           operator_id?: string
           started_at?: string
-          ended_at?: string | null
         }
         Relationships: [
           {
@@ -205,41 +218,49 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assert_admin_operator:
+        | { Args: { p_operator_id: string }; Returns: undefined }
+        | {
+            Args: { p_operator_id: string; p_shift_id: string }
+            Returns: undefined
+          }
       authenticate_operator: {
         Args: { p_operator_id: string; p_pin: string }
-        Returns: { id: string; name: string; role: string }[]
-      }
-      list_active_operators: {
-        Args: Record<string, never>
-        Returns: { id: string; name: string; role: string }[]
-      }
-      start_shift: {
-        Args: { p_operator_id: string }
-        Returns: string
-      }
-      end_shift: {
-        Args: { p_shift_id: string }
-        Returns: boolean
-      }
-      upsert_product: {
-        Args: {
-          p_operator_id: string
-          p_id: string
-          p_name: string
-          p_price: number
-          p_category: Database["public"]["Enums"]["product_category"]
-          p_description?: string | null
-          p_image_url?: string | null
-        }
         Returns: {
           id: string
           name: string
-          price: number
+          role: string
+        }[]
+      }
+      end_shift: { Args: { p_shift_id: string }; Returns: boolean }
+      list_active_operators: {
+        Args: never
+        Returns: {
+          id: string
+          name: string
+          role: string
+        }[]
+      }
+      start_shift: { Args: { p_operator_id: string }; Returns: string }
+      upsert_product: {
+        Args: {
+          p_category: Database["public"]["Enums"]["product_category"]
+          p_description?: string
+          p_id: string
+          p_image_url?: string
+          p_name: string
+          p_operator_id: string
+          p_price: number
+        }
+        Returns: {
           category: Database["public"]["Enums"]["product_category"]
-          description: string | null
-          image_url: string | null
-          created_at: string | null
-          updated_at: string | null
+          created_at: string
+          description: string
+          id: string
+          image_url: string
+          name: string
+          price: number
+          updated_at: string
         }[]
       }
     }

@@ -98,7 +98,7 @@ async function listOperatorsFromTable(): Promise<OperatorListResult> {
 }
 
 export async function listActiveOperators(): Promise<OperatorListResult> {
-  const { data, error } = await supabase.rpc("list_active_operators", {})
+  const { data, error } = await supabase.rpc("list_active_operators")
 
   if (!error && data) {
     return { operators: (data ?? []) as OperatorPublic[] }

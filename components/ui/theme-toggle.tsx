@@ -22,7 +22,7 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <Button variant="outline" size="icon" disabled className="rounded-full">
+      <Button variant="outline" size="icon" disabled>
         <MaterialIcon name="brightness_auto" />
         <span className="sr-only">Alternar tema</span>
       </Button>
@@ -32,11 +32,7 @@ export function ThemeToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="w-fit rounded-full border-festa-outline-variant/50"
-        >
+        <Button variant="outline" size="icon">
           <MaterialIcon name={theme === "dark" ? "dark_mode" : theme === "light" ? "light_mode" : "brightness_auto"} />
           <span className="sr-only">Alternar tema</span>
         </Button>

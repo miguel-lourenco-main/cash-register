@@ -2,7 +2,9 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { motion } from "motion/react"
 import { MaterialIcon } from "@/components/ui/material-icon"
+import { springs } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 import { useOperator } from "@/lib/operator-provider"
 import { getNavItemsForRole } from "@/lib/nav-items"
@@ -13,8 +15,8 @@ export function SideNav() {
   const items = getNavItemsForRole(session?.operatorRole)
 
   return (
-    <aside className="hidden md:flex fixed left-0 top-0 h-full w-24 lg:w-32 z-40 bg-festa-surface-container-low border-r-4 border-festa-primary-container flex-col items-center py-margin-page gap-gutter">
-      <div className="font-display text-headline-lg-mobile font-bold text-festa-primary-emphasis mb-4">
+    <aside className="hidden md:flex fixed left-0 top-0 h-full w-24 lg:w-32 z-40 bg-festa-surface-low border-r-2 border-festa-border flex-col items-center py-margin-page gap-gutter">
+      <div className="flex h-12 w-12 items-center justify-center rounded-md border-2 border-festa-border bg-festa-primary dark:bg-festa-primary-emphasis text-white dark:text-festa-ink shadow-block-sm font-display text-2xl font-bold mb-4">
         F
       </div>
       <nav className="flex flex-col gap-4 w-full px-2">
@@ -25,24 +27,32 @@ export function SideNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center justify-center rounded-xl py-4 transition-all active:scale-95",
+                "relative flex flex-col items-center justify-center rounded-md py-4 cursor-pointer transition-colors duration-200",
                 active
-                  ? "bg-festa-primary-container text-festa-on-primary-container shadow-sm"
-                  : "text-festa-on-surface-variant hover:bg-festa-surface-container-high"
+                  ? "text-festa-ink"
+                  : "text-festa-on-surface-variant hover:bg-festa-surface-high"
               )}
             >
+              {active && (
+                <motion.span
+                  layoutId="sidenav-active"
+                  transition={springs.snappy}
+                  className="absolute inset-0 rounded-md border-2 border-festa-border bg-festa-amber shadow-block-sm"
+                  aria-hidden
+                />
+              )}
               <MaterialIcon
                 name={item.icon}
                 filled={active}
-                className="mb-1 text-2xl"
+                className="relative mb-1 text-2xl"
               />
-              <span className="text-label-xl">{item.label}</span>
+              <span className="relative text-label-xl">{item.label}</span>
             </Link>
           )
         })}
       </nav>
       <div className="mt-auto flex flex-col items-center gap-4">
-        <div className="w-10 h-10 rounded-full bg-festa-primary-container flex items-center justify-center text-festa-on-primary-container font-bold text-sm border-2 border-festa-primary-container">
+        <div className="w-10 h-10 rounded-sm border-2 border-festa-border bg-festa-amber flex items-center justify-center text-festa-ink font-display font-bold text-sm">
           {session?.operatorName?.charAt(0) ?? "?"}
         </div>
       </div>

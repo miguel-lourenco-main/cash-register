@@ -6,11 +6,27 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { CategoryTabs, type ProductCategory } from "@/components/cash-register/category-tabs"
 import { ProductCard } from "@/components/cash-register/product-card"
+import { StaggerGrid, StaggerItem } from "@/components/ui/motion"
 import { CartPanel } from "@/components/cash-register/cart-panel"
 import { CartBottomSheet } from "@/components/cash-register/cart-bottom-sheet"
+import { PaymentOverlay } from "@/components/cash-register/payment-overlay"
+import { OrderSuccessOverlay } from "@/components/cash-register/order-success-overlay"
+import { ProductSearch } from "@/components/cash-register/product-search"
+import { MaterialIcon } from "@/components/ui/material-icon"
 import type { AppProduct, AppOrderItem } from "@/lib/types"
 import { createOrder } from "@/lib/actions"
+import { roundEuro } from "@/lib/order-utils"
 import { useOperator } from "@/lib/operator-provider"
+
+type CheckoutStep = "cart" | "payment" | "success"
+
+/** Lowercase + strip diacritics so "cafe" matches "Café" */
+function normalizeText(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+}
 
 export default function CashRegister({ products }: { products: AppProduct[] }) {
   const [orderItems, setOrderItems] = useState<AppOrderItem[]>([])
@@ -19,10 +35,19 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
   const [mobileCartDismissed, setMobileCartDismissed] = useState(false)
   const [mobileCartExpanded, setMobileCartExpanded] = useState(false)
+  const [checkoutStep, setCheckoutStep] = useState<CheckoutStep>("cart")
+  const [completedOrder, setCompletedOrder] = useState<{ id: string; changeDue: number } | null>(
+    null
+  )
+  const [searchQuery, setSearchQuery] = useState("")
   const router = useRouter()
   const { session } = useOperator()
 
-  const filteredProducts = products.filter((p) => p.category === activeCategory)
+  // A non-empty search looks across BOTH categories — operators shouldn't have to guess the tab
+  const normalizedQuery = normalizeText(searchQuery.trim())
+  const filteredProducts = normalizedQuery
+    ? products.filter((p) => normalizeText(p.name).includes(normalizedQuery))
+    : products.filter((p) => p.category === activeCategory)
 
   const handleAddToOrder = (product: AppProduct) => {
     setOrderItems((prevItems) => {
@@ -62,7 +87,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
 
   const itemCount = orderItems.reduce((sum, item) => sum + item.quantity, 0)
 
-  const handleConfirmOrder = async () => {
+  const handleOpenPayment = () => {
     if (orderItems.length === 0) {
       toast.error("Pedido Vazio", {
         description: "Por favor adicione itens ao pedido antes de confirmar.",
@@ -77,25 +102,39 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
       return
     }
 
+    setCheckoutStep("payment")
+  }
+
+  const handleConfirmPayment = async (amountTendered: number) => {
+    if (!session || isSubmitting || checkoutStep !== "payment") return
+
+    const total = roundEuro(calculateTotal())
+    const changeDue = roundEuro(amountTendered - total)
+
     setIsSubmitting(true)
-    const result = await createOrder(orderItems, {
-      operatorId: session.operatorId,
-      shiftId: session.shiftId,
-    })
+    const result = await createOrder(
+      orderItems,
+      { operatorId: session.operatorId, shiftId: session.shiftId },
+      { total, amountTendered, changeDue }
+    )
     setIsSubmitting(false)
 
     if (result.success && result.order) {
-      toast.success("Pedido Confirmado!", {
-        description: `Pedido #${result.order.id} foi criado com sucesso.`,
-      })
+      setCompletedOrder({ id: result.order.id, changeDue })
+      setCheckoutStep("success")
       setOrderItems([])
       router.refresh()
     } else {
       toast.error("Erro", {
-        description: "Houve um problema ao confirmar o pedido.",
+        description: "Houve um problema ao confirmar o pedido. Tente novamente.",
       })
     }
   }
+
+  const handleNewOrder = useCallback(() => {
+    setCheckoutStep("cart")
+    setCompletedOrder(null)
+  }, [])
 
   useEffect(() => {
     if (orderItems.length > 0) {
@@ -125,7 +164,10 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
   return (
     <div className="flex flex-1 flex-col lg:flex-row min-h-0">
       <div className="flex flex-1 flex-col min-w-0 min-h-0">
-        <CategoryTabs active={activeCategory} onChange={setActiveCategory} />
+        <div className="sticky top-touch-target-min md:top-20 z-20 bg-festa-surface flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 px-gutter pt-4 pb-3">
+          <CategoryTabs active={activeCategory} onChange={setActiveCategory} />
+          <ProductSearch value={searchQuery} onChange={setSearchQuery} />
+        </div>
 
         <div
           className={cn(
@@ -137,18 +179,26 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
             "lg:pb-6"
           )}
         >
-          <div
-            key={activeCategory}
-            className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-card-gap animate-in fade-in duration-300"
-          >
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAdd={handleAddToOrder}
-              />
-            ))}
-          </div>
+          {filteredProducts.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-festa-on-surface-variant">
+              <MaterialIcon name="search_off" className="text-6xl mb-4 opacity-50" />
+              <p className="font-bold">Nenhum produto encontrado</p>
+              {normalizedQuery && (
+                <p className="text-sm mt-1">Tente outro termo de pesquisa.</p>
+              )}
+            </div>
+          ) : (
+            <StaggerGrid
+              key={activeCategory}
+              className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-card-gap"
+            >
+              {filteredProducts.map((product) => (
+                <StaggerItem key={product.id}>
+                  <ProductCard product={product} onAdd={handleAddToOrder} />
+                </StaggerItem>
+              ))}
+            </StaggerGrid>
+          )}
         </div>
       </div>
 
@@ -160,7 +210,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
         highlightedIndex={highlightedIndex}
         onUpdateQuantity={handleUpdateQuantity}
         onRemove={handleRemoveFromOrder}
-        onConfirm={handleConfirmOrder}
+        onConfirm={handleOpenPayment}
       />
 
       <CartBottomSheet
@@ -171,10 +221,25 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
         highlightedIndex={highlightedIndex}
         onUpdateQuantity={handleUpdateQuantity}
         onRemove={handleRemoveFromOrder}
-        onConfirm={handleConfirmOrder}
+        onConfirm={handleOpenPayment}
         dismissed={mobileCartDismissed}
         onDismissedChange={handleMobileCartDismissedChange}
         onExpandedChange={setMobileCartExpanded}
+      />
+
+      <PaymentOverlay
+        show={checkoutStep === "payment"}
+        total={roundEuro(calculateTotal())}
+        isSubmitting={isSubmitting}
+        onConfirm={handleConfirmPayment}
+        onCancel={() => setCheckoutStep("cart")}
+      />
+
+      <OrderSuccessOverlay
+        show={checkoutStep === "success"}
+        orderId={completedOrder?.id ?? null}
+        changeDue={completedOrder?.changeDue ?? 0}
+        onNewOrder={handleNewOrder}
       />
     </div>
   )

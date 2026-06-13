@@ -1,14 +1,18 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { motion, useDragControls } from "motion/react"
+import { Button } from "@/components/ui/button"
 import { MaterialIcon } from "@/components/ui/material-icon"
 import {
-  COLLAPSIBLE_DURATION_MS,
+  AnimatedNumber,
+  CartPing,
   Collapsible,
   FadeIn,
   MotionPresence,
 } from "@/components/ui/motion"
 import { CartLineItem } from "@/components/cash-register/cart-line-item"
+import { springs } from "@/lib/motion"
 import type { AppOrderItem } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -41,6 +45,7 @@ export function CartBottomSheet({
 }: CartBottomSheetProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [footerReady, setFooterReady] = useState(false)
+  const dragControls = useDragControls()
 
   useEffect(() => {
     if (itemCount === 0) {
@@ -50,12 +55,7 @@ export function CartBottomSheet({
   }, [itemCount, onDismissedChange])
 
   useEffect(() => {
-    if (!isOpen) {
-      setFooterReady(false)
-      return
-    }
-    const timer = window.setTimeout(() => setFooterReady(true), COLLAPSIBLE_DURATION_MS)
-    return () => window.clearTimeout(timer)
+    if (!isOpen) setFooterReady(false)
   }, [isOpen])
 
   useEffect(() => {
@@ -78,45 +78,68 @@ export function CartBottomSheet({
           <button
             type="button"
             onClick={() => onDismissedChange(false)}
-            className="flex items-center gap-2 pl-4 pr-5 h-14 rounded-full bg-festa-primary-container text-festa-on-primary-container shadow-lg shadow-festa-primary-container/25 active:scale-95 transition-transform"
+            className="flex items-center gap-2 pl-4 pr-5 h-14 rounded-lg border-2 border-festa-border bg-festa-amber text-festa-ink shadow-block cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
             aria-label="Abrir pedido atual"
           >
             <MaterialIcon name="shopping_cart" filled />
-            <span className="font-bold">{itemCount}</span>
-            <span className="font-bold">{total.toFixed(2)}€</span>
+            <span className="font-bold tabular-nums">{itemCount}</span>
+            <span className="font-display font-bold tabular-nums">{total.toFixed(2)}€</span>
           </button>
         </FadeIn>
       ) : (
-        <FadeIn
+        <motion.div
           key="cart-sheet"
-          from="slide-in-from-bottom-4"
-          className="lg:hidden fixed left-0 right-0 z-30 flex flex-col min-h-0 overflow-hidden bg-card rounded-t-[24px] shadow-festa-cart border-t border-festa-outline-variant/30 transition-layout"
+          initial={{ y: 24, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={springs.sheet}
+          drag="y"
+          dragListener={false}
+          dragControls={dragControls}
+          dragConstraints={{ top: 0, bottom: 0 }}
+          dragElastic={{ top: 0, bottom: 0.5 }}
+          onDragEnd={(_, info) => {
+            if (info.offset.y > 80 || info.velocity.y > 600) {
+              setIsOpen(false)
+              onDismissedChange(true)
+            }
+          }}
+          className="lg:hidden fixed left-0 right-0 z-30 flex flex-col min-h-0 overflow-hidden bg-card rounded-t-2xl border-2 border-b-0 border-festa-border shadow-block-up"
           style={{
             bottom: "var(--festa-bottom-nav-height)",
             maxHeight:
               "calc(100dvh - var(--festa-top-bar-height) - var(--festa-bottom-nav-height))",
           }}
         >
-          <div className="flex items-center justify-between px-gutter shrink-0 border-b border-festa-outline-variant/30 min-h-[var(--festa-cart-peek-height)]">
+          <div
+            className="flex flex-col px-gutter shrink-0 border-b-2 border-festa-border/15 touch-none"
+            onPointerDown={(e) => dragControls.start(e)}
+          >
+            <div className="mx-auto mt-2 h-1.5 w-12 rounded-full bg-festa-border/30" aria-hidden />
             <button
               type="button"
-              className="flex flex-1 items-center gap-3 py-3 min-w-0"
+              className="flex flex-1 items-center gap-3 py-3 min-w-0 cursor-pointer"
               onClick={() => setExpanded(!isOpen)}
+              aria-expanded={isOpen}
             >
-              <div className="bg-festa-primary-container text-festa-on-primary-container w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shrink-0 transition-transform duration-300">
+              <CartPing
+                trigger={itemCount}
+                className="bg-festa-amber text-festa-ink border-2 border-festa-border w-10 h-10 rounded-md flex items-center justify-center font-display font-bold text-lg shrink-0 tabular-nums"
+              >
                 {itemCount}
-              </div>
+              </CartPing>
               <div className="min-w-0 text-left">
-                <p className="text-title-md font-bold text-festa-on-surface leading-tight truncate">
+                <p className="font-display text-title-md text-festa-on-surface leading-tight truncate">
                   Pedido Atual
                 </p>
                 <p className="text-sm text-festa-on-surface-variant">
                   {itemCount} {itemCount === 1 ? "item" : "itens"}
                 </p>
               </div>
-              <span className="ml-auto text-xl font-black text-festa-accent tracking-tight shrink-0 transition-opacity duration-300">
-                {total.toFixed(2)}€
-              </span>
+              <AnimatedNumber
+                value={total}
+                format={(v) => `${v.toFixed(2)}€`}
+                className="ml-auto font-display text-2xl font-bold text-festa-accent tracking-tight shrink-0 tabular-nums"
+              />
               <MaterialIcon
                 name="expand_less"
                 className={cn(
@@ -131,6 +154,9 @@ export function CartBottomSheet({
             open={isOpen}
             className={cn("min-h-0", isOpen && "flex-1")}
             innerClassName="flex min-h-0 flex-col overflow-hidden"
+            onAnimationComplete={() => {
+              if (isOpen) setFooterReady(true)
+            }}
           >
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain touch-pan-y no-scrollbar px-gutter py-2">
               {items.map((item, index) => (
@@ -149,28 +175,30 @@ export function CartBottomSheet({
           {isOpen && (
             <div
               className={cn(
-                "shrink-0 flex flex-col gap-4 px-gutter pb-4 pt-4 border-t border-festa-outline-variant/30 bg-card transition-opacity duration-200",
+                "shrink-0 flex flex-col gap-4 px-gutter pb-4 pt-4 border-t-2 border-festa-border bg-festa-paper transition-opacity duration-200",
                 footerReady ? "opacity-100" : "opacity-0 pointer-events-none"
               )}
             >
               <div className="flex justify-between items-center py-1">
-                <span className="text-festa-on-surface-variant font-bold text-lg">Total</span>
-                <span className="text-3xl font-black text-festa-on-surface tracking-tighter">
-                  {total.toFixed(2)}€
-                </span>
+                <span className="text-label-xl text-festa-on-surface-variant">Total</span>
+                <AnimatedNumber
+                  value={total}
+                  format={(v) => `${v.toFixed(2)}€`}
+                  className="font-display text-3xl font-bold text-festa-on-surface tracking-tight tabular-nums"
+                />
               </div>
-              <button
-                type="button"
+              <Button
+                variant="accent"
                 disabled={isSubmitting}
                 onClick={onConfirm}
-                className="w-full h-16 bg-festa-primary-container text-festa-on-primary-container rounded-2xl font-bold text-xl shadow-lg shadow-festa-primary-container/30 active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50"
+                className="w-full h-16 text-xl gap-3"
               >
-                Confirmar Pedido
+                {isSubmitting ? "A processar..." : "Confirmar Pedido"}
                 <MaterialIcon name="check_circle" className="text-2xl" />
-              </button>
+              </Button>
             </div>
           )}
-        </FadeIn>
+        </motion.div>
       )}
     </MotionPresence>
   )

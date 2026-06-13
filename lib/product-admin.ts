@@ -68,8 +68,9 @@ export async function upsertProduct(
     p_name: input.name,
     p_price: input.price,
     p_category: input.category,
-    p_description: input.description ?? null,
-    p_image_url: input.imageUrl ?? null,
+    // Omitted args fall back to the SQL DEFAULT NULL (clears the column on edit)
+    p_description: input.description ?? undefined,
+    p_image_url: input.imageUrl ?? undefined,
   })
 
   if (error) {

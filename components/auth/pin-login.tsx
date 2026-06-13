@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useOperator } from "@/lib/operator-provider"
+import { Button } from "@/components/ui/button"
 import { MaterialIcon } from "@/components/ui/material-icon"
 import { Collapsible } from "@/components/ui/motion"
 import { cn } from "@/lib/utils"
@@ -51,9 +52,16 @@ export function PinLogin() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-festa-surface px-6 py-8">
-      <div className="flex items-center gap-3 mb-8">
-        <MaterialIcon name="storefront" className="text-4xl text-festa-accent" />
-        <h1 className="text-headline-lg-mobile font-display text-festa-primary-emphasis">Festa POS</h1>
+      <div className="flex flex-col items-center mb-8">
+        <div className="flex items-center gap-3">
+          <div className="flex h-14 w-14 items-center justify-center rounded-md border-2 border-festa-border bg-festa-primary dark:bg-festa-primary-emphasis shadow-block">
+            <MaterialIcon name="storefront" filled className="text-3xl text-white dark:text-festa-ink" />
+          </div>
+          <h1 className="text-headline-lg-mobile md:text-display-xl font-display text-festa-primary-emphasis">
+            Festa POS
+          </h1>
+        </div>
+        <div className="mt-3 h-2 w-32 rounded-sm border border-festa-border bg-festa-amber" aria-hidden />
       </div>
 
       <form
@@ -65,12 +73,12 @@ export function PinLogin() {
         </p>
 
         {operators.length === 0 ? (
-          <div className="rounded-xl border border-festa-outline-variant/50 bg-card p-6 text-center shadow-festa-card">
+          <div className="rounded-lg border-2 border-festa-border bg-card p-6 text-center shadow-block">
             <MaterialIcon
               name="person_off"
               className="text-4xl text-festa-on-surface-variant mb-3 mx-auto"
             />
-            <p className="text-festa-on-surface font-medium mb-2">
+            <p className="text-festa-on-surface font-bold mb-2">
               {listError === "migration_required"
                 ? "Base de dados desatualizada"
                 : "Nenhum operador disponível"}
@@ -82,11 +90,11 @@ export function PinLogin() {
                   <br />
                   <br />
                   <strong>Local:</strong>
-                  <code className="block mt-1 p-2 bg-festa-surface-container-low rounded text-xs">
+                  <code className="block mt-1 p-2 bg-festa-surface-low rounded text-xs">
                     pnpm supabase:start && pnpm supabase:reset && pnpm supabase:env-sync
                   </code>
                   <strong className="block mt-3">Remoto (GitLab/hosted):</strong>
-                  <code className="block mt-1 p-2 bg-festa-surface-container-low rounded text-xs">
+                  <code className="block mt-1 p-2 bg-festa-surface-low rounded text-xs">
                     pnpm supabase db push
                   </code>
                   <span className="block mt-2 text-xs">
@@ -101,7 +109,7 @@ export function PinLogin() {
             <button
               type="button"
               onClick={() => refreshOperators()}
-              className="text-sm font-bold text-festa-accent underline"
+              className="text-sm font-bold text-festa-accent underline cursor-pointer"
             >
               Tentar novamente
             </button>
@@ -112,7 +120,7 @@ export function PinLogin() {
             <div>
               <label
                 htmlFor="operator-select"
-                className="block text-label-xl text-festa-on-surface-variant uppercase tracking-wider mb-2"
+                className="block text-label-xl text-festa-on-surface-variant mb-2"
               >
                 Nome
               </label>
@@ -129,7 +137,7 @@ export function PinLogin() {
                     setPin("")
                     setError(null)
                   }}
-                  className="w-full h-14 pl-12 pr-4 appearance-none bg-festa-surface-container-low border-2 border-festa-outline-variant/50 rounded-xl text-body-lg font-medium text-festa-on-surface focus:ring-4 focus:ring-festa-primary-container/10 focus:border-festa-primary-container outline-none"
+                  className="w-full h-14 pl-12 pr-4 appearance-none bg-festa-paper border-2 border-festa-border rounded-lg shadow-block-sm text-body-lg font-medium text-festa-on-surface focus:ring-4 focus:ring-festa-amber/40 focus:border-festa-amber outline-none"
                   required
                 >
                   <option value="" disabled>
@@ -152,7 +160,7 @@ export function PinLogin() {
             <div>
               <label
                 htmlFor="pin-input"
-                className="block text-label-xl text-festa-on-surface-variant uppercase tracking-wider mb-2"
+                className="block text-label-xl text-festa-on-surface-variant mb-2"
               >
                 PIN
               </label>
@@ -176,7 +184,7 @@ export function PinLogin() {
                   placeholder="Introduza o PIN (4 dígitos)"
                   disabled={!selectedId}
                   className={cn(
-                    "w-full h-14 pl-12 pr-4 bg-festa-surface-container-low border-2 border-festa-outline-variant/50 rounded-xl text-body-lg font-bold text-festa-on-surface tracking-[0.3em] placeholder:tracking-normal placeholder:font-medium placeholder:text-festa-on-surface-variant/60 focus:ring-4 focus:ring-festa-primary-container/10 focus:border-festa-primary-container outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                    "w-full h-14 pl-12 pr-4 bg-festa-paper border-2 border-festa-border rounded-lg shadow-block-sm text-body-lg font-bold text-festa-on-surface tracking-[0.3em] placeholder:tracking-normal placeholder:font-medium placeholder:text-festa-on-surface-variant/60 focus:ring-4 focus:ring-festa-amber/40 focus:border-festa-amber outline-none disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                   )}
                   required
                 />
@@ -191,8 +199,8 @@ export function PinLogin() {
                     <div
                       key={i}
                       className={cn(
-                        "w-4 h-4 rounded-full border-2 border-festa-primary-container transition-colors",
-                        pin.length > i && "bg-festa-primary-container"
+                        "w-4 h-4 rounded-sm border-2 border-festa-border transition-all duration-150",
+                        pin.length > i && "bg-festa-amber scale-110"
                       )}
                     />
                   ))}
@@ -206,7 +214,8 @@ export function PinLogin() {
                           key="back"
                           type="button"
                           onClick={handleBackspace}
-                          className="h-12 rounded-xl bg-festa-surface-container-high flex items-center justify-center active:scale-95"
+                          aria-label="Apagar dígito"
+                          className="h-16 rounded-lg border-2 border-festa-border bg-festa-surface-high shadow-block-sm flex items-center justify-center cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
                         >
                           <MaterialIcon name="backspace" />
                         </button>
@@ -217,7 +226,7 @@ export function PinLogin() {
                         key={key}
                         type="button"
                         onClick={() => handleDigit(key)}
-                        className="h-12 rounded-xl bg-card border border-festa-outline-variant/50 text-lg text-foreground font-bold active:scale-95 shadow-festa-card"
+                        className="h-16 rounded-lg border-2 border-festa-border bg-festa-paper shadow-block-sm font-display text-2xl text-foreground font-bold cursor-pointer transition-colors duration-150 hover:bg-festa-amber/20 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
                       >
                         {key}
                       </button>
@@ -228,19 +237,24 @@ export function PinLogin() {
             </Collapsible>
 
             <Collapsible open={Boolean(error)}>
-              <p className="text-sm text-festa-error font-medium text-center pt-1" role="alert">
+              <p
+                className="flex items-center justify-center gap-1.5 text-sm text-festa-error font-bold text-center pt-1"
+                role="alert"
+              >
+                <MaterialIcon name="warning" className="text-base" />
                 {error}
               </p>
             </Collapsible>
 
-            <button
+            <Button
               type="submit"
+              variant="accent"
               disabled={!canSubmit}
-              className="w-full h-14 bg-festa-primary-container text-festa-on-primary-container rounded-2xl font-bold text-lg disabled:opacity-50 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+              className="w-full h-16 text-lg gap-2"
             >
               <MaterialIcon name="login" />
               {submitting ? "A iniciar turno..." : "Iniciar Turno"}
-            </button>
+            </Button>
           </>
         )}
       </form>

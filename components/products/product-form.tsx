@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 import Image from "next/image"
 import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
 import { MaterialIcon } from "@/components/ui/material-icon"
 import { cn } from "@/lib/utils"
 import { slugifyProductName } from "@/lib/product-slug"
@@ -127,16 +128,16 @@ export function ProductForm({ session, product, onSaved, onCancel }: ProductForm
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-festa-outline-variant/40 bg-card shadow-festa-card p-gutter flex flex-col gap-5"
+      className="rounded-lg border-2 border-festa-border bg-card shadow-block p-gutter flex flex-col gap-5"
     >
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-title-md font-bold text-festa-on-surface">
+        <h2 className="text-title-md text-festa-on-surface">
           {isEditing ? "Editar produto" : "Novo produto"}
         </h2>
         <button
           type="button"
           onClick={onCancel}
-          className="h-10 w-10 rounded-full flex items-center justify-center text-festa-on-surface-variant hover:bg-festa-surface-container-high active:scale-95 transition-all"
+          className="h-10 w-10 rounded-md flex items-center justify-center text-festa-on-surface-variant cursor-pointer hover:bg-festa-surface-high active:scale-95 transition-all"
           aria-label="Fechar formulário"
         >
           <MaterialIcon name="close" />
@@ -223,7 +224,7 @@ export function ProductForm({ session, product, onSaved, onCancel }: ProductForm
 
       <Field label="Foto" error={fieldErrors.image}>
         <div className="flex flex-col sm:flex-row gap-4 items-start">
-          <div className="relative w-28 h-28 rounded-xl overflow-hidden bg-festa-surface-container-high border border-festa-outline-variant/30 shrink-0">
+          <div className="relative w-28 h-28 rounded-md overflow-hidden bg-festa-surface-high border-2 border-dashed border-festa-border/50 shrink-0">
             {imagePreview ? (
               <Image
                 src={imagePreview}
@@ -243,7 +244,7 @@ export function ProductForm({ session, product, onSaved, onCancel }: ProductForm
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="inline-flex items-center gap-2 h-11 px-4 rounded-xl bg-festa-surface-container-low border-2 border-festa-outline-variant/40 text-label-xl font-bold cursor-pointer hover:bg-festa-surface-container-high active:scale-[0.98] transition-all">
+            <label className="inline-flex items-center gap-2 h-11 px-4 rounded-lg bg-festa-paper border-2 border-festa-border shadow-block-sm text-label-xl cursor-pointer hover:bg-festa-amber/20 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-colors">
               <MaterialIcon name="upload" className="text-lg" />
               Escolher foto
               <input
@@ -265,7 +266,7 @@ export function ProductForm({ session, product, onSaved, onCancel }: ProductForm
                   setImagePreview(null)
                   setRemoveImage(true)
                 }}
-                className="inline-flex items-center gap-2 h-10 px-4 rounded-xl text-festa-error text-sm font-bold hover:bg-festa-error/10 active:scale-[0.98] transition-all"
+                className="inline-flex items-center gap-2 h-10 px-4 rounded-lg text-festa-error text-sm font-bold cursor-pointer hover:bg-festa-error/10 active:scale-[0.98] transition-all"
               >
                 <MaterialIcon name="delete" className="text-lg" />
                 Remover foto
@@ -279,20 +280,12 @@ export function ProductForm({ session, product, onSaved, onCancel }: ProductForm
       </Field>
 
       <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end pt-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="h-12 px-6 rounded-xl border-2 border-festa-outline-variant/40 text-festa-on-surface font-bold active:scale-[0.98] transition-all"
-        >
+        <Button type="button" variant="ghost" onClick={onCancel}>
           Cancelar
-        </button>
-        <button
-          type="submit"
-          disabled={submitting}
-          className="h-12 px-6 rounded-xl bg-festa-primary-container text-festa-on-primary-container font-bold active:scale-[0.98] transition-all disabled:opacity-60"
-        >
+        </Button>
+        <Button type="submit" variant="accent" disabled={submitting}>
           {submitting ? "A guardar..." : isEditing ? "Guardar alterações" : "Criar produto"}
-        </button>
+        </Button>
       </div>
     </form>
   )
@@ -314,7 +307,8 @@ function Field({
       </span>
       {children}
       {error && (
-        <span className="text-sm text-festa-error font-medium" role="alert">
+        <span className="flex items-center gap-1 text-sm text-festa-error font-bold" role="alert">
+          <MaterialIcon name="warning" className="text-sm" />
           {error}
         </span>
       )}
@@ -324,9 +318,9 @@ function Field({
 
 function inputClassName(hasError: boolean) {
   return cn(
-    "w-full h-12 px-4 rounded-xl bg-festa-surface-container-low border-2 text-festa-on-surface",
+    "w-full h-12 px-4 rounded-lg bg-festa-paper border-2 text-festa-on-surface shadow-block-sm outline-none focus:ring-4 focus:ring-festa-amber/40",
     hasError
       ? "border-festa-error"
-      : "border-festa-outline-variant/40 focus:border-festa-primary-container"
+      : "border-festa-border focus:border-festa-amber"
   )
 }

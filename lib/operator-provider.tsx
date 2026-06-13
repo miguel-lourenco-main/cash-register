@@ -20,6 +20,14 @@ import {
   type OperatorListError,
 } from "./operators"
 import type { OperatorPublic } from "./operators"
+import { getShiftSummary, type ShiftSummary } from "./shifts"
+
+export interface PendingLogout {
+  /** null when the summary fetch failed — overlay shows an "end anyway" escape hatch */
+  summary: ShiftSummary | null
+  operatorName: string
+  shiftStartedAt: string
+}
 
 interface OperatorContextValue {
   session: OperatorSession | null
@@ -29,6 +37,11 @@ interface OperatorContextValue {
   isLoading: boolean
   login: (operatorId: string, pin: string) => Promise<{ success: boolean; error?: string }>
   logout: () => Promise<void>
+  pendingLogout: PendingLogout | null
+  isPreparingLogout: boolean
+  requestLogout: () => Promise<void>
+  confirmLogout: () => Promise<void>
+  cancelLogout: () => void
   refreshOperators: () => Promise<void>
 }
 
@@ -40,6 +53,8 @@ export function OperatorProvider({ children }: { children: ReactNode }) {
   const [listError, setListError] = useState<OperatorListError | null>(null)
   const [listErrorMessage, setListErrorMessage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [pendingLogout, setPendingLogout] = useState<PendingLogout | null>(null)
+  const [isPreparingLogout, setIsPreparingLogout] = useState(false)
 
   const refreshOperators = useCallback(async () => {
     const result = await listActiveOperators()
@@ -69,6 +84,33 @@ export function OperatorProvider({ children }: { children: ReactNode }) {
     }
     clearOperatorSession()
     setSession(null)
+    setPendingLogout(null)
+  }, [])
+
+  // Fetch the summary BEFORE ending the shift — the shiftId is gone afterwards.
+  const requestLogout = useCallback(async () => {
+    const current = readOperatorSession()
+    if (!current?.shiftId) {
+      clearOperatorSession()
+      setSession(null)
+      return
+    }
+    setIsPreparingLogout(true)
+    const summary = await getShiftSummary(current.shiftId)
+    setIsPreparingLogout(false)
+    setPendingLogout({
+      summary,
+      operatorName: current.operatorName,
+      shiftStartedAt: current.shiftStartedAt,
+    })
+  }, [])
+
+  const confirmLogout = useCallback(async () => {
+    await logout()
+  }, [logout])
+
+  const cancelLogout = useCallback(() => {
+    setPendingLogout(null)
   }, [])
 
   return (
@@ -81,6 +123,11 @@ export function OperatorProvider({ children }: { children: ReactNode }) {
         isLoading,
         login,
         logout,
+        pendingLogout,
+        isPreparingLogout,
+        requestLogout,
+        confirmLogout,
+        cancelLogout,
         refreshOperators,
       }}
     >

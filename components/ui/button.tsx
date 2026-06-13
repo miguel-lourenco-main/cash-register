@@ -5,27 +5,29 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-bold uppercase tracking-wide cursor-pointer touch-manipulation transition-colors duration-200 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:ring-4 focus-visible:ring-festa-amber/60 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+          "border-2 border-festa-border bg-primary text-primary-foreground shadow-block-sm hover:bg-festa-primary-container dark:hover:bg-primary/90 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
+        accent:
+          "border-2 border-festa-border bg-festa-amber text-festa-ink shadow-block-sm hover:bg-festa-amber/85 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
         destructive:
-          "bg-destructive text-festa-on-error shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/80",
+          "border-2 border-festa-border bg-destructive text-destructive-foreground shadow-block-sm hover:bg-destructive/90 focus-visible:ring-destructive/30 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
         outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "border-2 border-festa-border bg-festa-paper text-festa-on-surface shadow-block-sm hover:bg-festa-amber hover:text-festa-ink active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+          "border-2 border-festa-border bg-festa-surface-high text-festa-on-surface shadow-block-sm hover:bg-festa-surface-low active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
+        link: "text-primary underline-offset-4 hover:underline normal-case tracking-normal",
       },
       size: {
-        default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-        icon: "size-9",
+        default: "h-12 px-5 py-2 has-[>svg]:px-4",
+        sm: "h-10 gap-1.5 px-3 has-[>svg]:px-2.5",
+        lg: "h-14 px-8 text-base has-[>svg]:px-6",
+        icon: "size-12",
       },
     },
     defaultVariants: {

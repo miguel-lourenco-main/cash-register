@@ -12,6 +12,7 @@ export type OrderItemWithProduct = {
   product_id: string
   quantity: number
   created_at: string | null
+  unit_price: number | null
   product: Product
 }
 
@@ -27,6 +28,8 @@ export interface AppProduct {
 export interface AppOrderItem {
   product: AppProduct
   quantity: number
+  /** Price snapshot at sale time; falls back to product.price for legacy rows */
+  unitPrice?: number | null
 }
 
 export interface OrderRegisteredBy {
@@ -40,6 +43,16 @@ export interface Order {
   items: AppOrderItem[]
   registeredBy?: OrderRegisteredBy | null
   shiftId?: string | null
+  /** Order total snapshot at sale time (null on legacy rows) */
+  total?: number | null
+  amountTendered?: number | null
+  changeDue?: number | null
+}
+
+export interface OrderPayment {
+  total: number
+  amountTendered: number
+  changeDue: number
 }
 
 export interface CreateOrderContext {
