@@ -16,7 +16,7 @@ function CategoryPlaceholder({ category }: { category: AppProduct["category"] })
     <div
       className={cn(
         "w-full h-full flex items-center justify-center",
-        isBebida ? "bg-festa-tertiary/10" : "bg-festa-primary-container/10"
+        isBebida ? "bg-festa-festival-blue/15" : "bg-festa-amber/20"
       )}
     >
       <MaterialIcon
@@ -37,52 +37,41 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
     <button
       type="button"
       onClick={() => onAdd(product)}
-      className={cn(
-        "group flex flex-col bg-card text-left max-h-[15rem] active:scale-[0.97] transition-all hover:shadow-lg shadow-festa-card border border-festa-outline-variant/30 overflow-hidden",
-        "rounded-2xl p-3 lg:rounded-xl lg:p-0",
-        "lg:border-l-4",
-        isBebida ? "lg:border-l-festa-festival-blue" : "lg:border-l-festa-primary-container"
-      )}
+      className="group flex w-full h-full flex-col rounded-lg border-2 border-festa-border bg-festa-paper text-left shadow-block overflow-hidden cursor-pointer touch-manipulation transition-colors duration-200 hover:bg-festa-amber/10 focus-visible:ring-4 focus-visible:ring-festa-amber/60 outline-none active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
     >
-      <div
-        className={cn(
-          "w-full overflow-hidden relative bg-festa-surface-container-high",
-          "aspect-square mb-3 rounded-xl lg:mb-0 lg:rounded-none"
-        )}
-      >
+      <div className="relative w-full aspect-square border-b-2 border-festa-border bg-festa-surface-high overflow-hidden">
         {product.imageUrl ? (
           <Image
             src={product.imageUrl}
             alt={product.name}
             fill
-            className="object-cover group-hover:scale-110 transition-transform duration-500"
+            className="object-cover"
             sizes="(max-width: 1024px) 50vw, 25vw"
             unoptimized
           />
         ) : (
           <CategoryPlaceholder category={product.category} />
         )}
-        <div
+      </div>
+      <div className="flex w-full flex-1 items-end justify-between gap-2 p-3">
+        <div className="min-w-0">
+          <h3 className="font-display font-bold text-festa-on-surface leading-tight truncate text-base lg:text-lg">
+            {product.name}
+          </h3>
+          {product.description && (
+            <p className="hidden lg:block text-festa-on-surface-variant text-xs truncate mt-0.5">
+              {product.description}
+            </p>
+          )}
+        </div>
+        <span
           className={cn(
-            "absolute top-2 right-2 text-festa-on-primary-container px-3 py-1 rounded-full font-bold",
-            isBebida ? "bg-festa-festival-blue" : "bg-festa-primary",
-            "lg:block hidden"
+            "shrink-0 rounded-md border-2 border-festa-border px-2.5 py-1 font-display text-lg font-bold tabular-nums",
+            isBebida
+              ? "bg-festa-festival-blue text-white dark:text-festa-ink"
+              : "bg-festa-primary text-white dark:bg-festa-primary-emphasis dark:text-festa-ink"
           )}
         >
-          {product.price.toFixed(2)}€
-        </div>
-        <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-xl lg:hidden pointer-events-none" />
-      </div>
-      <div className="px-1 lg:p-4">
-        <h3 className="font-bold text-festa-on-surface leading-tight truncate text-body-lg lg:text-title-md mb-1">
-          {product.name}
-        </h3>
-        {product.description && (
-          <p className="hidden lg:block text-festa-on-surface-variant text-sm truncate">
-            {product.description}
-          </p>
-        )}
-        <span className="text-title-md font-extrabold text-festa-accent lg:hidden">
           {product.price.toFixed(2)}€
         </span>
       </div>

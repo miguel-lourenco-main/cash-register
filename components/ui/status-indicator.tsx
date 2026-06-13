@@ -18,17 +18,17 @@ export function StatusIndicator({
   }
   
   const statusClasses = {
-    success: "bg-green-500",
-    warning: "bg-yellow-500", 
-    error: "bg-red-500",
-    info: "bg-blue-500",
+    success: "bg-festa-success",
+    warning: "bg-festa-amber",
+    error: "bg-festa-error",
+    info: "bg-festa-festival-blue",
     pending: "bg-muted-foreground animate-pulse"
   }
-  
+
   return (
-    <div 
+    <div
       className={cn(
-        "rounded-full",
+        "rounded-full border border-festa-border",
         sizeClasses[size],
         statusClasses[status],
         className

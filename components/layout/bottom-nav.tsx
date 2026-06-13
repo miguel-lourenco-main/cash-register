@@ -2,7 +2,9 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { motion } from "motion/react"
 import { MaterialIcon } from "@/components/ui/material-icon"
+import { springs } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 import { useOperator } from "@/lib/operator-provider"
 import { getNavItemsForRole } from "@/lib/nav-items"
@@ -14,7 +16,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 w-full z-40 flex justify-around items-center px-4 bg-festa-surface border-t border-festa-outline-variant/30 shadow-[0px_-4px_16px_rgba(0,0,0,0.06)]"
+      className="md:hidden fixed bottom-0 left-0 w-full z-40 flex justify-around items-center px-4 bg-festa-surface border-t-2 border-festa-border"
       style={{ height: "var(--festa-bottom-nav-height)" }}
     >
       {items.map((item) => {
@@ -24,16 +26,26 @@ export function BottomNav() {
             key={item.href}
             href={item.href}
             className={cn(
-              "flex flex-col items-center justify-center rounded-xl px-4 py-2 active:scale-95 transition-all min-w-0",
-              active ? "text-festa-accent" : "text-festa-on-surface-variant"
+              "relative flex flex-col items-center justify-center rounded-md px-4 py-2 min-w-0 min-h-12 cursor-pointer transition-colors duration-200",
+              active ? "text-festa-ink" : "text-festa-on-surface-variant"
             )}
           >
+            {active && (
+              <motion.span
+                layoutId="bottomnav-active"
+                transition={springs.snappy}
+                className="absolute inset-0 rounded-md border-2 border-festa-border bg-festa-amber shadow-block-sm"
+                aria-hidden
+              />
+            )}
             <MaterialIcon
               name={item.icon}
               filled={active}
-              className="text-2xl mb-1"
+              className="relative text-2xl mb-1"
             />
-            <span className="text-xs font-bold truncate">{item.label}</span>
+            <span className="relative text-xs font-bold uppercase tracking-wide truncate">
+              {item.label}
+            </span>
           </Link>
         )
       })}

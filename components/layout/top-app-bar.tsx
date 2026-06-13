@@ -33,27 +33,28 @@ const defaultPage = {
 
 export function TopAppBar() {
   const pathname = usePathname()
-  const { session, logout } = useOperator()
+  const { session, requestLogout, isPreparingLogout } = useOperator()
   const page = pageMeta[pathname] ?? defaultPage
 
   return (
-    <header className="sticky top-0 z-30 shrink-0 border-b border-festa-outline-variant/30 bg-festa-surface/95 backdrop-blur-md">
+    <header className="sticky top-0 z-30 shrink-0 border-b-2 border-festa-border bg-festa-surface">
       <div className="flex items-center justify-between gap-4 h-touch-target-min md:h-20 px-gutter md:px-margin-page">
         {/* Brand + current page */}
         <div className="flex items-center gap-3 md:gap-4 min-w-0">
-          <div className="flex h-11 w-11 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-2xl bg-festa-primary-container shadow-sm ring-1 ring-festa-primary-container/20">
+          <div className="flex h-11 w-11 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-md border-2 border-festa-border bg-festa-primary dark:bg-festa-primary-emphasis shadow-block-sm">
             <MaterialIcon
               name="storefront"
-              className="text-2xl text-festa-on-primary-container"
+              filled
+              className="text-2xl text-white dark:text-festa-ink"
             />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2 min-w-0">
-              <h1 className="font-display text-title-md font-extrabold text-festa-primary-emphasis tracking-tight truncate">
+              <h1 className="font-display text-title-md uppercase text-festa-primary-emphasis tracking-tight truncate">
                 Festa POS
               </h1>
-              <span className="hidden sm:inline text-festa-outline-variant/80">·</span>
-              <span className="hidden sm:flex items-center gap-1.5 min-w-0 text-festa-on-surface font-semibold truncate">
+              <span className="hidden sm:inline text-festa-on-surface-variant/60">/</span>
+              <span className="hidden sm:flex items-center gap-1.5 min-w-0 font-display font-bold text-festa-on-surface truncate">
                 <MaterialIcon
                   name={page.icon}
                   className="text-lg text-festa-accent shrink-0"
@@ -79,20 +80,20 @@ export function TopAppBar() {
             >
               <div
                 className={cn(
-                  "hidden sm:flex items-center gap-3 pl-3 pr-1 py-1 rounded-full",
-                  "bg-festa-surface-container-low border border-festa-outline-variant/40"
+                  "hidden sm:flex items-center gap-3 pl-3 pr-1.5 py-1.5 rounded-md",
+                  "bg-festa-paper border-2 border-festa-border shadow-block-sm"
                 )}
               >
                 <div className="flex flex-col items-end min-w-0">
                   <span className="text-sm font-bold text-festa-on-surface leading-tight truncate max-w-[140px] lg:max-w-[180px]">
                     {session.operatorName}
                   </span>
-                  <span className="text-[10px] text-festa-on-surface-variant uppercase tracking-wider">
+                  <span className="text-[10px] text-festa-on-surface-variant uppercase tracking-wider font-bold">
                     {session.operatorRole}
                   </span>
                 </div>
                 <div
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-festa-primary-container text-festa-on-primary-container font-bold text-sm"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border-2 border-festa-border bg-festa-amber text-festa-ink font-display font-bold text-sm"
                   aria-hidden
                 >
                   {session.operatorName.charAt(0)}
@@ -101,27 +102,32 @@ export function TopAppBar() {
 
               <button
                 type="button"
-                onClick={() => logout()}
-                className="hidden md:flex items-center gap-2 h-10 px-4 rounded-full bg-festa-error text-festa-on-error text-label-xl font-bold hover:opacity-90 active:scale-[0.98] transition-all"
+                onClick={() => requestLogout()}
+                disabled={isPreparingLogout}
+                className="hidden md:flex items-center gap-2 h-12 px-4 rounded-lg border-2 border-festa-border bg-festa-error text-festa-on-error text-label-xl shadow-block-sm cursor-pointer transition-colors duration-200 hover:bg-festa-error/90 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none disabled:opacity-60"
               >
-                <MaterialIcon name="logout" className="text-lg" />
+                <MaterialIcon
+                  name={isPreparingLogout ? "progress_activity" : "logout"}
+                  className={cn("text-lg", isPreparingLogout && "animate-spin")}
+                />
                 Encerrar Turno
               </button>
               <button
                 type="button"
-                onClick={() => logout()}
-                className="md:hidden flex h-10 w-10 items-center justify-center rounded-full bg-festa-error/10 text-festa-error active:scale-95"
+                onClick={() => requestLogout()}
+                disabled={isPreparingLogout}
+                className="md:hidden flex h-12 w-12 items-center justify-center rounded-lg border-2 border-festa-border bg-festa-error text-festa-on-error shadow-block-sm cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none disabled:opacity-60"
                 aria-label="Encerrar turno"
               >
-                <MaterialIcon name="logout" />
+                <MaterialIcon
+                  name={isPreparingLogout ? "progress_activity" : "logout"}
+                  className={cn(isPreparingLogout && "animate-spin")}
+                />
               </button>
             </FadeIn>
           )}
         </div>
       </div>
-
-      {/* Page accent strip */}
-      <div className="h-0.5 w-full bg-gradient-to-r from-festa-primary-container via-festa-festival-blue/60 to-transparent opacity-80" />
     </header>
   )
 }

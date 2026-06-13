@@ -1,18 +1,12 @@
 "use client"
 
 import { MaterialIcon } from "@/components/ui/material-icon"
+import { calculateOrderTotal } from "@/lib/order-utils"
 import type { Order } from "@/lib/types"
 
 interface OrderCardProps {
   order: Order
   onClick: () => void
-}
-
-function calculateOrderTotal(order: Order) {
-  return order.items.reduce(
-    (total, item) => total + item.product.price * item.quantity,
-    0
-  )
 }
 
 function formatRelativeTime(date: Date): string {
@@ -34,18 +28,18 @@ export function OrderCard({ order, onClick }: OrderCardProps) {
     <button
       type="button"
       onClick={onClick}
-      className="bg-card rounded-xl shadow-festa-card hover:shadow-md transition-all duration-300 cursor-pointer active:scale-95 overflow-hidden border border-festa-outline-variant/30 flex flex-col h-full text-left w-full"
+      className="bg-card rounded-lg border-2 border-festa-border shadow-block-sm overflow-hidden flex flex-col h-full text-left w-full cursor-pointer touch-manipulation transition-colors duration-200 hover:bg-festa-amber/10 focus-visible:ring-4 focus-visible:ring-festa-amber/60 outline-none active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
     >
-      <div className="h-2 w-full bg-festa-primary-container" />
+      <div className="h-2 w-full bg-festa-primary dark:bg-festa-primary-emphasis border-b-2 border-festa-border" />
       <div className="p-6 flex flex-col flex-grow">
         <div className="flex justify-between items-start mb-4">
           <div>
             <span className="text-xs font-bold text-festa-on-surface-variant uppercase tracking-widest mb-1 block">
               {operatorLabel}
             </span>
-            <h4 className="text-title-md text-festa-on-surface">#{order.id}</h4>
+            <h4 className="font-display text-title-md text-festa-on-surface">#{order.id}</h4>
           </div>
-          <span className="text-xs text-festa-on-surface-variant">
+          <span className="text-xs font-bold text-festa-on-surface-variant tabular-nums">
             {itemCount} {itemCount === 1 ? "item" : "itens"}
           </span>
         </div>
@@ -53,9 +47,9 @@ export function OrderCard({ order, onClick }: OrderCardProps) {
           <MaterialIcon name="schedule" className="text-sm" />
           <span>{formatRelativeTime(order.createdAt)}</span>
         </div>
-        <div className="mt-auto pt-6 border-t border-dashed border-festa-outline-variant flex justify-between items-center">
+        <div className="mt-auto pt-6 border-t-2 border-dashed border-festa-border/30 flex justify-between items-center">
           <span className="text-festa-on-surface-variant text-label-xl">Total</span>
-          <span className="text-headline-lg-mobile text-festa-primary-emphasis">
+          <span className="text-headline-lg-mobile text-festa-primary-emphasis tabular-nums">
             {total.toFixed(2)}€
           </span>
         </div>

@@ -1,23 +1,26 @@
 "use client"
 
 import type React from "react"
-import { Plus_Jakarta_Sans, Work_Sans } from "next/font/google"
+import { Space_Grotesk, Work_Sans } from "next/font/google"
+import { MotionConfig } from "motion/react"
 import "./globals.css"
-import { Toaster } from "sonner"
 import { ThemeProvider } from "@/lib/theme-provider"
 import { OperatorProvider } from "@/lib/operator-provider"
 import { AppShell } from "@/components/layout/app-shell"
+import { AppToaster } from "@/components/ui/app-toaster"
 
-const plusJakarta = Plus_Jakarta_Sans({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-plus-jakarta",
-  weight: ["400", "600", "700", "800"],
+  variable: "--font-space-grotesk",
+  weight: ["500", "700"],
+  display: "swap",
 })
 
 const workSans = Work_Sans({
   subsets: ["latin"],
   variable: "--font-work-sans",
   weight: ["400", "500", "700"],
+  display: "swap",
 })
 
 export default function RootLayout({
@@ -29,7 +32,7 @@ export default function RootLayout({
     <html lang="pt" suppressHydrationWarning className="no-scrollbar">
       <head>
         <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,500,0..1,0"
           rel="stylesheet"
         />
         <script
@@ -50,13 +53,15 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${workSans.variable} ${plusJakarta.variable} font-sans antialiased`}>
-        <ThemeProvider defaultTheme="system" storageKey="cash-register-theme">
-          <OperatorProvider>
-            <AppShell>{children}</AppShell>
-          </OperatorProvider>
-          <Toaster richColors />
-        </ThemeProvider>
+      <body className={`${workSans.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
+        <MotionConfig reducedMotion="user">
+          <ThemeProvider defaultTheme="system" storageKey="cash-register-theme">
+            <OperatorProvider>
+              <AppShell>{children}</AppShell>
+            </OperatorProvider>
+            <AppToaster />
+          </ThemeProvider>
+        </MotionConfig>
       </body>
     </html>
   )

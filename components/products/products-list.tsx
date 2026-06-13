@@ -1,8 +1,10 @@
 "use client"
 
 import Image from "next/image"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { MaterialIcon } from "@/components/ui/material-icon"
-import { cn } from "@/lib/utils"
+import { StaggerGrid, StaggerItem } from "@/components/ui/motion"
 import type { AppProduct } from "@/lib/types"
 
 interface ProductsListProps {
@@ -13,20 +15,20 @@ interface ProductsListProps {
 export function ProductsList({ products, onEdit }: ProductsListProps) {
   if (products.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-festa-outline-variant/50 p-gutter text-center text-festa-on-surface-variant">
+      <div className="rounded-lg border-2 border-dashed border-festa-border/40 p-gutter text-center text-festa-on-surface-variant">
         Nenhum produto encontrado.
       </div>
     )
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <StaggerGrid className="grid grid-cols-1 lg:grid-cols-2 gap-card-gap">
       {products.map((product) => (
+        <StaggerItem key={product.id} className="h-full">
         <article
-          key={product.id}
-          className="flex gap-4 rounded-2xl border border-festa-outline-variant/30 bg-card p-4 shadow-festa-card"
+          className="flex h-full gap-4 rounded-lg border-2 border-festa-border bg-festa-paper p-4 shadow-block-sm"
         >
-          <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-festa-surface-container-high shrink-0">
+          <div className="relative w-20 h-20 rounded-md border-2 border-festa-border overflow-hidden bg-festa-surface-high shrink-0">
             {product.imageUrl ? (
               <Image
                 src={product.imageUrl}
@@ -53,7 +55,7 @@ export function ProductsList({ products, onEdit }: ProductsListProps) {
                   {product.id}
                 </p>
               </div>
-              <span className="font-extrabold text-festa-accent shrink-0">
+              <span className="font-display font-bold text-festa-accent shrink-0 tabular-nums">
                 {product.price.toFixed(2)}€
               </span>
             </div>
@@ -65,28 +67,18 @@ export function ProductsList({ products, onEdit }: ProductsListProps) {
             )}
 
             <div className="flex items-center justify-between mt-3 gap-3">
-              <span
-                className={cn(
-                  "text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full",
-                  product.category === "bebida"
-                    ? "bg-festa-tertiary/10 text-festa-festival-blue"
-                    : "bg-festa-primary-container/10 text-festa-accent"
-                )}
-              >
+              <Badge variant={product.category === "bebida" ? "info" : "warning"}>
                 {product.category === "bebida" ? "Bebida" : "Comida"}
-              </span>
-              <button
-                type="button"
-                onClick={() => onEdit(product)}
-                className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-festa-surface-container-low text-festa-on-surface font-bold text-sm hover:bg-festa-surface-container-high active:scale-[0.98] transition-all"
-              >
+              </Badge>
+              <Button variant="outline" size="sm" onClick={() => onEdit(product)}>
                 <MaterialIcon name="edit" className="text-base" />
                 Editar
-              </button>
+              </Button>
             </div>
           </div>
         </article>
+        </StaggerItem>
       ))}
-    </div>
+    </StaggerGrid>
   )
 }

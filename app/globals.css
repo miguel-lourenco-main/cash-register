@@ -7,7 +7,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-work-sans);
-  --font-display: var(--font-plus-jakarta);
+  --font-display: var(--font-space-grotesk);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -34,6 +34,10 @@
   --color-card: var(--card);
 
   /* Festa semantic colors */
+  --color-festa-ink: var(--festa-ink);
+  --color-festa-border: var(--festa-border);
+  --color-festa-paper: var(--festa-surface-container-lowest);
+  --color-festa-amber: var(--festa-amber);
   --color-festa-primary: var(--festa-primary);
   --color-festa-primary-container: var(--festa-primary-container);
   --color-festa-surface: var(--festa-surface);
@@ -57,7 +61,7 @@
 
   --spacing-gutter: 24px;
   --spacing-margin-page: 32px;
-  --spacing-card-gap: 16px;
+  --spacing-card-gap: 20px;
   --spacing-touch-target-min: 64px;
   --spacing-panel-width-cart: 380px;
 
@@ -70,40 +74,53 @@
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.5rem;
 
   /* Layout (shell + cart + nav) */
   --festa-top-bar-height: 4rem;
   --festa-bottom-nav-height: 5rem;
   --festa-cart-peek-height: 4.5rem;
 
-  /* Festa palette */
+  /* Festa palette — bold block duotone */
+  --festa-ink: #1b130d;
+  --festa-border: var(--festa-ink);
+  --shadow-color: var(--festa-ink);
   --festa-primary: #7c2810;
   --festa-primary-container: #9b3f25;
   --festa-on-primary: #ffffff;
-  --festa-surface: #fbf9f5;
-  --festa-surface-container-low: #f5f3ef;
-  --festa-surface-container-high: #eae8e4;
-  --festa-surface-container-lowest: #ffffff;
-  --festa-on-surface: #1b1c1a;
-  --festa-on-surface-variant: #56423d;
-  --festa-outline: #89726c;
-  --festa-outline-variant: #dcc0b9;
-  --festa-secondary: #615e57;
+  --festa-amber: #ffb52e;
+  --festa-surface: #faf4e8;
+  --festa-surface-container-low: #f3eada;
+  --festa-surface-container-high: #ebdfc9;
+  --festa-surface-container-lowest: #fffdf7;
+  --festa-on-surface: #1b130d;
+  --festa-on-surface-variant: #5c4a3d;
+  --festa-outline: #8a7361;
+  --festa-outline-variant: #d9c9b4;
+  --festa-secondary: #5c5345;
   --festa-tertiary: #00457f;
   --festa-festival-blue: #005da7;
-  --festa-success-green: #2e7d32;
-  --festa-error: #ba1a1a;
-  --festa-primary-fixed-dim: #ffb5a0;
-  --festa-inverse-surface: #30312e;
-  --festa-inverse-primary: #ffb5a0;
-  --festa-inverse-on-surface: #f2f0ed;
+  --festa-success-green: #1b7339;
+  --festa-error: #b3261e;
+  --festa-primary-fixed-dim: #ff9b7a;
+  --festa-inverse-surface: #181210;
+  --festa-inverse-primary: #ff9b7a;
+  --festa-inverse-on-surface: #f6ede0;
   --festa-on-primary-container: #ffffff;
   --festa-on-error: #ffffff;
   --festa-primary-emphasis: var(--festa-primary);
   --festa-accent: var(--festa-primary-container);
   --festa-tertiary-emphasis: var(--festa-tertiary);
   --festa-success-emphasis: var(--festa-success-green);
+
+  /* Chart theme */
+  --chart-1: var(--festa-primary-emphasis);
+  --chart-2: var(--festa-festival-blue);
+  --chart-3: var(--festa-amber);
+  --chart-4: var(--festa-success-emphasis);
+  --chart-5: var(--festa-on-surface-variant);
+  --chart-grid: var(--festa-outline-variant);
+  --chart-tooltip-bg: var(--festa-surface-container-lowest);
 
   /* shadcn bridge */
   --background: var(--festa-surface);
@@ -112,9 +129,9 @@
   --card-foreground: var(--festa-on-surface);
   --popover: var(--festa-surface-container-lowest);
   --popover-foreground: var(--festa-on-surface);
-  --primary: var(--festa-primary-container);
+  --primary: var(--festa-primary);
   --primary-foreground: var(--festa-on-primary);
-  --secondary: var(--festa-surface-container-low);
+  --secondary: var(--festa-surface-container-high);
   --secondary-foreground: var(--festa-on-surface);
   --muted: var(--festa-surface-container-low);
   --muted-foreground: var(--festa-on-surface-variant);
@@ -123,16 +140,16 @@
   --destructive: var(--festa-error);
   --destructive-foreground: var(--festa-on-error);
   --border: var(--festa-outline-variant);
-  --input: var(--festa-outline-variant);
-  --ring: var(--festa-primary-container);
+  --input: var(--festa-border);
+  --ring: var(--festa-amber);
   --sidebar: var(--festa-surface-container-low);
   --sidebar-foreground: var(--festa-on-surface);
-  --sidebar-primary: var(--festa-primary-container);
+  --sidebar-primary: var(--festa-primary);
   --sidebar-primary-foreground: var(--festa-on-primary);
   --sidebar-accent: var(--festa-surface-container-high);
   --sidebar-accent-foreground: var(--festa-on-surface);
   --sidebar-border: var(--festa-outline-variant);
-  --sidebar-ring: var(--festa-primary-container);
+  --sidebar-ring: var(--festa-amber);
 }
 
 @media (min-width: 768px) {
@@ -142,20 +159,26 @@
 }
 
 .dark {
-  --festa-surface: var(--festa-inverse-surface);
-  --festa-on-surface: var(--festa-inverse-on-surface);
-  --festa-surface-container-low: #3a3b38;
-  --festa-surface-container-high: #454642;
-  --festa-surface-container-lowest: #2a2b28;
-  --festa-on-surface-variant: #d4cfc6;
-  --festa-secondary: #b5b0a6;
-  --festa-outline: #9a9289;
-  --festa-outline-variant: #5a534e;
+  --festa-border: #4a3b30;
+  --shadow-color: #000000;
+  --festa-surface: #181210;
+  --festa-on-surface: #f6ede0;
+  --festa-surface-container-low: #211915;
+  --festa-surface-container-high: #2d231c;
+  --festa-surface-container-lowest: #241b16;
+  --festa-on-surface-variant: #c9b8a8;
+  --festa-amber: #ffc247;
+  --festa-secondary: #b5a890;
+  --festa-outline: #6b584a;
+  --festa-outline-variant: #4a3b30;
+  --festa-success-green: #7ddb9a;
+  --festa-error: #ff8a80;
+  --festa-on-error: var(--festa-ink);
   --festa-primary-emphasis: var(--festa-primary-fixed-dim);
   --festa-accent: var(--festa-primary-fixed-dim);
-  --festa-tertiary-emphasis: #8ec5ff;
-  --festa-success-emphasis: #81c784;
-  --festa-festival-blue: #6eb3f7;
+  --festa-tertiary-emphasis: #8bbdff;
+  --festa-success-emphasis: #7ddb9a;
+  --festa-festival-blue: #8bbdff;
 
   --background: var(--festa-surface);
   --foreground: var(--festa-on-surface);
@@ -164,26 +187,26 @@
   --popover: var(--festa-surface-container-lowest);
   --popover-foreground: var(--festa-on-surface);
   --primary: var(--festa-primary-fixed-dim);
-  --primary-foreground: var(--festa-primary);
-  --secondary: var(--festa-surface-container-low);
+  --primary-foreground: var(--festa-ink);
+  --secondary: var(--festa-surface-container-high);
   --secondary-foreground: var(--festa-on-surface);
   --muted: var(--festa-surface-container-low);
   --muted-foreground: var(--festa-on-surface-variant);
   --accent: var(--festa-surface-container-high);
   --accent-foreground: var(--festa-on-surface);
   --destructive: var(--festa-error);
-  --destructive-foreground: var(--festa-on-error);
+  --destructive-foreground: var(--festa-ink);
   --border: var(--festa-outline-variant);
-  --input: var(--festa-outline-variant);
-  --ring: var(--festa-primary-fixed-dim);
+  --input: var(--festa-border);
+  --ring: var(--festa-amber);
   --sidebar: var(--festa-surface-container-low);
   --sidebar-foreground: var(--festa-on-surface);
   --sidebar-primary: var(--festa-primary-fixed-dim);
-  --sidebar-primary-foreground: var(--festa-primary);
+  --sidebar-primary-foreground: var(--festa-ink);
   --sidebar-accent: var(--festa-surface-container-high);
   --sidebar-accent-foreground: var(--festa-on-surface);
   --sidebar-border: var(--festa-outline-variant);
-  --sidebar-ring: var(--festa-primary-fixed-dim);
+  --sidebar-ring: var(--festa-amber);
 }
 
 @layer base {
@@ -192,10 +215,6 @@
   }
   body {
     @apply bg-background text-foreground font-sans;
-  }
-
-  * {
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   }
 
   ::-webkit-scrollbar {
@@ -219,32 +238,44 @@
 
 @layer utilities {
   .font-display {
-    font-family: var(--font-plus-jakarta), sans-serif;
+    font-family: var(--font-space-grotesk), sans-serif;
+  }
+  .text-display-xl {
+    font-family: var(--font-space-grotesk), sans-serif;
+    font-size: 56px;
+    line-height: 56px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
   .text-price-display {
-    font-family: var(--font-plus-jakarta), sans-serif;
-    font-size: 36px;
+    font-family: var(--font-space-grotesk), sans-serif;
+    font-size: 40px;
     line-height: 44px;
-    font-weight: 800;
-    letter-spacing: -0.01em;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
   }
   .text-headline-lg {
-    font-family: var(--font-plus-jakarta), sans-serif;
-    font-size: 32px;
+    font-family: var(--font-space-grotesk), sans-serif;
+    font-size: 36px;
     line-height: 40px;
     font-weight: 700;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
   }
   .text-headline-lg-mobile {
-    font-family: var(--font-plus-jakarta), sans-serif;
-    font-size: 24px;
+    font-family: var(--font-space-grotesk), sans-serif;
+    font-size: 28px;
     line-height: 32px;
     font-weight: 700;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
   }
   .text-title-md {
-    font-family: var(--font-plus-jakarta), sans-serif;
+    font-family: var(--font-space-grotesk), sans-serif;
     font-size: 20px;
-    line-height: 28px;
-    font-weight: 600;
+    line-height: 26px;
+    font-weight: 700;
   }
   .text-body-lg {
     font-size: 18px;
@@ -252,34 +283,40 @@
     font-weight: 400;
   }
   .text-label-xl {
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 13px;
+    line-height: 18px;
     font-weight: 700;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
-  .shadow-festa-card {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  /* Block chrome — hard offset shadows */
+  .shadow-block-sm {
+    box-shadow: 2px 2px 0 0 var(--shadow-color);
   }
-  .shadow-festa-cart {
-    box-shadow: 0px -12px 32px rgba(124, 40, 16, 0.12);
+  .shadow-block {
+    box-shadow: 4px 4px 0 0 var(--shadow-color);
   }
-  .dark .shadow-festa-card {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  .shadow-block-lg {
+    box-shadow: 6px 6px 0 0 var(--shadow-color);
   }
-  .dark .shadow-festa-cart {
-    box-shadow: 0px -12px 32px rgba(0, 0, 0, 0.45);
+  .shadow-block-up {
+    box-shadow: 0 -4px 0 0 var(--shadow-color);
+  }
+  .shadow-block-left {
+    box-shadow: -6px 0 0 0 var(--shadow-color);
   }
   .text-on-brand {
     color: var(--festa-on-primary-container);
   }
   .material-symbols-outlined {
-    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 24;
     display: inline-block;
     line-height: 1;
     direction: ltr;
   }
   .material-symbols-filled {
-    font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+    font-variation-settings: "FILL" 1, "wght" 500, "GRAD" 0, "opsz" 24;
   }
   .no-scrollbar::-webkit-scrollbar {
     display: none;

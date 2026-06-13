@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# AI-generated product photos (regenerate with pnpm photos:generate)
+generated-images/

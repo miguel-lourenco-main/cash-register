@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
 import { MaterialIcon } from "@/components/ui/material-icon"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { AdminAccessDenied } from "@/components/products/admin-access-denied"
@@ -85,17 +86,16 @@ export default function ProductsAdminClient() {
           </p>
         </div>
         {!showForm && (
-          <button
-            type="button"
+          <Button
+            variant="accent"
             onClick={() => {
               setEditingProduct(null)
               setShowForm(true)
             }}
-            className="inline-flex items-center justify-center gap-2 h-12 px-5 rounded-xl bg-festa-primary-container text-festa-on-primary-container font-bold active:scale-[0.98] transition-all"
           >
             <MaterialIcon name="add" className="text-xl" />
             Novo produto
-          </button>
+          </Button>
         )}
       </div>
 
