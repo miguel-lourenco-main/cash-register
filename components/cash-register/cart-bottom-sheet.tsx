@@ -78,6 +78,7 @@ export function CartBottomSheet({
           <button
             type="button"
             onClick={() => onDismissedChange(false)}
+            data-cart-drop
             className="flex items-center gap-2 pl-4 pr-5 h-14 rounded-lg border-2 border-festa-border bg-festa-amber text-festa-ink shadow-block cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
             aria-label="Abrir pedido atual"
           >
@@ -121,12 +122,14 @@ export function CartBottomSheet({
               onClick={() => setExpanded(!isOpen)}
               aria-expanded={isOpen}
             >
-              <CartPing
-                trigger={itemCount}
-                className="bg-festa-amber text-festa-ink border-2 border-festa-border w-10 h-10 rounded-md flex items-center justify-center font-display font-bold text-lg shrink-0 tabular-nums"
-              >
-                {itemCount}
-              </CartPing>
+              <span data-cart-drop className="shrink-0">
+                <CartPing
+                  trigger={itemCount}
+                  className="bg-festa-amber text-festa-ink border-2 border-festa-border w-10 h-10 rounded-md flex items-center justify-center font-display font-bold text-lg tabular-nums"
+                >
+                  {itemCount}
+                </CartPing>
+              </span>
               <div className="min-w-0 text-left">
                 <p className="font-display text-title-md text-festa-on-surface leading-tight truncate">
                   Pedido Atual

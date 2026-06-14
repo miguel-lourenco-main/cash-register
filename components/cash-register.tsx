@@ -12,6 +12,8 @@ import { CartBottomSheet } from "@/components/cash-register/cart-bottom-sheet"
 import { PaymentOverlay } from "@/components/cash-register/payment-overlay"
 import { OrderSuccessOverlay } from "@/components/cash-register/order-success-overlay"
 import { ProductSearch } from "@/components/cash-register/product-search"
+import { useFlyToCart } from "@/components/cash-register/fly-to-cart"
+import { Portal } from "@/components/ui/portal"
 import { MaterialIcon } from "@/components/ui/material-icon"
 import type { AppProduct, AppOrderItem } from "@/lib/types"
 import { createOrder } from "@/lib/actions"
@@ -42,6 +44,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
   const [searchQuery, setSearchQuery] = useState("")
   const router = useRouter()
   const { session } = useOperator()
+  const { flyToCart, flyLayer, clearFlyToCart } = useFlyToCart()
 
   // A non-empty search looks across BOTH categories — operators shouldn't have to guess the tab
   const normalizedQuery = normalizeText(searchQuery.trim())
@@ -49,7 +52,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
     ? products.filter((p) => normalizeText(p.name).includes(normalizedQuery))
     : products.filter((p) => p.category === activeCategory)
 
-  const handleAddToOrder = (product: AppProduct) => {
+  const handleAddToOrder = (product: AppProduct, originRect?: DOMRect) => {
     setOrderItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.product.id === product.id)
       if (existingItem) {
@@ -64,6 +67,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
     setMobileCartDismissed(false)
     setHighlightedIndex(orderItems.length)
     setTimeout(() => setHighlightedIndex(null), 600)
+    if (originRect) flyToCart(originRect, `${product.price.toFixed(2)}€`, product.category)
   }
 
   const handleUpdateQuantity = (productId: string, newQuantity: number) => {
@@ -143,6 +147,12 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
       return () => clearTimeout(t)
     }
   }, [orderItems.length])
+
+  // Drop any in-flight fly-to-cart tokens when leaving the cart step,
+  // so they don't paint over the payment/success overlays.
+  useEffect(() => {
+    if (checkoutStep !== "cart") clearFlyToCart()
+  }, [checkoutStep, clearFlyToCart])
 
   if (products.length === 0) {
     return (
@@ -227,20 +237,24 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
         onExpandedChange={setMobileCartExpanded}
       />
 
-      <PaymentOverlay
-        show={checkoutStep === "payment"}
-        total={roundEuro(calculateTotal())}
-        isSubmitting={isSubmitting}
-        onConfirm={handleConfirmPayment}
-        onCancel={() => setCheckoutStep("cart")}
-      />
+      <Portal>
+        <PaymentOverlay
+          show={checkoutStep === "payment"}
+          total={roundEuro(calculateTotal())}
+          isSubmitting={isSubmitting}
+          onConfirm={handleConfirmPayment}
+          onCancel={() => setCheckoutStep("cart")}
+        />
 
-      <OrderSuccessOverlay
-        show={checkoutStep === "success"}
-        orderId={completedOrder?.id ?? null}
-        changeDue={completedOrder?.changeDue ?? 0}
-        onNewOrder={handleNewOrder}
-      />
+        <OrderSuccessOverlay
+          show={checkoutStep === "success"}
+          orderId={completedOrder?.id ?? null}
+          changeDue={completedOrder?.changeDue ?? 0}
+          onNewOrder={handleNewOrder}
+        />
+
+        {flyLayer}
+      </Portal>
     </div>
   )
 }

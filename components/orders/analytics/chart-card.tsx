@@ -1,7 +1,9 @@
 "use client"
 
 import type { ReactNode } from "react"
+import { motion } from "motion/react"
 import { MaterialIcon } from "@/components/ui/material-icon"
+import { springs } from "@/lib/motion"
 
 /** Shared recharts styling, driven by the chart CSS vars (dark-mode safe). */
 export const chartTooltipStyle: React.CSSProperties = {
@@ -28,13 +30,19 @@ interface ChartCardProps {
 
 export function ChartCard({ title, icon, children }: ChartCardProps) {
   return (
-    <section className="rounded-lg border-2 border-festa-border bg-card shadow-block p-5 flex flex-col gap-4 min-w-0">
+    <motion.section
+      className="lift-block rounded-lg border-2 border-festa-border bg-card shadow-block p-5 flex flex-col gap-4 min-w-0"
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={springs.snappy}
+    >
       <h4 className="flex items-center gap-2 text-label-xl text-festa-on-surface-variant">
         <MaterialIcon name={icon} className="text-lg text-festa-accent" />
         {title}
       </h4>
       {children}
-    </section>
+    </motion.section>
   )
 }
 

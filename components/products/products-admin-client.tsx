@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { MaterialIcon } from "@/components/ui/material-icon"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import { MotionPresence } from "@/components/ui/motion"
 import { AdminAccessDenied } from "@/components/products/admin-access-denied"
 import { ProductForm } from "@/components/products/product-form"
 import { ProductsList } from "@/components/products/products-list"
@@ -17,6 +18,7 @@ export default function ProductsAdminClient() {
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editingProduct, setEditingProduct] = useState<AppProduct | null>(null)
+  const [justSavedId, setJustSavedId] = useState<string | null>(null)
 
   const loadProducts = useCallback(async () => {
     setLoading(true)
@@ -62,6 +64,8 @@ export default function ProductsAdminClient() {
     })
     setShowForm(false)
     setEditingProduct(null)
+    setJustSavedId(product.id)
+    window.setTimeout(() => setJustSavedId((id) => (id === product.id ? null : id)), 1200)
   }
 
   const handleEdit = (product: AppProduct) => {
@@ -99,16 +103,19 @@ export default function ProductsAdminClient() {
         )}
       </div>
 
-      {showForm && session && (
-        <ProductForm
-          session={session}
-          product={editingProduct}
-          onSaved={handleSaved}
-          onCancel={handleCancel}
-        />
-      )}
+      <MotionPresence show={showForm} enterFrom="slide-in-from-top-4" exitTo="slide-in-from-top-4">
+        {session ? (
+          <ProductForm
+            key={editingProduct?.id ?? "new"}
+            session={session}
+            product={editingProduct}
+            onSaved={handleSaved}
+            onCancel={handleCancel}
+          />
+        ) : null}
+      </MotionPresence>
 
-      <ProductsList products={products} onEdit={handleEdit} />
+      <ProductsList products={products} onEdit={handleEdit} justSavedId={justSavedId} />
     </div>
   )
 }

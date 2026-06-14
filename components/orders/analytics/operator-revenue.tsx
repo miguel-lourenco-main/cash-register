@@ -1,11 +1,14 @@
 "use client"
 
+import { motion, useReducedMotion } from "motion/react"
 import { ChartCard, ChartEmptyState } from "./chart-card"
 import { formatEuro } from "@/lib/order-utils"
+import { springs, STAGGER_S } from "@/lib/motion"
 import type { OperatorStat } from "@/lib/order-analytics"
 
 /** Ranked list with proportional bars — more legible than a chart for a handful of operators. */
 export function OperatorRevenue({ data }: { data: OperatorStat[] }) {
+  const reduce = useReducedMotion()
   const max = data.length > 0 ? Math.max(...data.map((entry) => entry.revenue)) : 0
 
   return (
@@ -33,9 +36,12 @@ export function OperatorRevenue({ data }: { data: OperatorStat[] }) {
                 </span>
               </div>
               <div className="h-3 rounded-sm border border-festa-border/40 bg-festa-surface-low overflow-hidden">
-                <div
+                <motion.div
                   className="h-full bg-festa-festival-blue"
-                  style={{ width: max > 0 ? `${(entry.revenue / max) * 100}%` : 0 }}
+                  initial={reduce ? false : { width: 0 }}
+                  whileInView={{ width: max > 0 ? `${(entry.revenue / max) * 100}%` : "0%" }}
+                  viewport={{ once: true, amount: 0.5 }}
+                  transition={{ ...springs.snappy, delay: index * STAGGER_S }}
                 />
               </div>
             </li>

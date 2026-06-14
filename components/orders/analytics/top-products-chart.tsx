@@ -1,5 +1,6 @@
 "use client"
 
+import { useReducedMotion } from "motion/react"
 import {
   Bar,
   BarChart,
@@ -13,6 +14,7 @@ import { ChartCard, ChartEmptyState, chartAxisTick, chartTooltipStyle } from "./
 import type { ProductStat } from "@/lib/order-analytics"
 
 export function TopProductsChart({ data }: { data: ProductStat[] }) {
+  const reduce = useReducedMotion()
   return (
     <ChartCard title="Mais vendidos" icon="trophy">
       {data.length === 0 ? (
@@ -56,7 +58,10 @@ export function TopProductsChart({ data }: { data: ProductStat[] }) {
                 stroke="var(--festa-border)"
                 strokeWidth={1.5}
                 radius={[0, 4, 4, 0]}
-                isAnimationActive={false}
+                isAnimationActive={!reduce}
+                animationBegin={150}
+                animationDuration={900}
+                animationEasing="ease-out"
               />
             </BarChart>
           </ResponsiveContainer>

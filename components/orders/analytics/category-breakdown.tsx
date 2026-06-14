@@ -1,5 +1,6 @@
 "use client"
 
+import { useReducedMotion } from "motion/react"
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 import { ChartCard, ChartEmptyState, chartTooltipStyle } from "./chart-card"
 import { formatEuro } from "@/lib/order-utils"
@@ -11,6 +12,7 @@ const CATEGORY_COLORS: Record<CategoryStat["category"], string> = {
 }
 
 export function CategoryBreakdown({ data }: { data: CategoryStat[] }) {
+  const reduce = useReducedMotion()
   const total = data.reduce((sum, entry) => sum + entry.revenue, 0)
 
   return (
@@ -35,7 +37,10 @@ export function CategoryBreakdown({ data }: { data: CategoryStat[] }) {
                   paddingAngle={3}
                   stroke="var(--festa-border)"
                   strokeWidth={2}
-                  isAnimationActive={false}
+                  isAnimationActive={!reduce}
+                  animationBegin={250}
+                  animationDuration={850}
+                  animationEasing="ease-out"
                 >
                   {data.map((entry) => (
                     <Cell key={entry.category} fill={CATEGORY_COLORS[entry.category]} />

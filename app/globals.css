@@ -3,6 +3,19 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* The "festa sun" — one global light source. Every .shadow-block-* offset is derived
+   from these so the whole app is lit from one consistent (optionally breathing) angle. */
+@property --sun-x {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+@property --sun-y {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -75,6 +88,10 @@
 
 :root {
   --radius: 0.5rem;
+
+  /* Festa sun — light direction multipliers (1,1 = bottom-right). Animated subtly on desktop. */
+  --sun-x: 1;
+  --sun-y: 1;
 
   /* Layout (shell + cart + nav) */
   --festa-top-bar-height: 4rem;
@@ -290,21 +307,38 @@
     text-transform: uppercase;
   }
 
-  /* Block chrome — hard offset shadows */
+  /* Block chrome — hard offset shadows lit by the global festa sun (--sun-x / --sun-y) */
   .shadow-block-sm {
-    box-shadow: 2px 2px 0 0 var(--shadow-color);
+    box-shadow: calc(var(--sun-x) * 2px) calc(var(--sun-y) * 2px) 0 0 var(--shadow-color);
   }
   .shadow-block {
-    box-shadow: 4px 4px 0 0 var(--shadow-color);
+    box-shadow: calc(var(--sun-x) * 4px) calc(var(--sun-y) * 4px) 0 0 var(--shadow-color);
   }
   .shadow-block-lg {
-    box-shadow: 6px 6px 0 0 var(--shadow-color);
+    box-shadow: calc(var(--sun-x) * 6px) calc(var(--sun-y) * 6px) 0 0 var(--shadow-color);
+  }
+  .shadow-block-xl {
+    box-shadow: calc(var(--sun-x) * 10px) calc(var(--sun-y) * 10px) 0 0 var(--shadow-color);
   }
   .shadow-block-up {
-    box-shadow: 0 -4px 0 0 var(--shadow-color);
+    box-shadow: 0 calc(var(--sun-y) * -4px) 0 0 var(--shadow-color);
   }
   .shadow-block-left {
-    box-shadow: -6px 0 0 0 var(--shadow-color);
+    box-shadow: calc(var(--sun-x) * -6px) 0 0 0 var(--shadow-color);
+  }
+
+  /* Tactile lift — block rises toward the viewer on hover, slams flat on press.
+     Pair with active:translate + active:shadow-none on the element itself. */
+  .lift-block {
+    transition:
+      box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1),
+      transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .lift-block:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: calc(var(--sun-x) * 8px) calc(var(--sun-y) * 8px) 0 0 var(--shadow-color);
+    }
   }
   .text-on-brand {
     color: var(--festa-on-primary-container);
@@ -333,12 +367,92 @@
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  /* Oversized poster headline for cinematic moments */
+  .text-display-2xl {
+    font-family: var(--font-space-grotesk), sans-serif;
+    font-size: clamp(56px, 11vw, 116px);
+    line-height: 0.9;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  /* Screen-print paper grain — tiled SVG turbulence, multiplies onto the paper */
+  .festa-grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  /* Halftone dot field — poster ink texture for hero panels */
+  .festa-halftone {
+    background-image: radial-gradient(var(--shadow-color) 1px, transparent 1.4px);
+    background-size: 10px 10px;
+  }
+
+  /* Amber ink shimmer sweep — skeletons / loading */
+  .festa-shimmer {
+    background-image: linear-gradient(
+      100deg,
+      transparent 30%,
+      color-mix(in srgb, var(--festa-amber) 55%, transparent) 50%,
+      transparent 70%
+    );
+    background-size: 220% 100%;
+    background-repeat: no-repeat;
+    animation: festa-shimmer 1.4s ease-in-out infinite;
+  }
+
+  .animate-stamp {
+    animation: festa-stamp 480ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  @keyframes festa-shimmer {
+    0% {
+      background-position: 180% 0;
+    }
+    100% {
+      background-position: -120% 0;
+    }
+  }
+
+  @keyframes festa-stamp {
+    0% {
+      transform: scale(0.62) rotate(-5deg);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(1.05) rotate(1.5deg);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
+  }
+
+  @keyframes festa-glow-drift {
+    0%,
+    100% {
+      transform: translate3d(-4%, -3%, 0) scale(1);
+      opacity: 0.45;
+    }
+    50% {
+      transform: translate3d(4%, 3%, 0) scale(1.12);
+      opacity: 0.75;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .transition-layout,
     .animate-in,
-    .animate-out {
+    .animate-out,
+    .festa-shimmer,
+    .animate-stamp,
+    .lift-block {
       animation: none !important;
       transition-duration: 0.01ms !important;
+    }
+    .lift-block:hover {
+      transform: none !important;
     }
   }
 }

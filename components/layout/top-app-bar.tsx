@@ -1,11 +1,34 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
 import { MaterialIcon } from "@/components/ui/material-icon"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { useOperator } from "@/lib/operator-provider"
 import { FadeIn } from "@/components/ui/motion"
 import { cn } from "@/lib/utils"
+
+/** Live elapsed shift time, ticking each half-minute. */
+function ShiftClock({ startedAt }: { startedAt: string }) {
+  const [now, setNow] = useState<number | null>(null)
+  useEffect(() => {
+    setNow(Date.now())
+    const t = window.setInterval(() => setNow(Date.now()), 30000)
+    return () => window.clearInterval(t)
+  }, [])
+  const start = new Date(startedAt).getTime()
+  if (now === null || Number.isNaN(start)) return null
+  const mins = Math.max(0, Math.floor((now - start) / 60000))
+  const h = Math.floor(mins / 60)
+  const m = mins % 60
+  const label = h === 0 ? `${m}m` : `${h}h ${m.toString().padStart(2, "0")}m`
+  return (
+    <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-festa-on-surface-variant tabular-nums">
+      <MaterialIcon name="schedule" className="text-[13px]" />
+      {label}
+    </span>
+  )
+}
 
 const pageMeta: Record<string, { title: string; subtitle: string; icon: string }> = {
   "/": {
@@ -88,8 +111,10 @@ export function TopAppBar() {
                   <span className="text-sm font-bold text-festa-on-surface leading-tight truncate max-w-[140px] lg:max-w-[180px]">
                     {session.operatorName}
                   </span>
-                  <span className="text-[10px] text-festa-on-surface-variant uppercase tracking-wider font-bold">
+                  <span className="flex items-center gap-1.5 text-[10px] text-festa-on-surface-variant uppercase tracking-wider font-bold">
                     {session.operatorRole}
+                    <span aria-hidden className="text-festa-outline-variant">·</span>
+                    <ShiftClock startedAt={session.shiftStartedAt} />
                   </span>
                 </div>
                 <div
