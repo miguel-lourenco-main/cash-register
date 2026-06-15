@@ -30,7 +30,7 @@ function StatCard({
   watermarkClass,
 }: StatCardProps) {
   return (
-    <div className="relative overflow-hidden bg-card rounded-lg border-2 border-festa-border shadow-block min-h-[120px] md:min-h-[132px] flex flex-col">
+    <div className="lift-block relative overflow-hidden bg-card rounded-lg border-2 border-festa-border shadow-block min-h-[120px] md:min-h-[132px] flex flex-col">
       <div className={cn("h-2 w-full border-b-2 border-festa-border", stripClass)} aria-hidden />
       <div className="relative flex-1 p-6 md:p-8">
         <MaterialIcon

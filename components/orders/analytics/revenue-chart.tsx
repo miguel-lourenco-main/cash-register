@@ -1,5 +1,6 @@
 "use client"
 
+import { useReducedMotion } from "motion/react"
 import {
   Area,
   AreaChart,
@@ -13,6 +14,7 @@ import { ChartCard, ChartEmptyState, chartAxisTick, chartTooltipStyle } from "./
 import type { HourBucket } from "@/lib/order-analytics"
 
 export function RevenueChart({ data }: { data: HourBucket[] }) {
+  const reduce = useReducedMotion()
   return (
     <ChartCard title="Receita por hora" icon="schedule">
       {data.length === 0 ? (
@@ -51,7 +53,9 @@ export function RevenueChart({ data }: { data: HourBucket[] }) {
                 stroke="var(--chart-1)"
                 strokeWidth={3}
                 fill="url(#revenue-fill)"
-                isAnimationActive={false}
+                isAnimationActive={!reduce}
+                animationDuration={950}
+                animationEasing="ease-out"
               />
             </AreaChart>
           </ResponsiveContainer>

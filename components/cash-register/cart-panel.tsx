@@ -39,12 +39,14 @@ export function CartPanel({
           <MaterialIcon name="shopping_cart" filled />
           Pedido Atual
         </h2>
-        <CartPing
-          trigger={itemCount}
-          className="ml-auto bg-festa-ink text-festa-surface text-sm font-bold w-8 h-8 rounded-md flex items-center justify-center tabular-nums"
-        >
-          {itemCount}
-        </CartPing>
+        <span data-cart-drop className="ml-auto">
+          <CartPing
+            trigger={itemCount}
+            className="bg-festa-ink text-festa-surface text-sm font-bold w-8 h-8 rounded-md flex items-center justify-center tabular-nums"
+          >
+            {itemCount}
+          </CartPing>
+        </span>
       </div>
 
       <div className="flex-grow overflow-y-auto no-scrollbar p-6 min-h-0 relative">

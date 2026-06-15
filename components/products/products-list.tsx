@@ -5,14 +5,16 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { MaterialIcon } from "@/components/ui/material-icon"
 import { StaggerGrid, StaggerItem } from "@/components/ui/motion"
+import { cn } from "@/lib/utils"
 import type { AppProduct } from "@/lib/types"
 
 interface ProductsListProps {
   products: AppProduct[]
   onEdit: (product: AppProduct) => void
+  justSavedId?: string | null
 }
 
-export function ProductsList({ products, onEdit }: ProductsListProps) {
+export function ProductsList({ products, onEdit, justSavedId }: ProductsListProps) {
   if (products.length === 0) {
     return (
       <div className="rounded-lg border-2 border-dashed border-festa-border/40 p-gutter text-center text-festa-on-surface-variant">
@@ -26,17 +28,29 @@ export function ProductsList({ products, onEdit }: ProductsListProps) {
       {products.map((product) => (
         <StaggerItem key={product.id} className="h-full">
         <article
-          className="flex h-full gap-4 rounded-lg border-2 border-festa-border bg-festa-paper p-4 shadow-block-sm"
+          className={cn(
+            "lift-block flex h-full gap-4 rounded-lg border-2 border-festa-border bg-festa-paper p-4 shadow-block-sm",
+            justSavedId === product.id && "animate-stamp ring-4 ring-festa-amber/60"
+          )}
         >
           <div className="relative w-20 h-20 rounded-md border-2 border-festa-border overflow-hidden bg-festa-surface-high shrink-0">
             {product.imageUrl ? (
-              <Image
-                src={product.imageUrl}
-                alt={product.name}
-                fill
-                className="object-cover"
-                unoptimized
-              />
+              <>
+                <Image
+                  src={product.imageUrl}
+                  alt={product.name}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+                <div
+                  aria-hidden
+                  className={cn(
+                    "absolute inset-0 mix-blend-multiply opacity-40",
+                    product.category === "bebida" ? "bg-festa-festival-blue/20" : "bg-festa-amber/25"
+                  )}
+                />
+              </>
             ) : (
               <div className="w-full h-full flex items-center justify-center">
                 <MaterialIcon

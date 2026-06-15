@@ -1,10 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { AnimatePresence, motion } from "motion/react"
 import { Button } from "@/components/ui/button"
 import { MaterialIcon } from "@/components/ui/material-icon"
-import { AnimatedNumber, MotionPresence } from "@/components/ui/motion"
+import { AnimatedNumber, CartPing, MotionPresence } from "@/components/ui/motion"
 import { formatEuro, roundEuro } from "@/lib/order-utils"
+import { springs } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 
 interface PaymentOverlayProps {
@@ -25,16 +27,37 @@ export function PaymentOverlay({
   onCancel,
 }: PaymentOverlayProps) {
   const [tendered, setTendered] = useState(0)
+  const [ghost, setGhost] = useState<{ id: number; amount: number } | null>(null)
+  const ghostId = useRef(0)
+  const wasPaid = useRef(false)
 
   // Fresh tendered amount each time the overlay opens
   useEffect(() => {
-    if (show) setTendered(0)
+    if (show) {
+      setTendered(0)
+      wasPaid.current = false
+    }
   }, [show])
 
   const change = roundEuro(tendered - total)
-  const canConfirm = tendered >= total && !isSubmitting
+  const paid = tendered >= total
+  const canConfirm = paid && !isSubmitting
+  const ratio = total > 0 ? Math.min(tendered / total, 1) : 1
 
-  const addAmount = (amount: number) => setTendered((t) => roundEuro(t + amount))
+  // Haptic + latch when crossing into "fully paid"
+  useEffect(() => {
+    if (paid && !wasPaid.current && tendered > 0) {
+      wasPaid.current = true
+      if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate?.(12)
+    } else if (!paid) {
+      wasPaid.current = false
+    }
+  }, [paid, tendered])
+
+  const addAmount = (amount: number) => {
+    setTendered((t) => roundEuro(t + amount))
+    setGhost({ id: ++ghostId.current, amount })
+  }
 
   return (
     <MotionPresence
@@ -42,11 +65,9 @@ export function PaymentOverlay({
       enterFrom="slide-in-from-bottom-4"
       className="fixed inset-0 z-50 flex flex-col bg-festa-surface overflow-y-auto no-scrollbar"
     >
-      <div className="flex w-full max-w-lg mx-auto flex-1 flex-col gap-6 p-gutter py-8">
+      <div className="flex w-full max-w-lg mx-auto flex-1 flex-col gap-5 p-gutter py-8">
         <div className="flex items-center justify-between">
-          <h2 className="text-headline-lg-mobile font-display text-festa-on-surface">
-            Pagamento
-          </h2>
+          <h2 className="text-headline-lg-mobile font-display text-festa-on-surface">Pagamento</h2>
           <button
             type="button"
             onClick={onCancel}
@@ -66,12 +87,42 @@ export function PaymentOverlay({
 
         {/* Valor entregue */}
         <div className="rounded-lg border-2 border-festa-border bg-festa-paper shadow-block p-6">
-          <div className="flex items-end justify-between mb-4">
+          <div className="relative flex items-end justify-between mb-3">
             <p className="text-label-xl text-festa-on-surface-variant pb-1.5">Valor entregue</p>
-            <AnimatedNumber
-              value={tendered}
-              format={formatEuro}
-              className="font-display text-3xl font-bold text-festa-on-surface tabular-nums"
+            <div className="relative">
+              <AnimatedNumber
+                value={tendered}
+                format={formatEuro}
+                className="font-display text-3xl font-bold text-festa-on-surface tabular-nums"
+              />
+              <AnimatePresence>
+                {ghost && (
+                  <motion.span
+                    key={ghost.id}
+                    className="absolute right-0 -top-1 font-display text-lg font-bold text-festa-success-emphasis tabular-nums pointer-events-none"
+                    initial={{ y: 4, opacity: 0, scale: 0.8 }}
+                    animate={{ y: -26, opacity: [0, 1, 0], scale: 1 }}
+                    transition={{ duration: 0.7, ease: "easeOut" }}
+                    onAnimationComplete={() => setGhost(null)}
+                  >
+                    +{ghost.amount}€
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+
+          {/* Live fill meter — total → tendered */}
+          <div className="h-3 w-full rounded-full border-2 border-festa-border bg-festa-surface-low overflow-hidden mb-4">
+            <motion.div
+              className="h-full"
+              style={{
+                background: paid
+                  ? "var(--festa-success-green)"
+                  : "linear-gradient(90deg, var(--festa-primary), var(--festa-amber))",
+              }}
+              animate={{ width: `${ratio * 100}%` }}
+              transition={springs.snappy}
             />
           </div>
 
@@ -111,21 +162,23 @@ export function PaymentOverlay({
         {/* Troco */}
         <div
           className={cn(
-            "rounded-lg border-2 border-festa-border p-6 text-center transition-colors duration-200",
+            "rounded-lg border-2 border-festa-border p-6 text-center transition-colors duration-300",
             change >= 0 ? "bg-festa-success/15" : "bg-festa-surface-low"
           )}
         >
           <p className="text-label-xl text-festa-on-surface-variant mb-1">
             {change >= 0 ? "Troco" : "Em falta"}
           </p>
-          <AnimatedNumber
-            value={Math.abs(change)}
-            format={formatEuro}
-            className={cn(
-              "font-display text-4xl font-bold tabular-nums",
-              change >= 0 ? "text-festa-success-emphasis" : "text-festa-error"
-            )}
-          />
+          <CartPing trigger={change >= 0 ? "troco" : "falta"}>
+            <AnimatedNumber
+              value={Math.abs(change)}
+              format={formatEuro}
+              className={cn(
+                "block font-display text-4xl font-bold tabular-nums",
+                change >= 0 ? "text-festa-success-emphasis" : "text-festa-error"
+              )}
+            />
+          </CartPing>
         </div>
 
         <div className="mt-auto flex flex-col gap-3">

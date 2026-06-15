@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { motion } from "motion/react"
 import { MaterialIcon } from "@/components/ui/material-icon"
 import { springs } from "@/lib/motion"
-import { cn } from "@/lib/utils"
+import { cn, tapHaptic } from "@/lib/utils"
 import { useOperator } from "@/lib/operator-provider"
 import { getNavItemsForRole } from "@/lib/nav-items"
 
@@ -26,8 +26,9 @@ export function SideNav() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => tapHaptic()}
               className={cn(
-                "relative flex flex-col items-center justify-center rounded-md py-4 cursor-pointer transition-colors duration-200",
+                "relative flex flex-col items-center justify-center rounded-md py-4 cursor-pointer transition-[transform,background-color] duration-200 active:scale-95",
                 active
                   ? "text-festa-ink"
                   : "text-festa-on-surface-variant hover:bg-festa-surface-high"
