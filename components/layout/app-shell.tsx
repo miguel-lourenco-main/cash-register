@@ -9,6 +9,7 @@ import { SideNav } from "@/components/layout/side-nav"
 import { TopAppBar } from "@/components/layout/top-app-bar"
 import { FestaAmbience } from "@/components/ui/festa-ambience"
 import { BootCurtain } from "@/components/ui/boot-curtain"
+import { DemoModeBanner } from "@/components/ui/demo-mode-banner"
 import { useOperator } from "@/lib/operator-provider"
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -19,21 +20,29 @@ export function AppShell({ children }: { children: ReactNode }) {
   }
 
   if (!session) {
-    return <PinLogin />
+    return (
+      <>
+        <DemoModeBanner />
+        <PinLogin />
+      </>
+    )
   }
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-festa-surface">
-      <FestaAmbience />
-      <SideNav />
-      <div className="relative z-10 flex flex-col flex-1 md:ml-24 lg:ml-32">
-        <TopAppBar />
-        <main className="flex flex-1 flex-col min-h-0 pb-[var(--festa-bottom-nav-height)] md:pb-6">
-          <PageTransition>{children}</PageTransition>
-        </main>
+    <>
+      <DemoModeBanner />
+      <div className="relative flex flex-col min-h-screen bg-festa-surface">
+        <FestaAmbience />
+        <SideNav />
+        <div className="relative z-10 flex flex-col flex-1 md:ml-24 lg:ml-32">
+          <TopAppBar />
+          <main className="flex flex-1 flex-col min-h-0 pb-[var(--festa-bottom-nav-height)] md:pb-6">
+            <PageTransition>{children}</PageTransition>
+          </main>
+        </div>
+        <BottomNav />
+        <ShiftSummaryOverlay />
       </div>
-      <BottomNav />
-      <ShiftSummaryOverlay />
-    </div>
+    </>
   )
 }

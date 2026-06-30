@@ -1,11 +1,22 @@
 import type { Order, AppOrderItem, OrderItemWithProduct, CreateOrderContext, OrderPayment } from "./types"
 import { supabase } from "./supabase"
+import {
+  isConnectionError,
+  isKnownOffline,
+  markOffline,
+  markOnline,
+  timeoutSignal,
+} from "./db-status"
+import { createDemoOrder, getDemoOrderById, getDemoOrders } from "./demo-store"
 
 export async function createOrder(
   items: AppOrderItem[],
   context: CreateOrderContext,
   payment: OrderPayment
 ): Promise<{ success: boolean; order?: Order }> {
+  if (isKnownOffline()) {
+    return { success: true, order: createDemoOrder(items, context, payment) }
+  }
   try {
     const orderId = crypto.randomUUID()
 
@@ -23,9 +34,15 @@ export async function createOrder(
       .single()
 
     if (orderError) {
+      if (isConnectionError(orderError)) {
+        markOffline()
+        return { success: true, order: createDemoOrder(items, context, payment) }
+      }
       console.error("Failed to create order:", orderError)
       return { success: false }
     }
+
+    markOnline()
 
     const orderItems = items.map(item => ({
       order_id: orderId,
@@ -60,6 +77,10 @@ export async function createOrder(
 
     return { success: true, order: newOrder }
   } catch (error) {
+    if (isConnectionError(error)) {
+      markOffline()
+      return { success: true, order: createDemoOrder(items, context, payment) }
+    }
     console.error("Failed to create order:", error)
     return { success: false }
   }
@@ -113,6 +134,7 @@ function mapOrderRow(order: {
 }
 
 export async function getOrders(): Promise<Order[]> {
+  if (isKnownOffline()) return getDemoOrders()
   try {
     const { data: ordersData, error: ordersError } = await supabase
       .from('orders')
@@ -125,20 +147,31 @@ export async function getOrders(): Promise<Order[]> {
         operator:operators (id, name)
       `)
       .order('created_at', { ascending: false })
+      .abortSignal(timeoutSignal())
 
     if (ordersError) {
+      if (isConnectionError(ordersError)) {
+        markOffline()
+        return getDemoOrders()
+      }
       console.error("Failed to fetch orders:", ordersError)
       return []
     }
 
+    markOnline()
     return ordersData.map(mapOrderRow)
   } catch (error) {
+    if (isConnectionError(error)) {
+      markOffline()
+      return getDemoOrders()
+    }
     console.error("Failed to fetch orders:", error)
     return []
   }
 }
 
 export async function getOrderById(id: string): Promise<Order | undefined> {
+  if (isKnownOffline()) return getDemoOrderById(id)
   try {
     const { data: orderData, error: orderError } = await supabase
       .from('orders')
@@ -151,15 +184,25 @@ export async function getOrderById(id: string): Promise<Order | undefined> {
         operator:operators (id, name)
       `)
       .eq('id', id)
+      .abortSignal(timeoutSignal())
       .single()
 
     if (orderError || !orderData) {
+      if (isConnectionError(orderError)) {
+        markOffline()
+        return getDemoOrderById(id)
+      }
       console.error("Failed to fetch order:", orderError)
       return undefined
     }
 
+    markOnline()
     return mapOrderRow(orderData)
   } catch (error) {
+    if (isConnectionError(error)) {
+      markOffline()
+      return getDemoOrderById(id)
+    }
     console.error("Failed to fetch order:", error)
     return undefined
   }

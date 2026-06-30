@@ -1,4 +1,12 @@
 import { supabase } from "./supabase"
+import {
+  isConnectionError,
+  isKnownOffline,
+  markOffline,
+  markOnline,
+  timeoutSignal,
+} from "./db-status"
+import { getDemoShiftSummary } from "./demo-store"
 
 export interface ShiftTopItem {
   name: string
@@ -26,6 +34,9 @@ interface ShiftOrderRow {
 
 /** Aggregate the operator's shift client-side — one query, festival-scale volumes. */
 export async function getShiftSummary(shiftId: string): Promise<ShiftSummary | null> {
+  if (isKnownOffline() || shiftId.startsWith("demo-shift-")) {
+    return getDemoShiftSummary(shiftId)
+  }
   try {
     const { data, error } = await supabase
       .from("orders")
@@ -34,11 +45,18 @@ export async function getShiftSummary(shiftId: string): Promise<ShiftSummary | n
          order_items ( quantity, unit_price, product:products ( id, name, price ) )`
       )
       .eq("shift_id", shiftId)
+      .abortSignal(timeoutSignal())
 
     if (error || !data) {
+      if (isConnectionError(error)) {
+        markOffline()
+        return getDemoShiftSummary(shiftId)
+      }
       console.error("Failed to fetch shift summary:", error)
       return null
     }
+
+    markOnline()
 
     const orders = data as unknown as ShiftOrderRow[]
     const quantitiesByProduct = new Map<string, ShiftTopItem>()
@@ -89,6 +107,10 @@ export async function getShiftSummary(shiftId: string): Promise<ShiftSummary | n
       lastOrderAt,
     }
   } catch (error) {
+    if (isConnectionError(error)) {
+      markOffline()
+      return getDemoShiftSummary(shiftId)
+    }
     console.error("Failed to fetch shift summary:", error)
     return null
   }

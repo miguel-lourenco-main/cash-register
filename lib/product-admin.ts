@@ -1,6 +1,8 @@
 import { supabase } from "./supabase"
 import type { AppProduct } from "./types"
 import type { ProductCategory } from "./validation-helpers"
+import { isConnectionError, isKnownOffline, markOffline } from "./db-status"
+import { upsertDemoProduct } from "./demo-store"
 
 const PRODUCT_IMAGES_BUCKET = "product-images"
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024
@@ -59,9 +61,25 @@ function mapProductError(error: { code?: string; message?: string }): string {
   return error.message ?? "Não foi possível guardar o produto."
 }
 
+function upsertProductOffline(input: UpsertProductInput): ProductMutationResult {
+  return {
+    success: true,
+    product: upsertDemoProduct({
+      id: input.id,
+      name: input.name,
+      price: input.price,
+      category: input.category,
+      description: input.description ?? null,
+      imageUrl: input.imageUrl ?? null,
+    }),
+  }
+}
+
 export async function upsertProduct(
   input: UpsertProductInput
 ): Promise<ProductMutationResult> {
+  if (isKnownOffline()) return upsertProductOffline(input)
+
   const { data, error } = await supabase.rpc("upsert_product", {
     p_operator_id: input.operatorId,
     p_id: input.id,
@@ -74,6 +92,10 @@ export async function upsertProduct(
   })
 
   if (error) {
+    if (isConnectionError(error)) {
+      markOffline()
+      return upsertProductOffline(input)
+    }
     console.error("upsert_product failed:", error)
     return { success: false, error: mapProductError(error) }
   }
@@ -105,6 +127,11 @@ export async function uploadProductImage(
     return { error: validationError }
   }
 
+  // Demo mode: no storage backend — preview the image locally for this session.
+  if (isKnownOffline()) {
+    return { url: URL.createObjectURL(file) }
+  }
+
   const extension = file.name.split(".").pop()?.toLowerCase() || "jpg"
   const path = `${productId}/${Date.now()}.${extension}`
 
@@ -116,6 +143,10 @@ export async function uploadProductImage(
     })
 
   if (error) {
+    if (isConnectionError(error)) {
+      markOffline()
+      return { url: URL.createObjectURL(file) }
+    }
     console.error("uploadProductImage failed:", error)
     return { error: "Não foi possível carregar a imagem." }
   }

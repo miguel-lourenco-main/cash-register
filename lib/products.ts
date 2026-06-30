@@ -1,16 +1,33 @@
 import type { AppProduct } from "./types"
 import { BEBIDAS, COMIDA } from "./seed-products"
 import { supabase } from "./supabase"
+import {
+  isConnectionError,
+  isKnownOffline,
+  markOffline,
+  markOnline,
+  timeoutSignal,
+} from "./db-status"
+import { getDemoProductById, getDemoProducts } from "./demo-store"
 
 export const getProducts = async (): Promise<AppProduct[]> => {
+  if (isKnownOffline()) return getDemoProducts()
+
   const { data, error } = await supabase
     .from('products')
     .select('*')
+    .abortSignal(timeoutSignal())
 
   if (error) {
+    if (isConnectionError(error)) {
+      markOffline()
+      return getDemoProducts()
+    }
     console.error('Error fetching products:', error)
     return []
   }
+
+  markOnline()
 
   const products = data.map(product => ({
     id: product.id,
@@ -48,16 +65,25 @@ export const getProducts = async (): Promise<AppProduct[]> => {
 }
 
 export const getProductById = async (id: string): Promise<AppProduct | null> => {
+  if (isKnownOffline()) return getDemoProductById(id)
+
   const { data, error } = await supabase
     .from('products')
     .select('*')
     .eq('id', id)
+    .abortSignal(timeoutSignal())
     .single()
 
   if (error) {
+    if (isConnectionError(error)) {
+      markOffline()
+      return getDemoProductById(id)
+    }
     console.error('Error fetching product:', error)
     return null
   }
+
+  markOnline()
 
   return {
     id: data.id,

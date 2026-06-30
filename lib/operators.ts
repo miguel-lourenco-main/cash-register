@@ -1,6 +1,14 @@
 import { supabase } from "./supabase"
 import type { OperatorSession } from "./operator-session"
 import { writeOperatorSession } from "./operator-session"
+import {
+  isConnectionError,
+  isKnownOffline,
+  markOffline,
+  markOnline,
+  timeoutSignal,
+} from "./db-status"
+import { demoLoginWithPin, listDemoOperators } from "./demo-store"
 
 export interface OperatorPublic {
   id: string
@@ -77,8 +85,13 @@ async function listOperatorsFromTable(): Promise<OperatorListResult> {
     .select("id, name, role")
     .eq("active", true)
     .order("name")
+    .abortSignal(timeoutSignal())
 
   if (error) {
+    if (isConnectionError(error)) {
+      markOffline()
+      return { operators: listDemoOperators() }
+    }
     if (isMissingTable(error)) {
       return {
         operators: [],
@@ -98,10 +111,20 @@ async function listOperatorsFromTable(): Promise<OperatorListResult> {
 }
 
 export async function listActiveOperators(): Promise<OperatorListResult> {
-  const { data, error } = await supabase.rpc("list_active_operators")
+  if (isKnownOffline()) return { operators: listDemoOperators() }
+
+  const { data, error } = await supabase
+    .rpc("list_active_operators")
+    .abortSignal(timeoutSignal())
 
   if (!error && data) {
+    markOnline()
     return { operators: (data ?? []) as OperatorPublic[] }
+  }
+
+  if (isConnectionError(error)) {
+    markOffline()
+    return { operators: listDemoOperators() }
   }
 
   if (isMissingRpc(error)) {
@@ -120,10 +143,17 @@ export async function authenticateOperator(
   operatorId: string,
   pin: string
 ): Promise<{ operator: OperatorPublic | null; rpcMissing?: boolean; error?: string }> {
-  const { data, error } = await supabase.rpc("authenticate_operator", {
-    p_operator_id: operatorId,
-    p_pin: pin,
-  })
+  const { data, error } = await supabase
+    .rpc("authenticate_operator", {
+      p_operator_id: operatorId,
+      p_pin: pin,
+    })
+    .abortSignal(timeoutSignal())
+
+  if (isConnectionError(error)) {
+    markOffline()
+    return { operator: null }
+  }
 
   if (isMissingRpc(error)) {
     return { operator: null, rpcMissing: true }
@@ -145,9 +175,16 @@ export async function authenticateOperator(
 export async function startShift(
   operatorId: string
 ): Promise<{ shiftId: string | null; rpcMissing?: boolean; error?: string }> {
-  const { data, error } = await supabase.rpc("start_shift", {
-    p_operator_id: operatorId,
-  })
+  const { data, error } = await supabase
+    .rpc("start_shift", {
+      p_operator_id: operatorId,
+    })
+    .abortSignal(timeoutSignal())
+
+  if (isConnectionError(error)) {
+    markOffline()
+    return { shiftId: null }
+  }
 
   if (isMissingRpc(error)) {
     return { shiftId: null, rpcMissing: true }
@@ -166,10 +203,16 @@ export async function startShift(
 }
 
 export async function endShift(shiftId: string): Promise<boolean> {
+  if (isKnownOffline() || shiftId.startsWith("demo-shift-")) return true
+
   const { data, error } = await supabase.rpc("end_shift", {
     p_shift_id: shiftId,
   })
   if (error) {
+    if (isConnectionError(error)) {
+      markOffline()
+      return true
+    }
     console.error("Failed to end shift:", error)
     return false
   }
@@ -180,8 +223,13 @@ export async function loginWithPin(
   operatorId: string,
   pin: string
 ): Promise<{ success: boolean; session?: OperatorSession; error?: string }> {
+  if (isKnownOffline()) return demoLoginWithPin(operatorId, pin)
+
   const { operator, rpcMissing: authRpcMissing, error: authError } =
     await authenticateOperator(operatorId, pin)
+
+  // Backend went away between listing operators and logging in → demo mode.
+  if (isKnownOffline()) return demoLoginWithPin(operatorId, pin)
 
   if (authRpcMissing) {
     return {
