@@ -13,6 +13,7 @@ import {
 } from "@/lib/order-analytics"
 import type { Order } from "@/lib/types"
 
+/** Chart grid fed by the same filtered order set as the stats cards and list. */
 export function AnalyticsSection({ orders }: { orders: Order[] }) {
   const hourly = useMemo(() => revenueByHour(orders), [orders])
   const products = useMemo(() => topProducts(orders), [orders])

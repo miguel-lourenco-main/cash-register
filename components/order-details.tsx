@@ -50,6 +50,7 @@ export default function OrderDetails({ order }: OrderDetailsProps) {
         </div>
 
         <div className="p-6 bg-festa-surface-low border-t-2 border-festa-border flex items-end justify-between gap-6">
+          {/* Cash tendering fields are null on legacy orders created before payment tracking. */}
           {order.amountTendered != null ? (
             <div className="space-y-1 text-sm text-festa-on-surface-variant tabular-nums">
               <p>

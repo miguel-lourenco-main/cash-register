@@ -30,6 +30,7 @@ export function CartPanel({
   onConfirm,
 }: CartPanelProps) {
   return (
+    // Desktop sidebar cart — `data-cart-drop` is the fly-to-cart animation target.
     <aside
       className="hidden lg:flex w-[380px] shrink-0 flex-col border-l-2 border-festa-border bg-card sticky top-0 self-start overflow-hidden"
       style={{ height: "calc(100dvh - var(--festa-top-bar-height))", maxHeight: "calc(100dvh - var(--festa-top-bar-height))" }}

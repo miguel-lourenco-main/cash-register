@@ -9,6 +9,7 @@ import { cn, tapHaptic } from "@/lib/utils"
 import { useOperator } from "@/lib/operator-provider"
 import { getNavItemsForRole } from "@/lib/nav-items"
 
+/** Desktop rail navigation — items filtered by operator role (admins see Produtos). */
 export function SideNav() {
   const pathname = usePathname()
   const { session } = useOperator()

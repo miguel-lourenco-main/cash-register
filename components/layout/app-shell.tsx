@@ -12,6 +12,7 @@ import { BootCurtain } from "@/components/ui/boot-curtain"
 import { DemoModeBanner } from "@/components/ui/demo-mode-banner"
 import { useOperator } from "@/lib/operator-provider"
 
+/** Root chrome: gates the app behind PIN login, then wraps authenticated routes. */
 export function AppShell({ children }: { children: ReactNode }) {
   const { session, isLoading } = useOperator()
 

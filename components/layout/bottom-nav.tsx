@@ -9,6 +9,7 @@ import { cn, tapHaptic } from "@/lib/utils"
 import { useOperator } from "@/lib/operator-provider"
 import { getNavItemsForRole } from "@/lib/nav-items"
 
+/** Mobile bottom tab bar — mirrors SideNav routes with the same role filtering. */
 export function BottomNav() {
   const pathname = usePathname()
   const { session } = useOperator()

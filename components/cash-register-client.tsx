@@ -6,6 +6,7 @@ import { getProducts } from "@/lib/products"
 import type { AppProduct } from "@/lib/types"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
+/** Client boundary: loads the product catalog once, then hands off to the register UI. */
 export default function CashRegisterClient() {
   const [products, setProducts] = useState<AppProduct[]>([])
   const [loading, setLoading] = useState(true)

@@ -1,3 +1,8 @@
+/**
+ * Order persistence layer. Every read/write tries Supabase first and transparently
+ * falls back to `demo-store` when the backend is known offline — callers always
+ * get a coherent result without handling connectivity themselves.
+ */
 import type { Order, AppOrderItem, OrderItemWithProduct, CreateOrderContext, OrderPayment } from "./types"
 import { supabase } from "./supabase"
 import {
@@ -57,6 +62,7 @@ export async function createOrder(
 
     if (itemsError) {
       console.error("Failed to create order items:", itemsError)
+      // Roll back the header row so we never leave orphan orders without line items.
       await supabase.from('orders').delete().eq('id', orderId)
       return { success: false }
     }
@@ -86,6 +92,7 @@ export async function createOrder(
   }
 }
 
+/** Supabase may embed the join as `operator` or `operators` depending on the select alias. */
 function resolveOperator(
   order: Record<string, unknown>
 ): { id: string; name: string } | null {
@@ -98,6 +105,7 @@ function resolveOperator(
   return { id: row.id, name: row.name }
 }
 
+/** Normalise a nested Supabase row (snake_case + joined product) into the app `Order` shape. */
 function mapOrderRow(order: {
   id: string
   created_at: string | null

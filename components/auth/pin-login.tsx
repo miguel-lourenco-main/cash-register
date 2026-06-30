@@ -25,6 +25,7 @@ export function PinLogin() {
   const selectedOperator = operators.find((op) => op.id === selectedId)
   const firstName = selectedOperator?.name.split(" ")[0]
 
+  // PINs are four digits — matches the bcrypt-verified length on the server.
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault()
     if (!canSubmit) return

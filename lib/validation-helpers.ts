@@ -8,6 +8,7 @@ export function isValidPhoneNumber(phone: string): boolean {
   return cleaned.length >= 10 && cleaned.length <= 15
 }
 
+/** Luhn check — validates card number checksum, not issuer or expiry. */
 export function isValidCreditCard(cardNumber: string): boolean {
   const cleaned = cardNumber.replace(/\s/g, "")
   if (!/^\d+$/.test(cleaned)) {
@@ -52,6 +53,7 @@ export interface ProductFormErrors {
   image?: string
 }
 
+/** Client-side guard before calling the upsert RPC — mirrors server-side slug/price rules. */
 export function validateProductForm(values: ProductFormValues): ProductFormErrors {
   const errors: ProductFormErrors = {}
 

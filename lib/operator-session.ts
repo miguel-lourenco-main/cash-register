@@ -1,3 +1,4 @@
+/** Browser-local operator + shift context, persisted across reloads until logout. */
 import { OPERATOR_SESSION_KEY } from "./design-tokens"
 
 export interface OperatorSession {

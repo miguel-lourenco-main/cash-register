@@ -1,3 +1,4 @@
+/** Static asset module declarations for Next.js image imports. */
 declare module "*.png" {
   const value: string;
   export default value;

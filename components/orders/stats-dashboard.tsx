@@ -56,6 +56,7 @@ function StatCard({
 }
 
 export function StatsDashboard({ orders }: StatsDashboardProps) {
+  // Stats respect the active filters passed from OrderList, not the full history.
   const totalRevenue = orders.reduce(
     (sum, order) => sum + calculateOrderTotal(order),
     0

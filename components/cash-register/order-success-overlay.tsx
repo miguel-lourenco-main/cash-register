@@ -18,6 +18,7 @@ interface OrderSuccessOverlayProps {
 
 const AUTO_DISMISS_MS = 6000
 
+/** Full-screen confirmation shown after payment — auto-returns to the product grid. */
 export function OrderSuccessOverlay({
   show,
   orderId,

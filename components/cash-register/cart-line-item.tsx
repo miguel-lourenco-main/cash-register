@@ -48,6 +48,7 @@ export function CartLineItem({
   const { product, quantity } = item
 
   if (compact) {
+    // Bottom-sheet layout: horizontal row with larger touch targets.
     return (
       <div
         className={cn(

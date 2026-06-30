@@ -23,6 +23,7 @@ export function OrderCard({ order, onClick }: OrderCardProps) {
   const total = calculateOrderTotal(order)
   const itemCount = order.items.reduce((sum, item) => sum + item.quantity, 0)
   const operatorLabel = order.registeredBy?.name ?? "Desconhecido"
+  // Green pulse for orders placed in the last two minutes.
   const isFresh = Date.now() - order.createdAt.getTime() < 120000
 
   return (

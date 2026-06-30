@@ -1,3 +1,4 @@
+/** Derive a URL-safe product id from a display name (used when creating new products). */
 export function slugifyProductName(name: string): string {
   return name
     .normalize("NFD")

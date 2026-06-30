@@ -10,6 +10,7 @@ import {
 } from "./db-status"
 import { getDemoProductById, getDemoProducts } from "./demo-store"
 
+/** Fetch the catalog, falling back to demo data when Supabase is offline. */
 export const getProducts = async (): Promise<AppProduct[]> => {
   if (isKnownOffline()) return getDemoProducts()
 
@@ -38,6 +39,7 @@ export const getProducts = async (): Promise<AppProduct[]> => {
     description: product.description ?? null,
   }))
 
+  // Preserve the seeded menu order (Bebidas block, then Comida); unknown ids sort alphabetically.
   const sortedProducts = products.sort((a, b) => {
     const indexA = BEBIDAS.indexOf(a.id)
     const indexB = BEBIDAS.indexOf(b.id)

@@ -1,5 +1,6 @@
 import type { Tables } from "./database.types"
 
+/** Raw Supabase row types — snake_case columns as generated from the schema. */
 export type Product = Tables<'products'>
 
 export type OrderItem = Tables<'order_items'>
@@ -16,6 +17,7 @@ export type OrderItemWithProduct = {
   product: Product
 }
 
+/** App-layer product shape — camelCase fields and stable category union for UI code. */
 export interface AppProduct {
   id: string
   name: string

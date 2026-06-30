@@ -40,6 +40,7 @@ export function CategoryTabs({ active, onChange }: CategoryTabsProps) {
                 <motion.span
                   layoutId="category-tab-pill"
                   transition={springs.snappy}
+                  // Shared layoutId slides the amber pill between Bebidas and Comida tabs.
                   className="absolute inset-0 rounded-md bg-festa-amber border-2 border-festa-border"
                   aria-hidden
                 />

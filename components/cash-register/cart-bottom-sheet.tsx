@@ -47,6 +47,7 @@ export function CartBottomSheet({
   const [footerReady, setFooterReady] = useState(false)
   const dragControls = useDragControls()
 
+  // Collapse and reset dismiss state when the cart becomes empty.
   useEffect(() => {
     if (itemCount === 0) {
       setIsOpen(false)
@@ -54,6 +55,7 @@ export function CartBottomSheet({
     }
   }, [itemCount, onDismissedChange])
 
+  // Defer footer opacity until the expand animation finishes — avoids a layout jump.
   useEffect(() => {
     if (!isOpen) setFooterReady(false)
   }, [isOpen])
@@ -69,6 +71,7 @@ export function CartBottomSheet({
   return (
     <MotionPresence show={itemCount > 0}>
       {dismissed ? (
+        // Minimised FAB — swipe-down or tap-away hides the sheet but keeps a cart entry point.
         <FadeIn
           key="cart-fab"
           from="slide-in-from-bottom-4 zoom-in-95"

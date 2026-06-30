@@ -45,6 +45,7 @@ export function ShiftSummaryOverlay() {
   const celebrate = Boolean(summary && summary.ordersCount > 0)
 
   const [displayRevenue, setDisplayRevenue] = useState(0)
+  // Count-up animation: reset to 0 then jump to the final revenue on the next frame.
   useEffect(() => {
     if (!pendingLogout || !summary) return
     setDisplayRevenue(0)

@@ -83,6 +83,7 @@ export function topProducts(orders: Order[], limit = 8): ProductStat[] {
     .slice(0, limit)
 }
 
+/** Split revenue between food and drinks for the category breakdown chart. */
 export function revenueByCategory(orders: Order[]): CategoryStat[] {
   const totals = { comida: 0, bebida: 0 }
   for (const order of orders) {
@@ -96,6 +97,7 @@ export function revenueByCategory(orders: Order[]): CategoryStat[] {
   ].filter((entry) => entry.revenue > 0)
 }
 
+/** Per-operator revenue and order count for the shift leaderboard. */
 export function revenueByOperator(orders: Order[]): OperatorStat[] {
   const stats = new Map<string, OperatorStat>()
   for (const order of orders) {

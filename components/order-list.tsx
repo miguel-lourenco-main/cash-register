@@ -18,6 +18,7 @@ import { StaggerGrid, StaggerItem } from "@/components/ui/motion"
 import { calculateOrderTotal } from "@/lib/order-utils"
 import type { Order } from "@/lib/types"
 
+/** Lower bound for preset period filters — returns null for "all". */
 function periodStart(period: OrderFiltersState["period"]): Date | null {
   if (period === "last_hour") return new Date(Date.now() - 60 * 60 * 1000)
   if (period === "today") {
