@@ -1,5 +1,10 @@
 # Supabase Local Development Setup
 
+> **Shared mode only.** The app runs in **local mode** by default with no backend
+> at all — you only need Supabase if you want multiple devices to share one
+> dataset. See the [README](../README.md#-shared-mode-multi-device-with-supabase)
+> for the mode overview.
+
 ## Local ports (this project)
 
 Defined in `supabase/config.toml` and `lib/local-supabase.ts` — **not** the Supabase defaults:
