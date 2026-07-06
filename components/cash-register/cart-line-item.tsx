@@ -87,7 +87,7 @@ export function CartLineItem({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 p-3 rounded-lg border-2 bg-festa-paper group transition-colors duration-500",
+        "lift-block flex items-center gap-3 p-3 rounded-lg border-2 bg-festa-paper group transition-colors duration-500",
         highlighted ? "border-festa-amber bg-festa-amber/15" : "border-festa-border/20"
       )}
     >
