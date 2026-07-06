@@ -60,7 +60,7 @@ export function TopAppBar() {
   const page = pageMeta[pathname] ?? defaultPage
 
   return (
-    <header className="sticky top-0 z-30 shrink-0 border-b-2 border-festa-border bg-festa-surface">
+    <header className="sticky top-0 z-50 shrink-0 border-b-2 border-festa-border bg-festa-surface">
       <div className="flex items-center justify-between gap-4 h-touch-target-min md:h-20 px-gutter md:px-margin-page">
         {/* Brand + current page */}
         <div className="flex items-center gap-3 md:gap-4 min-w-0">
