@@ -24,12 +24,12 @@ export function ProductsList({ products, onEdit, justSavedId }: ProductsListProp
   }
 
   return (
-    <StaggerGrid className="grid grid-cols-1 lg:grid-cols-2 gap-card-gap">
+    <StaggerGrid className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-card-gap">
       {products.map((product) => (
         <StaggerItem key={product.id} className="h-full">
         <article
           className={cn(
-            "lift-block flex h-full gap-4 rounded-lg border-2 border-festa-border bg-festa-paper p-4 shadow-block-sm",
+            "group relative overflow-hidden lift-block flex h-full gap-4 rounded-lg border-2 border-festa-border bg-festa-paper p-4 shadow-block-sm",
             justSavedId === product.id && "animate-stamp ring-4 ring-festa-amber/60"
           )}
         >
@@ -84,11 +84,31 @@ export function ProductsList({ products, onEdit, justSavedId }: ProductsListProp
               <Badge variant={product.category === "bebida" ? "info" : "warning"}>
                 {product.category === "bebida" ? "Bebida" : "Comida"}
               </Badge>
-              <Button variant="outline" size="sm" onClick={() => onEdit(product)}>
+              {/* Touch devices have no hover overlay — keep an inline Edit affordance. */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onEdit(product)}
+                className="[@media(hover:hover)]:hidden"
+              >
                 <MaterialIcon name="edit" className="text-base" />
                 Editar
               </Button>
             </div>
+          </div>
+
+          {/* Hover overlay (mouse/keyboard): mustard wash with the edit button on top.
+              Hidden entirely on touch, where the inline button above is used instead. */}
+          <div className="pointer-events-none absolute inset-0 hidden items-center justify-center bg-festa-amber opacity-0 transition-opacity duration-200 [@media(hover:hover)]:flex group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => onEdit(product)}
+              aria-label={`Editar ${product.name}`}
+            >
+              <MaterialIcon name="edit" className="text-base" />
+              Editar
+            </Button>
           </div>
         </article>
         </StaggerItem>

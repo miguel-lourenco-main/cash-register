@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { MaterialIcon } from "@/components/ui/material-icon"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
-import { MotionPresence } from "@/components/ui/motion"
+import { Modal } from "@/components/ui/modal"
 import { AdminAccessDenied } from "@/components/products/admin-access-denied"
 import { ProductForm } from "@/components/products/product-form"
 import { ProductsList } from "@/components/products/products-list"
@@ -79,7 +79,7 @@ export default function ProductsAdminClient() {
   }
 
   return (
-    <div className="px-gutter md:px-margin-page py-gutter flex flex-col gap-gutter max-w-5xl mx-auto w-full">
+    <div className="px-gutter md:px-margin-page py-gutter flex flex-col gap-gutter max-w-6xl mx-auto w-full">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-headline-lg-mobile font-display font-bold text-festa-primary-emphasis">
@@ -103,7 +103,7 @@ export default function ProductsAdminClient() {
         )}
       </div>
 
-      <MotionPresence show={showForm} enterFrom="slide-in-from-top-4" exitTo="slide-in-from-top-4">
+      <Modal open={showForm && Boolean(session)} onClose={handleCancel}>
         {session ? (
           <ProductForm
             key={editingProduct?.id ?? "new"}
@@ -113,7 +113,7 @@ export default function ProductsAdminClient() {
             onCancel={handleCancel}
           />
         ) : null}
-      </MotionPresence>
+      </Modal>
 
       <ProductsList products={products} onEdit={handleEdit} justSavedId={justSavedId} />
     </div>
