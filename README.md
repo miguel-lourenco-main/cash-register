@@ -111,6 +111,20 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_local_anon_key
 
 After `pnpm supabase:start`, run `pnpm supabase:env-sync` to write `.env.local`, or copy `.env.example`.
 
+**Optional — show demo codes on the login screen:**
+
+```env
+NEXT_PUBLIC_SHOW_DEMO_CREDENTIALS=true
+```
+
+Surfaces the public demo PINs (`1234` / `5678`) as tap-to-fill chips on the login
+screen, so anyone who clones or opens the app can sign in without a password. It
+only ever reveals those demo PINs — never a real operator's PIN (those are bcrypt
+hashes the browser never receives). The codes also appear automatically whenever
+the app is in demo mode (Supabase paused). Leave this **unset** in a production
+deploy with real operators. `NEXT_PUBLIC_*` vars are inlined at build time, so set
+it before `next build` (in CI: as a GitLab CI/CD variable, then rebuild).
+
 ### Database Setup
 ```bash
 pnpm supabase:start
