@@ -42,7 +42,7 @@ export function CartPanel({
         <span data-cart-drop className="ml-auto">
           <CartPing
             trigger={itemCount}
-            className="bg-festa-ink text-festa-surface text-sm font-bold w-8 h-8 rounded-md flex items-center justify-center tabular-nums"
+            className="bg-festa-ink text-white text-sm font-bold w-8 h-8 rounded-md flex items-center justify-center tabular-nums"
           >
             {itemCount}
           </CartPing>

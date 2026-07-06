@@ -29,7 +29,7 @@ export function CategoryTabs({ active, onChange }: CategoryTabsProps) {
               type="button"
               onClick={() => onChange(tab.value)}
               className={cn(
-                "relative flex h-12 items-center gap-2 rounded-md px-5 md:px-6 font-display text-base font-bold uppercase tracking-wide cursor-pointer transition-colors duration-200",
+                "lift-block relative flex h-12 items-center gap-2 rounded-md px-5 md:px-6 font-display text-base font-bold uppercase tracking-wide cursor-pointer",
                 isActive
                   ? "text-festa-ink"
                   : "text-festa-on-surface-variant hover:bg-festa-surface-high"

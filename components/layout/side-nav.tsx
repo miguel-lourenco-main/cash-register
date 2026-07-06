@@ -7,7 +7,7 @@ import { MaterialIcon } from "@/components/ui/material-icon"
 import { springs } from "@/lib/motion"
 import { cn, tapHaptic } from "@/lib/utils"
 import { useOperator } from "@/lib/operator-provider"
-import { getNavItemsForRole } from "@/lib/nav-items"
+import { getNavItemsForRole, isNavItemActive } from "@/lib/nav-items"
 
 export function SideNav() {
   const pathname = usePathname()
@@ -21,7 +21,7 @@ export function SideNav() {
       </div>
       <nav className="flex flex-col gap-4 w-full px-2">
         {items.map((item) => {
-          const active = pathname === item.href
+          const active = isNavItemActive(pathname, item.href)
           return (
             <Link
               key={item.href}
