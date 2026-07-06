@@ -15,10 +15,7 @@ export function SideNav() {
   const items = getNavItemsForRole(session?.operatorRole)
 
   return (
-    <aside className="hidden md:flex fixed left-0 top-0 h-full w-24 lg:w-32 z-40 bg-festa-surface-low border-r-2 border-festa-border flex-col items-center py-margin-page gap-gutter">
-      <div className="flex h-12 w-12 items-center justify-center rounded-md border-2 border-festa-border bg-festa-primary dark:bg-festa-primary-emphasis text-white dark:text-festa-ink shadow-block-sm font-display text-2xl font-bold mb-4">
-        F
-      </div>
+    <aside className="hidden md:flex fixed left-0 top-[var(--festa-top-bar-height)] bottom-0 w-24 lg:w-32 z-40 bg-festa-surface-low border-r-2 border-festa-border flex-col items-center py-gutter gap-gutter">
       <nav className="flex flex-col gap-4 w-full px-2">
         {items.map((item) => {
           const active = isNavItemActive(pathname, item.href)

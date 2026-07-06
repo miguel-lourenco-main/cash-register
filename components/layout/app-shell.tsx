@@ -33,9 +33,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       <DemoModeBanner />
       <div className="relative flex flex-col min-h-screen bg-festa-surface">
         <FestaAmbience />
+        {/* Full-width top bar spans across the rail column; the rail hangs below it. */}
+        <TopAppBar />
         <SideNav />
         <div className="relative z-10 flex flex-col flex-1 md:ml-24 lg:ml-32">
-          <TopAppBar />
           <main className="flex flex-1 flex-col min-h-0 pb-[var(--festa-bottom-nav-height)] md:pb-6">
             <PageTransition>{children}</PageTransition>
           </main>
