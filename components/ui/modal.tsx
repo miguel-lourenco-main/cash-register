@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, type ReactNode } from "react"
+import { useEffect, useState, type ReactNode } from "react"
+import { createPortal } from "react-dom"
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { springs } from "@/lib/motion"
 
@@ -16,9 +17,16 @@ interface ModalProps {
  * Centered modal dialog: a dimmed backdrop plus a scale/fade panel that meets
  * the user wherever they are on the page (unlike a top-pinned inline form).
  * Closes on Escape or backdrop click; locks body scroll while open.
+ *
+ * Rendered through a portal on `document.body` so it escapes the app shell's
+ * stacking context (the main content lives in a `z-10` container) and reliably
+ * overlays the sticky top bar instead of being clipped behind it on mobile.
  */
 export function Modal({ open, onClose, children, labelledBy }: ModalProps) {
   const reduce = useReducedMotion()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => setMounted(true), [])
 
   useEffect(() => {
     if (!open) return
@@ -34,12 +42,14 @@ export function Modal({ open, onClose, children, labelledBy }: ModalProps) {
     }
   }, [open, onClose])
 
-  return (
+  if (!mounted) return null
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
           key="modal-root"
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto no-scrollbar p-4 sm:p-6 md:py-12"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto no-scrollbar p-4 sm:p-6 md:py-12"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -64,6 +74,7 @@ export function Modal({ open, onClose, children, labelledBy }: ModalProps) {
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }
