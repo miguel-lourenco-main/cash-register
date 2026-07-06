@@ -8,13 +8,14 @@ import {
   timeoutSignal,
 } from "./db-status"
 import { createDemoOrder, getDemoOrderById, getDemoOrders } from "./demo-store"
+import { isLocalMode } from "./app-mode"
 
 export async function createOrder(
   items: AppOrderItem[],
   context: CreateOrderContext,
   payment: OrderPayment
 ): Promise<{ success: boolean; order?: Order }> {
-  if (isKnownOffline()) {
+  if (isLocalMode() || isKnownOffline()) {
     return { success: true, order: createDemoOrder(items, context, payment) }
   }
   try {
@@ -134,7 +135,7 @@ function mapOrderRow(order: {
 }
 
 export async function getOrders(): Promise<Order[]> {
-  if (isKnownOffline()) return getDemoOrders()
+  if (isLocalMode() || isKnownOffline()) return getDemoOrders()
   try {
     const { data: ordersData, error: ordersError } = await supabase
       .from('orders')
@@ -171,7 +172,7 @@ export async function getOrders(): Promise<Order[]> {
 }
 
 export async function getOrderById(id: string): Promise<Order | undefined> {
-  if (isKnownOffline()) return getDemoOrderById(id)
+  if (isLocalMode() || isKnownOffline()) return getDemoOrderById(id)
   try {
     const { data: orderData, error: orderError } = await supabase
       .from('orders')

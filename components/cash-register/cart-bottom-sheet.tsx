@@ -7,7 +7,6 @@ import { MaterialIcon } from "@/components/ui/material-icon"
 import {
   AnimatedNumber,
   CartPing,
-  Collapsible,
   FadeIn,
   MotionPresence,
 } from "@/components/ui/motion"
@@ -44,7 +43,6 @@ export function CartBottomSheet({
   onExpandedChange,
 }: CartBottomSheetProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [footerReady, setFooterReady] = useState(false)
   const dragControls = useDragControls()
 
   useEffect(() => {
@@ -53,10 +51,6 @@ export function CartBottomSheet({
       onDismissedChange(false)
     }
   }, [itemCount, onDismissedChange])
-
-  useEffect(() => {
-    if (!isOpen) setFooterReady(false)
-  }, [isOpen])
 
   useEffect(() => {
     onExpandedChange?.(isOpen && !dismissed && itemCount > 0)
@@ -153,13 +147,14 @@ export function CartBottomSheet({
             </button>
           </div>
 
-          <Collapsible
-            open={isOpen}
-            className={cn("min-h-0", isOpen && "flex-1")}
-            innerClassName="flex min-h-0 flex-col overflow-hidden"
-            onAnimationComplete={() => {
-              if (isOpen) setFooterReady(true)
-            }}
+          {/* Flex layout (not a height-auto collapse): the list is a bounded,
+              scrollable region and the footer reserves its own space — so the
+              checkout never hides the last items and the list stays scrollable
+              to the end. The footer floats above the list with an upward shadow. */}
+          <MotionPresence
+            show={isOpen}
+            enterFrom="slide-in-from-bottom-4"
+            className="flex min-h-0 flex-1 flex-col"
           >
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain touch-pan-y no-scrollbar px-gutter py-2">
               {items.map((item, index) => (
@@ -173,15 +168,8 @@ export function CartBottomSheet({
                 />
               ))}
             </div>
-          </Collapsible>
 
-          {isOpen && (
-            <div
-              className={cn(
-                "shrink-0 flex flex-col gap-4 px-gutter pb-4 pt-4 border-t-2 border-festa-border bg-festa-paper transition-opacity duration-200",
-                footerReady ? "opacity-100" : "opacity-0 pointer-events-none"
-              )}
-            >
+            <div className="relative z-10 shrink-0 flex flex-col gap-4 px-gutter pb-4 pt-4 border-t-2 border-festa-border bg-festa-paper shadow-block-up">
               <div className="flex justify-between items-center py-1">
                 <span className="text-label-xl text-festa-on-surface-variant">Total</span>
                 <AnimatedNumber
@@ -200,7 +188,7 @@ export function CartBottomSheet({
                 <MaterialIcon name="check_circle" className="text-2xl" />
               </Button>
             </div>
-          )}
+          </MotionPresence>
         </motion.div>
       )}
     </MotionPresence>

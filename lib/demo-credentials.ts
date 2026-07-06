@@ -1,4 +1,5 @@
 import { DEMO_OPERATORS } from "./demo-data"
+import { isLocalMode } from "./app-mode"
 
 /**
  * Whether the login screen should surface the demo account codes so someone
@@ -9,14 +10,20 @@ import { DEMO_OPERATORS } from "./demo-data"
  * bcrypt hash on the server and is never sent to the browser — it literally
  * cannot be displayed, so cloning and deploying this app can never leak one.
  *
- * We reveal the demo codes when either:
- *   - the app is in demo mode (Supabase paused/unreachable) — so a fresh clone
- *     is immediately usable with no setup; or
- *   - `NEXT_PUBLIC_SHOW_DEMO_CREDENTIALS === "true"` — set in `.env.example` for
- *     local dev / demos, and simply absent in a real production deploy.
+ * We reveal the demo codes when any of these hold:
+ *   - the app is in local mode (the default) — the local store IS the demo
+ *     accounts, so anyone should be able to sign straight in; or
+ *   - the app is in demo mode (shared mode with Supabase paused/unreachable) —
+ *     so a fresh clone is immediately usable with no setup; or
+ *   - `NEXT_PUBLIC_SHOW_DEMO_CREDENTIALS === "true"` — force them on even in a
+ *     connected shared deploy (e.g. for a demo).
  */
 export function shouldShowDemoCredentials(demoMode: boolean): boolean {
-  return demoMode || process.env.NEXT_PUBLIC_SHOW_DEMO_CREDENTIALS === "true"
+  return (
+    isLocalMode() ||
+    demoMode ||
+    process.env.NEXT_PUBLIC_SHOW_DEMO_CREDENTIALS === "true"
+  )
 }
 
 /** Human-friendly label for the role(s) a given code unlocks. */

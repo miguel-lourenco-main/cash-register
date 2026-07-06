@@ -30,10 +30,7 @@ export function CartPanel({
   onConfirm,
 }: CartPanelProps) {
   return (
-    <aside
-      className="hidden lg:flex w-[380px] shrink-0 flex-col border-l-2 border-festa-border bg-card sticky top-0 self-start overflow-hidden"
-      style={{ height: "calc(100dvh - var(--festa-top-bar-height))", maxHeight: "calc(100dvh - var(--festa-top-bar-height))" }}
-    >
+    <aside className="hidden lg:flex max-w-[380px] flex-1 shrink-0 flex-col min-h-0 border-l-2 border-festa-border bg-card overflow-hidden">
       <div className="h-20 border-b-2 border-festa-border flex items-center px-6 bg-festa-amber shrink-0">
         <h2 className="font-display text-title-md uppercase text-festa-ink flex items-center gap-2">
           <MaterialIcon name="shopping_cart" filled />
@@ -42,7 +39,7 @@ export function CartPanel({
         <span data-cart-drop className="ml-auto">
           <CartPing
             trigger={itemCount}
-            className="bg-festa-ink text-festa-surface text-sm font-bold w-8 h-8 rounded-md flex items-center justify-center tabular-nums"
+            className="bg-festa-ink text-white text-sm font-bold w-8 h-8 rounded-md flex items-center justify-center tabular-nums"
           >
             {itemCount}
           </CartPing>

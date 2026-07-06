@@ -10,15 +10,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "border-2 border-festa-border bg-primary text-primary-foreground shadow-block-sm hover:bg-festa-primary-container dark:hover:bg-primary/90 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
+          "lift-block border-2 border-festa-border bg-primary text-primary-foreground shadow-block-sm hover:bg-festa-primary-container dark:hover:bg-primary/90 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
         accent:
-          "border-2 border-festa-border bg-festa-amber text-festa-ink shadow-block-sm hover:bg-festa-amber/85 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
+          "lift-block border-2 border-festa-border bg-festa-amber text-festa-ink shadow-block-sm hover:bg-festa-amber/85 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
         destructive:
-          "border-2 border-festa-border bg-destructive text-destructive-foreground shadow-block-sm hover:bg-destructive/90 focus-visible:ring-destructive/30 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
+          "lift-block border-2 border-festa-border bg-destructive text-destructive-foreground shadow-block-sm hover:bg-destructive/90 focus-visible:ring-destructive/30 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
         outline:
-          "border-2 border-festa-border bg-festa-paper text-festa-on-surface shadow-block-sm hover:bg-festa-amber hover:text-festa-ink active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
+          "lift-block border-2 border-festa-border bg-festa-paper text-festa-on-surface shadow-block-sm hover:bg-festa-amber hover:text-festa-ink active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
         secondary:
-          "border-2 border-festa-border bg-festa-surface-high text-festa-on-surface shadow-block-sm hover:bg-festa-surface-low active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
+          "lift-block border-2 border-festa-border bg-festa-surface-high text-festa-on-surface shadow-block-sm hover:bg-festa-surface-low active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline normal-case tracking-normal",

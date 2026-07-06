@@ -9,6 +9,7 @@ import {
   timeoutSignal,
 } from "./db-status"
 import { demoLoginWithPin, listDemoOperators } from "./demo-store"
+import { isLocalMode } from "./app-mode"
 
 export interface OperatorPublic {
   id: string
@@ -111,7 +112,7 @@ async function listOperatorsFromTable(): Promise<OperatorListResult> {
 }
 
 export async function listActiveOperators(): Promise<OperatorListResult> {
-  if (isKnownOffline()) return { operators: listDemoOperators() }
+  if (isLocalMode() || isKnownOffline()) return { operators: listDemoOperators() }
 
   const { data, error } = await supabase
     .rpc("list_active_operators")
@@ -203,7 +204,7 @@ export async function startShift(
 }
 
 export async function endShift(shiftId: string): Promise<boolean> {
-  if (isKnownOffline() || shiftId.startsWith("demo-shift-")) return true
+  if (isLocalMode() || isKnownOffline() || shiftId.startsWith("demo-shift-")) return true
 
   const { data, error } = await supabase.rpc("end_shift", {
     p_shift_id: shiftId,
@@ -223,7 +224,7 @@ export async function loginWithPin(
   operatorId: string,
   pin: string
 ): Promise<{ success: boolean; session?: OperatorSession; error?: string }> {
-  if (isKnownOffline()) return demoLoginWithPin(operatorId, pin)
+  if (isLocalMode() || isKnownOffline()) return demoLoginWithPin(operatorId, pin)
 
   const { operator, rpcMissing: authRpcMissing, error: authError } =
     await authenticateOperator(operatorId, pin)
