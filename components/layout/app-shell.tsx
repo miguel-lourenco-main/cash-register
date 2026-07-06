@@ -37,7 +37,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <TopAppBar />
         <SideNav />
         <div className="relative z-10 flex flex-col flex-1 md:ml-24 lg:ml-32">
-          <main className="flex flex-1 flex-col min-h-0 pb-[var(--festa-bottom-nav-height)] md:pb-6">
+          <main className="flex flex-1 flex-col min-h-0 pb-[var(--festa-bottom-nav-height)] md:pb-0">
             <PageTransition>{children}</PageTransition>
           </main>
         </div>

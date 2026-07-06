@@ -174,7 +174,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
   return (
     <div className="flex flex-1 flex-col lg:flex-row min-h-0 lg:flex-none lg:h-[calc(100dvh_-_var(--festa-top-bar-height))] lg:overflow-hidden">
       <div className="flex flex-1 flex-col min-w-0 min-h-0">
-        <div className="sticky top-touch-target-min md:top-20 z-20 bg-festa-surface flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 px-gutter pt-4 pb-3">
+        <div className="sticky top-0 left-0 z-20 bg-festa-surface flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 px-gutter pt-4 pb-3">
           <CategoryTabs active={activeCategory} onChange={setActiveCategory} />
           <ProductSearch value={searchQuery} onChange={setSearchQuery} />
         </div>
