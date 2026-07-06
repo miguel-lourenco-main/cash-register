@@ -172,7 +172,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
   }, [])
 
   return (
-    <div className="flex flex-1 flex-col lg:flex-row min-h-0">
+    <div className="flex flex-1 flex-col lg:flex-row min-h-0 lg:flex-none lg:h-[calc(100dvh_-_var(--festa-top-bar-height))] lg:overflow-hidden">
       <div className="flex flex-1 flex-col min-w-0 min-h-0">
         <div className="sticky top-touch-target-min md:top-20 z-20 bg-festa-surface flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 px-gutter pt-4 pb-3">
           <CategoryTabs active={activeCategory} onChange={setActiveCategory} />
@@ -181,7 +181,7 @@ export default function CashRegister({ products }: { products: AppProduct[] }) {
 
         <div
           className={cn(
-            "flex-1 overflow-y-auto no-scrollbar px-gutter pt-6 transition-layout",
+            "flex-1 min-h-0 overflow-y-auto no-scrollbar px-gutter pt-6 transition-layout",
             mobileCartExpanded && "overflow-hidden touch-none lg:overflow-y-auto lg:touch-auto",
             showMobileCartPeek
               ? "pb-[calc(var(--festa-bottom-nav-height)+var(--festa-cart-peek-height)+1rem)]"
