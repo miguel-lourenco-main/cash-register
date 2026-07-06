@@ -7,6 +7,7 @@ import {
   timeoutSignal,
 } from "./db-status"
 import { getDemoShiftSummary } from "./demo-store"
+import { isLocalMode } from "./app-mode"
 
 export interface ShiftTopItem {
   name: string
@@ -34,7 +35,7 @@ interface ShiftOrderRow {
 
 /** Aggregate the operator's shift client-side — one query, festival-scale volumes. */
 export async function getShiftSummary(shiftId: string): Promise<ShiftSummary | null> {
-  if (isKnownOffline() || shiftId.startsWith("demo-shift-")) {
+  if (isLocalMode() || isKnownOffline() || shiftId.startsWith("demo-shift-")) {
     return getDemoShiftSummary(shiftId)
   }
   try {

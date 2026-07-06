@@ -1,4 +1,5 @@
 import { supabase } from "./supabase"
+import { isLocalMode } from "./app-mode"
 
 /**
  * Detects whether the Supabase backend is reachable. The hosted project
@@ -97,6 +98,8 @@ export function timeoutSignal(ms: number = DB_TIMEOUT_MS): AbortSignal {
  * → demo mode. Result is cached for the session; concurrent callers share it.
  */
 export async function ensureDbStatus(): Promise<boolean> {
+  // Local mode has no backend to probe — never touch the network.
+  if (isLocalMode()) return false
   if (offline !== null) return offline
   if (!probe) {
     probe = (async () => {

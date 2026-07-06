@@ -3,23 +3,27 @@
 import { useEffect, useState } from "react"
 import { MaterialIcon } from "@/components/ui/material-icon"
 import { ensureDbStatus, getDbOffline, subscribeDbStatus } from "@/lib/db-status"
+import { isLocalMode } from "@/lib/app-mode"
 
 /**
- * Slim banner shown whenever the Supabase backend is unreachable (paused
- * project) and the app has fallen back to static demo data. Lets the user know
- * their changes are local-only while still letting them explore everything.
+ * Slim banner shown in SHARED mode whenever the Supabase backend is unreachable
+ * (paused project) and the app has fallen back to static data — so the user
+ * knows their changes are local-only. In local mode there is no backend to fall
+ * back from (the on-device store is the source of truth), so the banner never
+ * shows and we don't probe the network.
  */
 export function DemoModeBanner() {
   const [offline, setOffline] = useState(getDbOffline() === true)
 
   useEffect(() => {
+    if (isLocalMode()) return
     const unsubscribe = subscribeDbStatus(setOffline)
     // Probe up front so the banner appears even before any data is loaded.
     void ensureDbStatus()
     return unsubscribe
   }, [])
 
-  if (!offline) return null
+  if (isLocalMode() || !offline) return null
 
   return (
     <div

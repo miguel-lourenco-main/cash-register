@@ -9,9 +9,10 @@ import {
   timeoutSignal,
 } from "./db-status"
 import { getDemoProductById, getDemoProducts } from "./demo-store"
+import { isLocalMode } from "./app-mode"
 
 export const getProducts = async (): Promise<AppProduct[]> => {
-  if (isKnownOffline()) return getDemoProducts()
+  if (isLocalMode() || isKnownOffline()) return getDemoProducts()
 
   const { data, error } = await supabase
     .from('products')
@@ -65,7 +66,7 @@ export const getProducts = async (): Promise<AppProduct[]> => {
 }
 
 export const getProductById = async (id: string): Promise<AppProduct | null> => {
-  if (isKnownOffline()) return getDemoProductById(id)
+  if (isLocalMode() || isKnownOffline()) return getDemoProductById(id)
 
   const { data, error } = await supabase
     .from('products')

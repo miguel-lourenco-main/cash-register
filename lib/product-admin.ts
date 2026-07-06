@@ -3,6 +3,7 @@ import type { AppProduct } from "./types"
 import type { ProductCategory } from "./validation-helpers"
 import { isConnectionError, isKnownOffline, markOffline } from "./db-status"
 import { upsertDemoProduct } from "./demo-store"
+import { isLocalMode } from "./app-mode"
 
 const PRODUCT_IMAGES_BUCKET = "product-images"
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024
@@ -78,7 +79,7 @@ function upsertProductOffline(input: UpsertProductInput): ProductMutationResult 
 export async function upsertProduct(
   input: UpsertProductInput
 ): Promise<ProductMutationResult> {
-  if (isKnownOffline()) return upsertProductOffline(input)
+  if (isLocalMode() || isKnownOffline()) return upsertProductOffline(input)
 
   const { data, error } = await supabase.rpc("upsert_product", {
     p_operator_id: input.operatorId,
@@ -127,8 +128,8 @@ export async function uploadProductImage(
     return { error: validationError }
   }
 
-  // Demo mode: no storage backend — preview the image locally for this session.
-  if (isKnownOffline()) {
+  // Local/demo mode: no storage backend — preview the image locally for this session.
+  if (isLocalMode() || isKnownOffline()) {
     return { url: URL.createObjectURL(file) }
   }
 
