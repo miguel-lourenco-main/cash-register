@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion, useReducedMotion } from "motion/react"
 import { useOperator } from "@/lib/operator-provider"
 import { Button } from "@/components/ui/button"
@@ -8,6 +8,8 @@ import { MaterialIcon } from "@/components/ui/material-icon"
 import { Collapsible } from "@/components/ui/motion"
 import { FestaAmbience } from "@/components/ui/festa-ambience"
 import { FestaBunting } from "@/components/ui/festa-bunting"
+import { ensureDbStatus, getDbOffline, subscribeDbStatus } from "@/lib/db-status"
+import { DEMO_CREDENTIAL_HINTS, shouldShowDemoCredentials } from "@/lib/demo-credentials"
 import { springs } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 
@@ -20,10 +22,19 @@ export function PinLogin() {
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [shake, setShake] = useState(0)
+  const [offline, setOffline] = useState(getDbOffline() === true)
+
+  useEffect(() => {
+    const unsubscribe = subscribeDbStatus(setOffline)
+    // Probe up front so the demo hints appear as soon as we know we're offline.
+    void ensureDbStatus()
+    return unsubscribe
+  }, [])
 
   const canSubmit = Boolean(selectedId) && pin.length >= 4 && !submitting
   const selectedOperator = operators.find((op) => op.id === selectedId)
   const firstName = selectedOperator?.name.split(" ")[0]
+  const showCredentials = shouldShowDemoCredentials(offline)
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault()
@@ -49,6 +60,11 @@ export function PinLogin() {
 
   const handleBackspace = () => {
     setPin((p) => p.slice(0, -1))
+    setError(null)
+  }
+
+  const handleFillCode = (code: string) => {
+    setPin(code.replace(/\D/g, "").slice(0, 4))
     setError(null)
   }
 
@@ -320,6 +336,43 @@ export function PinLogin() {
                 {submitting ? "A iniciar turno..." : "Iniciar Turno"}
               </Button>
             </>
+          )}
+
+          {showCredentials && DEMO_CREDENTIAL_HINTS.length > 0 && (
+            <motion.div
+              initial={reduce ? false : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...springs.snappy, delay: 0.58 }}
+              className="rounded-lg border-2 border-dashed border-festa-border bg-festa-surface-high/60 p-4 shadow-block-sm"
+            >
+              <div className="flex items-center justify-center gap-1.5 mb-3">
+                <MaterialIcon name="key" className="text-base text-festa-on-surface-variant" />
+                <p className="text-sm font-bold uppercase tracking-wide text-festa-on-surface-variant">
+                  Contas de demonstração
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                {DEMO_CREDENTIAL_HINTS.map((hint) => (
+                  <button
+                    key={hint.pin}
+                    type="button"
+                    onClick={() => handleFillCode(hint.pin)}
+                    aria-label={`Preencher o PIN ${hint.pin} (${hint.label})`}
+                    className="lift-block flex items-center gap-2 rounded-md border-2 border-festa-border bg-festa-paper px-3 py-2 shadow-block-sm cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:!shadow-none"
+                  >
+                    <span className="text-sm font-medium text-festa-on-surface-variant">
+                      {hint.label}
+                    </span>
+                    <span className="font-display text-lg font-bold tracking-[0.2em] text-festa-primary-emphasis">
+                      {hint.pin}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <p className="mt-3 text-center text-xs text-festa-on-surface-variant/80">
+                Selecione um nome e toque num código para preencher o PIN.
+              </p>
+            </motion.div>
           )}
         </form>
       </div>
