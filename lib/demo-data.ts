@@ -8,7 +8,7 @@ import type { OperatorPublic } from "./operators"
  */
 
 /** Catalog in canonical display order (Bebidas first, then Comida). */
-export const DEMO_PRODUCTS: AppProduct[] = [
+const DEMO_PRODUCTS_SEED: AppProduct[] = [
   // Bebidas
   { id: "cerveja", name: "Cerveja", price: 1.0, category: "bebida", imageUrl: null, description: "Imperial de cerveja" },
   { id: "metro-cerveja-11-imperiais", name: "Metro de cerveja (11 imperiais)", price: 10.0, category: "bebida", imageUrl: null, description: "Metro com 11 imperiais" },
@@ -39,6 +39,17 @@ export const DEMO_PRODUCTS: AppProduct[] = [
   { id: "gelado", name: "Gelado", price: 1.5, category: "comida", imageUrl: null, description: "Gelado individual" },
   { id: "chupa-caramelo", name: "Chupa, Caramelo", price: 0.5, category: "comida", imageUrl: null, description: "Chupa-chupa ou caramelo" },
 ]
+
+/**
+ * Local mode has no image host, so product photos are bundled as static assets
+ * at `public/products/<id>.webp` (see `scripts/optimize-product-images.mjs`).
+ * Every seed product has a matching file, so we derive the path here instead of
+ * repeating it on each row.
+ */
+export const DEMO_PRODUCTS: AppProduct[] = DEMO_PRODUCTS_SEED.map((product) => ({
+  ...product,
+  imageUrl: `/products/${product.id}.webp`,
+}))
 
 export interface DemoOperator extends OperatorPublic {
   /** Demo-only plaintext PIN (the real backend stores a bcrypt hash). */
