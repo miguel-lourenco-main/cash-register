@@ -19,6 +19,7 @@ interface PaymentOverlayProps {
 
 const QUICK_AMOUNTS = [5, 10, 20, 50]
 
+/** Full-screen cash tendering step — quick bills, exact, and free-form entry. */
 export function PaymentOverlay({
   show,
   total,

@@ -30,6 +30,7 @@ function normalizeText(value: string): string {
     .replace(/\p{Diacritic}/gu, "")
 }
 
+/** Three-step checkout: build cart → collect cash → confirm and show troco. */
 export default function CashRegister({ products }: { products: AppProduct[] }) {
   const [orderItems, setOrderItems] = useState<AppOrderItem[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)

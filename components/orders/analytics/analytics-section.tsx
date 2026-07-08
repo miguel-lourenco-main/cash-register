@@ -13,6 +13,7 @@ import {
 } from "@/lib/order-analytics"
 import type { Order } from "@/lib/types"
 
+/** Four chart cards — all metrics derive from the same filtered order list. */
 export function AnalyticsSection({ orders }: { orders: Order[] }) {
   const hourly = useMemo(() => revenueByHour(orders), [orders])
   const products = useMemo(() => topProducts(orders), [orders])

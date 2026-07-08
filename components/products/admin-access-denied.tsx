@@ -2,6 +2,7 @@
 
 import { MaterialIcon } from "@/components/ui/material-icon"
 
+/** Shown when a non-admin operator navigates to /products. */
 export function AdminAccessDenied() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] px-gutter text-center">

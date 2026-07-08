@@ -1,3 +1,7 @@
+/**
+ * Order persistence layer. Shared mode writes to Supabase; local mode and
+ * unreachable backends transparently fall back to `demo-store`.
+ */
 import type { Order, AppOrderItem, OrderItemWithProduct, CreateOrderContext, OrderPayment } from "./types"
 import { supabase } from "./supabase"
 import {
@@ -10,6 +14,7 @@ import {
 import { createDemoOrder, getDemoOrderById, getDemoOrders } from "./demo-store"
 import { isLocalMode } from "./app-mode"
 
+/** Persists a sale and its line items; rolls back the order row if items fail. */
 export async function createOrder(
   items: AppOrderItem[],
   context: CreateOrderContext,
@@ -87,6 +92,7 @@ export async function createOrder(
   }
 }
 
+/** Supabase may embed the join as `operator` or `operators` depending on the query. */
 function resolveOperator(
   order: Record<string, unknown>
 ): { id: string; name: string } | null {

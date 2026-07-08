@@ -13,6 +13,7 @@ import {
 import { ChartCard, ChartEmptyState, chartAxisTick, chartTooltipStyle } from "./chart-card"
 import type { ProductStat } from "@/lib/order-analytics"
 
+/** Horizontal bar chart of best-selling products by quantity. */
 export function TopProductsChart({ data }: { data: ProductStat[] }) {
   const reduce = useReducedMotion()
   return (

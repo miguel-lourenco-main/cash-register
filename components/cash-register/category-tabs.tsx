@@ -17,6 +17,7 @@ const tabs: { value: ProductCategory; label: string; icon: string }[] = [
   { value: "comida", label: "Comida", icon: "restaurant" },
 ]
 
+/** Bebidas / Comida toggle — `layoutId` shares the amber pill across tab switches. */
 export function CategoryTabs({ active, onChange }: CategoryTabsProps) {
   return (
     <nav className="shrink-0">

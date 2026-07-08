@@ -16,6 +16,7 @@ interface OrderSuccessOverlayProps {
   onNewOrder: () => void
 }
 
+/** Seconds before auto-returning to the register after a successful sale. */
 const AUTO_DISMISS_MS = 6000
 
 export function OrderSuccessOverlay({

@@ -1,3 +1,4 @@
+/** Operator shift persisted in localStorage — survives reloads within the same browser. */
 import { OPERATOR_SESSION_KEY } from "./design-tokens"
 
 export interface OperatorSession {

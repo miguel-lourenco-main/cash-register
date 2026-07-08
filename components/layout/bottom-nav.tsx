@@ -9,6 +9,7 @@ import { cn, tapHaptic } from "@/lib/utils"
 import { useOperator } from "@/lib/operator-provider"
 import { getNavItemsForRole, isNavItemActive } from "@/lib/nav-items"
 
+/** Phone tab bar — mirrors `SideNav` items, hidden from `md` up. */
 export function BottomNav() {
   const pathname = usePathname()
   const { session } = useOperator()

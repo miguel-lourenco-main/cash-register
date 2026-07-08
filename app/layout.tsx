@@ -35,6 +35,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,500,0..1,0"
           rel="stylesheet"
         />
+        {/* Inline script runs before paint to avoid a flash of the wrong theme. */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -55,6 +56,7 @@ export default function RootLayout({
       </head>
       <body className={`${workSans.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
         <MotionConfig reducedMotion="user">
+          {/* Outermost → innermost: theme, operator session, chrome, toasts */}
           <ThemeProvider defaultTheme="system" storageKey="cash-register-theme">
             <OperatorProvider>
               <AppShell>{children}</AppShell>

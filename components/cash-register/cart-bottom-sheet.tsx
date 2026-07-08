@@ -15,6 +15,7 @@ import { springs } from "@/lib/motion"
 import type { AppOrderItem } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
+/** Mobile cart peek / expandable sheet — drag down to dismiss into a FAB. */
 interface CartBottomSheetProps {
   items: AppOrderItem[]
   total: number

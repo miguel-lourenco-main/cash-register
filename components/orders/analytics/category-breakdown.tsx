@@ -11,6 +11,7 @@ const CATEGORY_COLORS: Record<CategoryStat["category"], string> = {
   comida: "var(--chart-1)",
 }
 
+/** Donut split between comida and bebida revenue. */
 export function CategoryBreakdown({ data }: { data: CategoryStat[] }) {
   const reduce = useReducedMotion()
   const total = data.reduce((sum, entry) => sum + entry.revenue, 0)

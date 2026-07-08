@@ -56,6 +56,7 @@ export function ProductForm({ session, product, onSaved, onCancel }: ProductForm
   const [submitting, setSubmitting] = useState(false)
   const [fieldErrors, setFieldErrors] = useState<ProductFormErrors>({})
 
+  // Auto-slug the id from the name until the admin edits the id field manually.
   useEffect(() => {
     if (isEditing || idTouched) return
     setValues((current) => ({

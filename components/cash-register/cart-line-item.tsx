@@ -38,6 +38,7 @@ function StepperButton({
   )
 }
 
+/** Single cart row — `compact` for the mobile sheet, full card for the desktop panel. */
 export function CartLineItem({
   item,
   highlighted,

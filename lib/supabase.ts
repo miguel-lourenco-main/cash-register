@@ -1,3 +1,4 @@
+/** Typed Supabase client — falls back to local CLI defaults when env vars are unset. */
 import { createClient } from "@supabase/supabase-js"
 import type { Database } from "./database.types"
 import { LOCAL_SUPABASE_ANON_KEY, LOCAL_SUPABASE_URLS } from "./local-supabase"

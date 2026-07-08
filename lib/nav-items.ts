@@ -5,6 +5,7 @@ export type NavItem = {
   adminOnly?: boolean
 }
 
+/** Primary app routes — filtered per operator role at render time. */
 export const navItems: NavItem[] = [
   { href: "/", label: "Caixa", icon: "point_of_sale" },
   { href: "/orders", label: "Pedidos", icon: "receipt_long" },

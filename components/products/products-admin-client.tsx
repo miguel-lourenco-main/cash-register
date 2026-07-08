@@ -12,6 +12,7 @@ import { useOperator } from "@/lib/operator-provider"
 import { getProducts } from "@/lib/products"
 import type { AppProduct } from "@/lib/types"
 
+/** Admin product CRUD — role check happens before any catalog fetch. */
 export default function ProductsAdminClient() {
   const { session } = useOperator()
   const [products, setProducts] = useState<AppProduct[]>([])

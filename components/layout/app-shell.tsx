@@ -12,6 +12,7 @@ import { BootCurtain } from "@/components/ui/boot-curtain"
 import { DemoModeBanner } from "@/components/ui/demo-mode-banner"
 import { useOperator } from "@/lib/operator-provider"
 
+/** Auth gate + authenticated chrome (nav, top bar, shift summary on logout). */
 export function AppShell({ children }: { children: ReactNode }) {
   const { session, isLoading } = useOperator()
 

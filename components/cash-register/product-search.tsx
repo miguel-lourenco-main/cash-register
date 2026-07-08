@@ -2,6 +2,7 @@
 
 import { MaterialIcon } from "@/components/ui/material-icon"
 
+/** Category-scoped name filter — parent widens to all categories when non-empty. */
 interface ProductSearchProps {
   value: string
   onChange: (value: string) => void

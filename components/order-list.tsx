@@ -18,6 +18,7 @@ import { StaggerGrid, StaggerItem } from "@/components/ui/motion"
 import { calculateOrderTotal } from "@/lib/order-utils"
 import type { Order } from "@/lib/types"
 
+/** Cutoff timestamp for preset period filters (null = no time bound). */
 function periodStart(period: OrderFiltersState["period"]): Date | null {
   if (period === "last_hour") return new Date(Date.now() - 60 * 60 * 1000)
   if (period === "today") {
@@ -34,6 +35,7 @@ export default function OrderList({ initialOrders }: { initialOrders: Order[] })
   const [filters, setFilters] = useState<OrderFiltersState>(defaultOrderFilters)
   const ordersPerPage = 12
 
+  // Distinct operators for the filter dropdown — derived from the loaded history.
   const operators = useMemo(() => {
     const byId = new Map<string, string>()
     for (const order of initialOrders) {
@@ -44,6 +46,7 @@ export default function OrderList({ initialOrders }: { initialOrders: Order[] })
       .sort((a, b) => a.name.localeCompare(b.name))
   }, [initialOrders])
 
+  // Stats, analytics, and the grid all consume this filtered+sorted slice.
   const filteredOrders = useMemo(() => {
     let result = initialOrders
 

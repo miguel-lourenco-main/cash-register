@@ -9,6 +9,7 @@ interface OrderCardProps {
   onClick: () => void
 }
 
+/** Human-readable relative time for the order grid (Portuguese). */
 function formatRelativeTime(date: Date): string {
   const diffMs = Date.now() - date.getTime()
   const diffMin = Math.floor(diffMs / 60000)
@@ -23,6 +24,7 @@ export function OrderCard({ order, onClick }: OrderCardProps) {
   const total = calculateOrderTotal(order)
   const itemCount = order.items.reduce((sum, item) => sum + item.quantity, 0)
   const operatorLabel = order.registeredBy?.name ?? "Desconhecido"
+  // Pulse the timestamp for two minutes after checkout — easy to spot fresh sales.
   const isFresh = Date.now() - order.createdAt.getTime() < 120000
 
   return (

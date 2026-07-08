@@ -10,6 +10,7 @@ import { formatEuro } from "@/lib/order-utils"
 import { springs, STAGGER_S } from "@/lib/motion"
 import { useOperator } from "@/lib/operator-provider"
 
+/** Elapsed shift duration for the end-of-shift summary header. */
 function formatDuration(startedAt: string): string {
   const start = new Date(startedAt).getTime()
   if (Number.isNaN(start)) return "—"

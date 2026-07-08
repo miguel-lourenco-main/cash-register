@@ -4,6 +4,7 @@ import { MaterialIcon } from "@/components/ui/material-icon"
 import { calculateOrderTotal, lineItemTotal } from "@/lib/order-utils"
 import type { Order } from "@/lib/types"
 
+/** Read-only receipt view — used on mobile full-screen and inside the desktop panel. */
 interface OrderDetailsProps {
   order: Order
   onBack?: () => void

@@ -6,6 +6,7 @@ import { getOrders } from "@/lib/actions"
 import type { Order } from "@/lib/types"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
+/** Fetches order history on mount, then hands off to the filterable list UI. */
 export default function OrdersClient() {
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)

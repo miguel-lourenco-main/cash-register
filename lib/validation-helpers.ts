@@ -1,3 +1,5 @@
+/** Client-side product form validation for the admin screen. */
+
 export function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   return emailRegex.test(email)
@@ -52,6 +54,7 @@ export interface ProductFormErrors {
   image?: string
 }
 
+/** Returns field-level errors; empty object means the form is ready to submit. */
 export function validateProductForm(values: ProductFormValues): ProductFormErrors {
   const errors: ProductFormErrors = {}
 

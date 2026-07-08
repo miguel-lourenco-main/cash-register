@@ -9,6 +9,7 @@ import { cn, tapHaptic } from "@/lib/utils"
 import { useOperator } from "@/lib/operator-provider"
 import { getNavItemsForRole, isNavItemActive } from "@/lib/nav-items"
 
+/** Tablet/desktop rail — fixed left column below the top bar. */
 export function SideNav() {
   const pathname = usePathname()
   const { session } = useOperator()

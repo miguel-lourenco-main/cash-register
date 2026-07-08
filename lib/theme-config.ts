@@ -1,3 +1,4 @@
+/** Theme picker labels and preview metadata for the settings UI. */
 import { festaColors } from "./design-tokens"
 
 export const themeConfig = {

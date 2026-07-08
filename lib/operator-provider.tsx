@@ -47,6 +47,7 @@ interface OperatorContextValue {
 
 const OperatorContext = createContext<OperatorContextValue | undefined>(undefined)
 
+/** Global operator session — login, logout, and shift-end summary flow. */
 export function OperatorProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<OperatorSession | null>(null)
   const [operators, setOperators] = useState<OperatorPublic[]>([])

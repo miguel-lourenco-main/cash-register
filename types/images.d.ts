@@ -1,3 +1,4 @@
+/** Ambient module declarations so Next/Image can import raster assets. */
 declare module "*.png" {
   const value: string;
   export default value;

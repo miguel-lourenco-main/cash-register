@@ -13,6 +13,7 @@ import {
 import { ChartCard, ChartEmptyState, chartAxisTick, chartTooltipStyle } from "./chart-card"
 import type { HourBucket } from "@/lib/order-analytics"
 
+/** Hourly revenue area chart for the Pedidos analytics section. */
 export function RevenueChart({ data }: { data: HourBucket[] }) {
   const reduce = useReducedMotion()
   return (

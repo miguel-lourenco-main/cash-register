@@ -55,6 +55,7 @@ function StatCard({
   )
 }
 
+/** KPI cards at the top of Pedidos — totals reflect the currently filtered set. */
 export function StatsDashboard({ orders }: StatsDashboardProps) {
   const totalRevenue = orders.reduce(
     (sum, order) => sum + calculateOrderTotal(order),

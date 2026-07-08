@@ -1,3 +1,4 @@
+/** App-facing types — camelCase shapes used by UI; DB rows live in `database.types`. */
 import type { Tables } from "./database.types"
 
 export type Product = Tables<'products'>

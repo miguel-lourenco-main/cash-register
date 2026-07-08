@@ -1,3 +1,4 @@
+/** Product catalog reads — sorted to match the seeded menu order in `seed-products`. */
 import type { AppProduct } from "./types"
 import { BEBIDAS, COMIDA } from "./seed-products"
 import { supabase } from "./supabase"
@@ -39,6 +40,7 @@ export const getProducts = async (): Promise<AppProduct[]> => {
     description: product.description ?? null,
   }))
 
+  // Bebidas first (seed order), then comida, then any admin-added items by name.
   const sortedProducts = products.sort((a, b) => {
     const indexA = BEBIDAS.indexOf(a.id)
     const indexB = BEBIDAS.indexOf(b.id)

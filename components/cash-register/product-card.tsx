@@ -33,6 +33,7 @@ function CategoryPlaceholder({ category }: { category: AppProduct["category"] })
 
 export function ProductCard({ product, onAdd }: ProductCardProps) {
   const isBebida = product.category === "bebida"
+  // Price chip origin for the fly-to-cart animation.
   const chipRef = useRef<HTMLSpanElement>(null)
 
   return (

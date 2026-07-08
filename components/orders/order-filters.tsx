@@ -22,6 +22,7 @@ export const defaultOrderFilters: OrderFiltersState = {
   sort: "time_desc",
 }
 
+/** Operator, period, and sort controls for the order history grid. */
 interface OrderFiltersProps {
   filters: OrderFiltersState
   onChange: (filters: OrderFiltersState) => void

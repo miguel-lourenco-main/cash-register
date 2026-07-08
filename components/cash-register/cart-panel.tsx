@@ -8,6 +8,7 @@ import { CartLineItem } from "@/components/cash-register/cart-line-item"
 import { springs } from "@/lib/motion"
 import type { AppOrderItem } from "@/lib/types"
 
+/** Desktop cart sidebar — hidden below `lg`, paired with `CartBottomSheet` on mobile. */
 interface CartPanelProps {
   items: AppOrderItem[]
   total: number
