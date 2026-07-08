@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "motion/react"
 import { Button } from "@/components/ui/button"
 import { MaterialIcon } from "@/components/ui/material-icon"
 import { SpringPanel } from "@/components/ui/motion"
+import { Portal } from "@/components/ui/portal"
 import { calculateOrderTotal, lineItemTotal } from "@/lib/order-utils"
 import type { Order } from "@/lib/types"
 
@@ -14,7 +15,11 @@ interface OrderDetailPanelProps {
 
 export function OrderDetailPanel({ order, onClose }: OrderDetailPanelProps) {
   return (
-    <>
+    // Portal to <body> so the panel escapes the app shell's `z-10` stacking
+    // context and overlays the sticky top bar / bottom nav. Without this the
+    // close controls (top X, bottom "Fechar") and backdrop are painted behind
+    // those bars on mobile, leaving no way to dismiss the panel.
+    <Portal>
       <AnimatePresence>
         {order && (
           <motion.div
@@ -112,6 +117,6 @@ export function OrderDetailPanel({ order, onClose }: OrderDetailPanelProps) {
           </div>
         )}
       </SpringPanel>
-    </>
+    </Portal>
   )
 }
