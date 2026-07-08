@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { type ChangeEvent, useEffect, useRef, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { Button } from "@/components/ui/button"
 import { MaterialIcon } from "@/components/ui/material-icon"
@@ -27,6 +27,8 @@ export function PaymentOverlay({
   onCancel,
 }: PaymentOverlayProps) {
   const [tendered, setTendered] = useState(0)
+  // Raw text backing the free-form amount input, kept in sync with `tendered`.
+  const [raw, setRaw] = useState("")
   const [ghost, setGhost] = useState<{ id: number; amount: number } | null>(null)
   const ghostId = useRef(0)
   const wasPaid = useRef(false)
@@ -35,6 +37,7 @@ export function PaymentOverlay({
   useEffect(() => {
     if (show) {
       setTendered(0)
+      setRaw("")
       wasPaid.current = false
     }
   }, [show])
@@ -54,9 +57,28 @@ export function PaymentOverlay({
     }
   }, [paid, tendered])
 
+  // Single source of truth: set both the numeric total and its text mirror.
+  const applyTendered = (value: number) => {
+    const rounded = roundEuro(Math.max(value, 0))
+    setTendered(rounded)
+    setRaw(rounded === 0 ? "" : String(rounded))
+  }
+
   const addAmount = (amount: number) => {
-    setTendered((t) => roundEuro(t + amount))
+    applyTendered(tendered + amount)
     setGhost({ id: ++ghostId.current, amount })
+  }
+
+  // Free-form entry for amounts that aren't round bills or the exact total
+  // (e.g. the client hands over 13.50€ in mixed notes and coins).
+  const handleRawChange = (event: ChangeEvent<HTMLInputElement>) => {
+    // Accept comma or dot as decimal separator, keep digits + a single separator.
+    const cleaned = event.target.value.replace(",", ".").replace(/[^0-9.]/g, "")
+    const [whole, ...rest] = cleaned.split(".")
+    const normalized = rest.length > 0 ? `${whole}.${rest.join("")}` : whole
+    setRaw(normalized)
+    const parsed = Number.parseFloat(normalized)
+    setTendered(Number.isFinite(parsed) ? roundEuro(parsed) : 0)
   }
 
   return (
@@ -126,6 +148,26 @@ export function PaymentOverlay({
             />
           </div>
 
+          {/* Free-form amount — for values that aren't round bills or exact */}
+          <label className="mb-3 block">
+            <span className="sr-only">Introduzir valor entregue</span>
+            <div className="relative">
+              <input
+                value={raw}
+                onChange={handleRawChange}
+                inputMode="decimal"
+                type="text"
+                placeholder="Outro valor"
+                disabled={isSubmitting}
+                aria-label="Introduzir valor entregue"
+                className="h-14 w-full rounded-lg border-2 border-festa-border bg-festa-surface-high pl-4 pr-9 font-display text-xl font-bold tabular-nums shadow-block-sm outline-none transition-colors focus:border-festa-primary disabled:opacity-50"
+              />
+              <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 font-display text-xl font-bold text-festa-on-surface-variant">
+                €
+              </span>
+            </div>
+          </label>
+
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
             {QUICK_AMOUNTS.map((amount) => (
               <button
@@ -142,7 +184,7 @@ export function PaymentOverlay({
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
-              onClick={() => setTendered(roundEuro(total))}
+              onClick={() => applyTendered(total)}
               disabled={isSubmitting}
               className="h-12 rounded-lg border-2 border-festa-border bg-festa-festival-blue text-white dark:text-festa-ink font-bold uppercase tracking-wide text-sm shadow-block-sm cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none disabled:opacity-50"
             >
@@ -150,7 +192,7 @@ export function PaymentOverlay({
             </button>
             <button
               type="button"
-              onClick={() => setTendered(0)}
+              onClick={() => applyTendered(0)}
               disabled={isSubmitting || tendered === 0}
               className="h-12 rounded-lg border-2 border-festa-border bg-festa-paper font-bold uppercase tracking-wide text-sm shadow-block-sm cursor-pointer hover:bg-festa-surface-high active:translate-x-[2px] active:translate-y-[2px] active:shadow-none disabled:opacity-50 disabled:shadow-none"
             >
