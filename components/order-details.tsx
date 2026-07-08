@@ -1,6 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Separator } from "@/components/ui/separator"
+import { Button } from "@/components/ui/button"
+import { ArrowLeft } from "lucide-react"
+import Link from "next/link"
 import type { Order } from "@/lib/types"
 
 export default function OrderDetails({ order }: { order: Order }) {
@@ -11,6 +14,14 @@ export default function OrderDetails({ order }: { order: Order }) {
 
   return (
     <div className="max-w-4xl mx-auto py-8">
+      <div className="mb-4">
+        <Button asChild variant="outline" size="sm">
+          <Link href="/orders">
+            <ArrowLeft className="w-4 h-4" />
+            Voltar aos Pedidos
+          </Link>
+        </Button>
+      </div>
       <Card>
         <CardHeader>
           <CardTitle>Detalhes do Pedido</CardTitle>
