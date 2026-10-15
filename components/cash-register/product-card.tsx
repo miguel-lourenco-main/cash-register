@@ -70,9 +70,14 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
           <MaterialIcon name="add" className="text-xl" />
         </span>
       </div>
-      <div className="flex w-full flex-1 items-end justify-between gap-2 p-3">
+      {/* Price chip sits under the name so the name gets the full card width
+          (side by side, the chip squeezed names down to "Cer…" on narrow cards). */}
+      <div className="flex w-full flex-1 flex-col justify-between gap-2 p-3">
         <div className="min-w-0">
-          <h3 className="font-display font-bold text-festa-on-surface leading-tight truncate text-base lg:text-lg">
+          <h3
+            title={product.name}
+            className="font-display font-bold text-festa-on-surface leading-tight line-clamp-2 break-words text-base lg:text-lg"
+          >
             {product.name}
           </h3>
           {product.description && (
@@ -84,7 +89,7 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
         <span
           ref={chipRef}
           className={cn(
-            "shrink-0 rounded-md border-2 border-festa-border px-2.5 py-1 font-display text-lg font-bold tabular-nums",
+            "shrink-0 self-end rounded-md border-2 border-festa-border px-2.5 py-1 font-display text-lg font-bold tabular-nums",
             isBebida
               ? "bg-festa-festival-blue text-white dark:text-festa-ink"
               : "bg-festa-primary text-white dark:bg-festa-primary-emphasis dark:text-festa-ink"

@@ -4,10 +4,11 @@ import { useRef, type ReactNode } from "react"
 import { usePathname } from "next/navigation"
 import { motion } from "motion/react"
 import { springs } from "@/lib/motion"
-import { navItems } from "@/lib/nav-items"
+import { navItems, normalizePath } from "@/lib/nav-items"
 
 function routeIndex(path: string): number {
-  const i = navItems.findIndex((n) => n.href === path)
+  const current = normalizePath(path)
+  const i = navItems.findIndex((n) => n.href === current)
   return i === -1 ? 0 : i
 }
 
@@ -21,7 +22,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
 
   return (
     <motion.div
-      key={pathname}
+      key={normalizePath(pathname)}
       className="flex flex-1 flex-col min-h-0"
       initial={{ opacity: 0, x: 28 * dir }}
       animate={{ opacity: 1, x: 0 }}

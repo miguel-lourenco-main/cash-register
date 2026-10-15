@@ -12,9 +12,27 @@ type Flyer = {
   variant: FlyVariant
   from: { x: number; y: number; w: number; h: number }
   to: { x: number; y: number }
+  /** Viewport y where the mobile cart bar starts; the flyer is clipped below it. */
+  clipBottom: number | null
 }
 
 type Ring = { id: number; x: number; y: number }
+
+/**
+ * Top edge of the visible mobile cart bar ([data-cart-bar]), if any. Flyers are
+ * clipped to the area above it so price tags pass *under* the bar instead of
+ * piling up over its total after fast repeated taps.
+ */
+function resolveCartBarTop(): number | null {
+  const bars = Array.from(document.querySelectorAll<HTMLElement>("[data-cart-bar]"))
+  for (const el of bars) {
+    const r = el.getBoundingClientRect()
+    // No offsetParent check: the sheet itself is position:fixed (offsetParent is
+    // always null); a hidden (lg:hidden / display:none) bar has an empty rect.
+    if (r.width > 0 && r.height > 0) return r.top
+  }
+  return null
+}
 
 /** Center of whichever cart drop-target ([data-cart-drop]) is currently visible. */
 function resolveCartTarget(): { x: number; y: number } | null {
@@ -51,6 +69,7 @@ export function useFlyToCart() {
         variant,
         from: { x: originRect.left, y: originRect.top, w: originRect.width, h: originRect.height },
         to,
+        clipBottom: resolveCartBarTop(),
       },
     ])
   }, [])
@@ -86,28 +105,35 @@ export function useFlyToCart() {
           // Lift into an arc: peak ~70px above the straight-line midpoint.
           const midY = dy * 0.45 - 70
           return (
-            <motion.div
+            // Per-flyer clip box: everything below the mobile cart bar's top edge
+            // is hidden, so the tag disappears into the bar rather than over it.
+            <div
               key={flyer.id}
-              className={cn(
-                "absolute flex items-center justify-center rounded-md border-2 border-festa-border font-display text-sm font-bold tabular-nums shadow-block-sm",
-                flyer.variant === "bebida"
-                  ? "bg-festa-festival-blue text-white dark:text-festa-ink"
-                  : "bg-festa-primary text-white dark:bg-festa-primary-emphasis dark:text-festa-ink"
-              )}
-              initial={{ x: flyer.from.x, y: flyer.from.y, opacity: 1, scale: 1, rotate: 0 }}
-              style={{ left: 0, top: 0, width: flyer.from.w, height: flyer.from.h }}
-              animate={{
-                x: [flyer.from.x, flyer.from.x + dx * 0.55, flyer.from.x + dx],
-                y: [flyer.from.y, flyer.from.y + midY, flyer.from.y + dy],
-                scale: [1, 0.82, 0.32],
-                opacity: [1, 1, 0.55],
-                rotate: [0, -8, 10],
-              }}
-              transition={{ duration: 0.52, ease: [0.4, 0, 0.5, 1], times: [0, 0.55, 1] }}
-              onAnimationComplete={() => land(flyer)}
+              className="absolute inset-x-0 top-0 overflow-hidden"
+              style={{ height: flyer.clipBottom ?? "100%" }}
             >
-              {flyer.label}
-            </motion.div>
+              <motion.div
+                className={cn(
+                  "absolute flex items-center justify-center rounded-md border-2 border-festa-border font-display text-sm font-bold tabular-nums shadow-block-sm",
+                  flyer.variant === "bebida"
+                    ? "bg-festa-festival-blue text-white dark:text-festa-ink"
+                    : "bg-festa-primary text-white dark:bg-festa-primary-emphasis dark:text-festa-ink"
+                )}
+                initial={{ x: flyer.from.x, y: flyer.from.y, opacity: 1, scale: 1, rotate: 0 }}
+                style={{ left: 0, top: 0, width: flyer.from.w, height: flyer.from.h }}
+                animate={{
+                  x: [flyer.from.x, flyer.from.x + dx * 0.55, flyer.from.x + dx],
+                  y: [flyer.from.y, flyer.from.y + midY, flyer.from.y + dy],
+                  scale: [1, 0.82, 0.32],
+                  opacity: [1, 1, 0.55],
+                  rotate: [0, -8, 10],
+                }}
+                transition={{ duration: 0.52, ease: [0.4, 0, 0.5, 1], times: [0, 0.55, 1] }}
+                onAnimationComplete={() => land(flyer)}
+              >
+                {flyer.label}
+              </motion.div>
+            </div>
           )
         })}
       </AnimatePresence>

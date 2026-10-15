@@ -73,6 +73,7 @@ export function CartBottomSheet({
             type="button"
             onClick={() => onDismissedChange(false)}
             data-cart-drop
+            data-cart-bar
             className="flex items-center gap-2 pl-4 pr-5 h-14 rounded-lg border-2 border-festa-border bg-festa-amber text-festa-ink shadow-block cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
             aria-label="Abrir pedido atual"
           >
@@ -87,6 +88,7 @@ export function CartBottomSheet({
           initial={{ y: 24, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={springs.sheet}
+          data-cart-bar
           drag="y"
           dragListener={false}
           dragControls={dragControls}
