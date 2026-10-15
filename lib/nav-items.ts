@@ -16,7 +16,7 @@ export function getNavItemsForRole(operatorRole?: string): NavItem[] {
 }
 
 /** Drop any trailing slash except on the root path. */
-function normalizePath(path: string): string {
+export function normalizePath(path: string): string {
   return path.length > 1 ? path.replace(/\/+$/, "") : path
 }
 

@@ -7,6 +7,7 @@ import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { useOperator } from "@/lib/operator-provider"
 import { FadeIn } from "@/components/ui/motion"
 import { cn } from "@/lib/utils"
+import { normalizePath } from "@/lib/nav-items"
 
 /** Live elapsed shift time, ticking each half-minute. */
 function ShiftClock({ startedAt }: { startedAt: string }) {
@@ -57,7 +58,7 @@ const defaultPage = {
 export function TopAppBar() {
   const pathname = usePathname()
   const { session, requestLogout, isPreparingLogout } = useOperator()
-  const page = pageMeta[pathname] ?? defaultPage
+  const page = pageMeta[normalizePath(pathname)] ?? defaultPage
 
   return (
     <header className="sticky top-0 z-50 shrink-0 border-b-2 border-festa-border bg-festa-surface">
