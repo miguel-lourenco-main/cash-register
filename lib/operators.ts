@@ -32,6 +32,7 @@ type SupabaseErrorLike = {
   hint?: string
 }
 
+// The database migration (and its RPCs) hasn't been applied yet.
 function isMissingRpc(error: SupabaseErrorLike | null): boolean {
   if (!error) return false
   return (
@@ -54,6 +55,7 @@ function isUndefinedFunction(error: SupabaseErrorLike | null): boolean {
   )
 }
 
+// Shown in errors when the schema is out of date: which migration to apply, and how.
 const MIGRATION_HINT =
   "Migração: 20250801030130_add_operators_and_shifts.sql — local: pnpm supabase:reset && pnpm supabase:env-sync | remoto: pnpm supabase:deploy"
 
@@ -128,6 +130,7 @@ export async function listActiveOperators(): Promise<OperatorListResult> {
     return { operators: listDemoOperators() }
   }
 
+  // Database without the list_active_operators RPC: fall back to a direct table query.
   if (isMissingRpc(error)) {
     return listOperatorsFromTable()
   }
@@ -268,6 +271,7 @@ export async function loginWithPin(
     }
   }
 
+  // Persist the session locally so the till survives a reload during the shift.
   const session: OperatorSession = {
     operatorId: operator.id,
     operatorName: operator.name,

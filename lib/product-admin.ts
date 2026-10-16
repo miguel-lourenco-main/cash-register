@@ -5,6 +5,7 @@ import { isConnectionError, isKnownOffline, markOffline } from "./db-status"
 import { upsertDemoProduct } from "./demo-store"
 import { isLocalMode } from "./app-mode"
 
+// Storage bucket and client-side upload limits, checked before any storage call.
 const PRODUCT_IMAGES_BUCKET = "product-images"
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024
 const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"])
@@ -134,6 +135,7 @@ export async function uploadProductImage(
   }
 
   const extension = file.name.split(".").pop()?.toLowerCase() || "jpg"
+  // Timestamped name so a re-upload isn't served from a cached previous image.
   const path = `${productId}/${Date.now()}.${extension}`
 
   const { error } = await supabase.storage

@@ -35,6 +35,7 @@ interface ShiftOrderRow {
 
 /** Aggregate the operator's shift client-side — one query, festival-scale volumes. */
 export async function getShiftSummary(shiftId: string): Promise<ShiftSummary | null> {
+  // Demo shifts (and local/offline mode) are served from the in-memory demo store.
   if (isLocalMode() || isKnownOffline() || shiftId.startsWith("demo-shift-")) {
     return getDemoShiftSummary(shiftId)
   }
@@ -67,6 +68,7 @@ export async function getShiftSummary(shiftId: string): Promise<ShiftSummary | n
 
     for (const order of orders) {
       let orderTotal = order.total != null ? Number(order.total) : null
+      // Orders without a stored total: recompute from line items (unit price, falling back to product price).
       if (orderTotal == null) {
         orderTotal = order.order_items.reduce(
           (sum, item) =>
@@ -96,6 +98,7 @@ export async function getShiftSummary(shiftId: string): Promise<ShiftSummary | n
       }
     }
 
+    // Top 5 products by quantity sold during the shift.
     const topItems = [...quantitiesByProduct.values()]
       .sort((a, b) => b.quantity - a.quantity)
       .slice(0, 5)

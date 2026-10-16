@@ -15,10 +15,12 @@ export async function createOrder(
   context: CreateOrderContext,
   payment: OrderPayment
 ): Promise<{ success: boolean; order?: Order }> {
+  // Local/offline: record the sale in the demo store so the till keeps working.
   if (isLocalMode() || isKnownOffline()) {
     return { success: true, order: createDemoOrder(items, context, payment) }
   }
   try {
+    // Client-generated ID so the header and its items can reference the same order.
     const orderId = crypto.randomUUID()
 
     const { data: orderData, error: orderError } = await supabase
@@ -58,6 +60,7 @@ export async function createOrder(
 
     if (itemsError) {
       console.error("Failed to create order items:", itemsError)
+      // No cross-table transaction here: manually remove the orphaned order header.
       await supabase.from('orders').delete().eq('id', orderId)
       return { success: false }
     }
@@ -87,6 +90,7 @@ export async function createOrder(
   }
 }
 
+// PostgREST returns the embedded `operators` relation under either alias, depending on the select.
 function resolveOperator(
   order: Record<string, unknown>
 ): { id: string; name: string } | null {

@@ -42,8 +42,10 @@ export function ShiftSummaryOverlay() {
   const averageTicket =
     summary && summary.ordersCount > 0 ? summary.revenue / summary.ordersCount : 0
   const maxQty = summary?.topItems.reduce((m, i) => Math.max(m, i.quantity), 0) ?? 0
+  // Confetti only for shifts that actually sold something.
   const celebrate = Boolean(summary && summary.ordersCount > 0)
 
+  // Revenue counts up from zero each time the overlay opens.
   const [displayRevenue, setDisplayRevenue] = useState(0)
   useEffect(() => {
     if (!pendingLogout || !summary) return
@@ -79,6 +81,7 @@ export function ShiftSummaryOverlay() {
             </div>
           </motion.div>
 
+          {/* Summary can be null on network failure; logout stays available either way. */}
           {summary ? (
             <>
               {/* Hero revenue */}
