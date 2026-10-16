@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
+import { BrandMark } from "@/components/layout/brand-mark"
 import { MaterialIcon } from "@/components/ui/material-icon"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { useOperator } from "@/lib/operator-provider"
@@ -60,18 +61,15 @@ export function TopAppBar() {
   const { session, requestLogout, isPreparingLogout } = useOperator()
   const page = pageMeta[normalizePath(pathname)] ?? defaultPage
 
+  // md+: the bar starts after the side rail and shares its surface, so rail and
+  // bar read as one L-shaped frame whose top-left corner holds the brand mark.
   return (
-    <header className="sticky top-0 z-50 shrink-0 border-b-2 border-festa-border bg-festa-surface">
-      <div className="flex items-center justify-between gap-4 h-touch-target-min md:h-20 px-gutter md:px-margin-page">
+    <header className="sticky top-0 z-50 shrink-0 border-b-2 border-festa-border bg-festa-surface md:ml-24 md:bg-festa-surface-low lg:ml-32">
+      <div className="flex items-center justify-between gap-4 h-touch-target-min md:h-20 px-gutter md:pl-gutter md:pr-margin-page">
         {/* Brand + current page */}
         <div className="flex items-center gap-3 md:gap-4 min-w-0">
-          <div className="flex h-11 w-11 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-md border-2 border-festa-border bg-festa-primary dark:bg-festa-primary-emphasis shadow-block-sm">
-            <MaterialIcon
-              name="storefront"
-              filled
-              className="text-2xl text-white dark:text-festa-ink"
-            />
-          </div>
+          {/* On md+ the brand mark sits in the side rail's top-left corner instead. */}
+          <BrandMark className="md:hidden" />
           <div className="min-w-0">
             <div className="flex items-center gap-2 min-w-0">
               <h1 className="font-display text-title-md uppercase text-festa-primary-emphasis tracking-tight truncate">
@@ -130,7 +128,7 @@ export function TopAppBar() {
                 type="button"
                 onClick={() => requestLogout()}
                 disabled={isPreparingLogout}
-                className="hidden md:flex items-center gap-2 h-12 px-4 rounded-lg border-2 border-festa-border bg-festa-error text-festa-on-error text-label-xl shadow-block-sm cursor-pointer transition-colors duration-200 hover:bg-festa-error/90 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none disabled:opacity-60"
+                className="hidden lg:flex items-center gap-2 h-12 px-4 rounded-lg border-2 border-festa-border bg-festa-error text-festa-on-error text-label-xl shadow-block-sm cursor-pointer transition-colors duration-200 hover:bg-festa-error/90 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none disabled:opacity-60"
               >
                 <MaterialIcon
                   name={isPreparingLogout ? "progress_activity" : "logout"}
@@ -142,7 +140,7 @@ export function TopAppBar() {
                 type="button"
                 onClick={() => requestLogout()}
                 disabled={isPreparingLogout}
-                className="md:hidden flex h-12 w-12 items-center justify-center rounded-lg border-2 border-festa-border bg-festa-error text-festa-on-error shadow-block-sm cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none disabled:opacity-60"
+                className="lg:hidden flex h-12 w-12 items-center justify-center rounded-lg border-2 border-festa-border bg-festa-error text-festa-on-error shadow-block-sm cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none disabled:opacity-60"
                 aria-label="Encerrar turno"
               >
                 <MaterialIcon
