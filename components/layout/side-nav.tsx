@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion } from "motion/react"
+import { BrandMark } from "@/components/layout/brand-mark"
 import { MaterialIcon } from "@/components/ui/material-icon"
 import { springs } from "@/lib/motion"
 import { cn, tapHaptic } from "@/lib/utils"
@@ -15,8 +16,14 @@ export function SideNav() {
   const items = getNavItemsForRole(session?.operatorRole)
 
   return (
-    <aside className="hidden md:flex fixed left-0 top-[var(--festa-top-bar-height)] bottom-0 w-24 lg:w-32 z-40 bg-festa-surface-low border-r-2 border-festa-border flex-col items-center py-gutter gap-gutter">
-      <nav className="flex flex-col gap-4 w-full px-2">
+    <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-24 lg:w-32 z-40 bg-festa-surface-low flex-col">
+      {/* Top-left corner of the merged rail + top bar: holds the brand mark.
+          No right/bottom border, so it flows into the top bar beside it; the nav's
+          right border starts exactly where the bar's bottom border ends. */}
+      <div className="flex h-[var(--festa-top-bar-height)] shrink-0 items-center justify-center">
+        <BrandMark />
+      </div>
+      <nav className="flex flex-1 flex-col gap-4 w-full px-2 py-gutter border-r-2 border-festa-border">
         {items.map((item) => {
           const active = isNavItemActive(pathname, item.href)
           return (
@@ -49,11 +56,6 @@ export function SideNav() {
           )
         })}
       </nav>
-      <div className="mt-auto flex flex-col items-center gap-4">
-        <div className="w-10 h-10 rounded-sm border-2 border-festa-border bg-festa-amber flex items-center justify-center text-festa-ink font-display font-bold text-sm">
-          {session?.operatorName?.charAt(0) ?? "?"}
-        </div>
-      </div>
     </aside>
   )
 }
