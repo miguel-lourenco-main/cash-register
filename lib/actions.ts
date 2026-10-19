@@ -15,6 +15,7 @@ export async function createOrder(
   context: CreateOrderContext,
   payment: OrderPayment
 ): Promise<{ success: boolean; order?: Order }> {
+  // Local and offline sales are recorded in the on-device demo store instead.
   if (isLocalMode() || isKnownOffline()) {
     return { success: true, order: createDemoOrder(items, context, payment) }
   }
@@ -56,6 +57,7 @@ export async function createOrder(
       .from('order_items')
       .insert(orderItems)
 
+    // No transaction across the two inserts: roll back the order row if its items failed.
     if (itemsError) {
       console.error("Failed to create order items:", itemsError)
       await supabase.from('orders').delete().eq('id', orderId)
@@ -87,6 +89,7 @@ export async function createOrder(
   }
 }
 
+// The joined operator arrives under the `operator` alias in some queries and as the raw `operators` table name in others.
 function resolveOperator(
   order: Record<string, unknown>
 ): { id: string; name: string } | null {

@@ -3,6 +3,7 @@ export function isValidEmail(email: string): boolean {
   return emailRegex.test(email)
 }
 
+// Separators are ignored; only the digit count is checked.
 export function isValidPhoneNumber(phone: string): boolean {
   const cleaned = phone.replace(/\D/g, "")
   return cleaned.length >= 10 && cleaned.length <= 15
@@ -14,6 +15,7 @@ export function isValidCreditCard(cardNumber: string): boolean {
     return false
   }
 
+  // Luhn checksum: walk right to left, doubling every second digit.
   let sum = 0
   let isEven = false
 
@@ -78,6 +80,7 @@ export function validateProductForm(values: ProductFormValues): ProductFormError
   return errors
 }
 
+// Accepts a decimal comma as typed by pt-PT users ("12,50" -> 12.5).
 export function parseProductPrice(price: string): number {
   return Number.parseFloat(price.replace(",", "."))
 }

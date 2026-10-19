@@ -24,6 +24,7 @@ export function processOrderData(rawData: unknown): {
     return null;
   }
 
+  // Drop malformed or non-positive-priced items rather than failing the whole order.
   const processedItems = data.items
     .filter((item: unknown) => {
       if (!item || typeof item !== 'object') return false;
@@ -52,7 +53,8 @@ export function processOrderData(rawData: unknown): {
 }
 
 /**
- * Sanitizes a string input by trimming whitespace, removing special characters, and limiting the length.
+ * Sanitizes a string input by trimming whitespace, stripping angle brackets, collapsing runs of
+ * whitespace, and limiting the length. This is a basic guard, not a substitute for output escaping.
  * @param {string} input - The input string to be sanitized.
  * @returns {string} The sanitized string.
  */

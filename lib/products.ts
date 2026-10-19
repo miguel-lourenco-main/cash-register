@@ -39,6 +39,8 @@ export const getProducts = async (): Promise<AppProduct[]> => {
     description: product.description ?? null,
   }))
 
+  // Products listed in the seed files keep their curated order (bebidas, then comida);
+  // everything else falls back to alphabetical.
   const sortedProducts = products.sort((a, b) => {
     const indexA = BEBIDAS.indexOf(a.id)
     const indexB = BEBIDAS.indexOf(b.id)

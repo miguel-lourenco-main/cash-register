@@ -25,6 +25,7 @@ export function calculatePriceBreakdown(
 ): PriceBreakdown {
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   
+  // Fixed promo codes; any unrecognised code means no discount.
   let discountMultiplier = 1;
   if (discountCode === 'SAVE10') {
     discountMultiplier = 0.9;
@@ -34,6 +35,7 @@ export function calculatePriceBreakdown(
   
   const discount = subtotal * (1 - discountMultiplier);
   const discountedSubtotal = subtotal * discountMultiplier;
+  // Tax is levied on the discounted subtotal, not the list price.
   const tax = discountedSubtotal * taxRate;
   const total = discountedSubtotal + tax;
   

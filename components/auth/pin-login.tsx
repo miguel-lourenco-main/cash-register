@@ -31,6 +31,7 @@ export function PinLogin() {
     return unsubscribe
   }, [])
 
+  // PINs are always 4 digits; submit stays disabled until both a name and a full PIN are entered.
   const canSubmit = Boolean(selectedId) && pin.length >= 4 && !submitting
   const selectedOperator = operators.find((op) => op.id === selectedId)
   const firstName = selectedOperator?.name.split(" ")[0]
@@ -47,6 +48,7 @@ export function PinLogin() {
       setError(result.error ?? "Não foi possível iniciar sessão. Tente novamente.")
       setPin("")
       setShake((s) => s + 1)
+      // Haptic feedback on failure; silently skipped on devices without vibration.
       if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate?.([8, 40, 8])
     }
   }
@@ -63,6 +65,7 @@ export function PinLogin() {
     setError(null)
   }
 
+  // Demo hint buttons: fill the PIN directly instead of typing it.
   const handleFillCode = (code: string) => {
     setPin(code.replace(/\D/g, "").slice(0, 4))
     setError(null)
@@ -255,7 +258,7 @@ export function PinLogin() {
                 </div>
               </motion.div>
 
-              {/* PIN dots + numpad */}
+              {/* PIN dots + numpad (revealed once an operator is selected) */}
               <Collapsible open={Boolean(selectedId)}>
                 <div className="flex flex-col items-center gap-5 pt-1">
                   <motion.div

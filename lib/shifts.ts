@@ -35,6 +35,7 @@ interface ShiftOrderRow {
 
 /** Aggregate the operator's shift client-side — one query, festival-scale volumes. */
 export async function getShiftSummary(shiftId: string): Promise<ShiftSummary | null> {
+  // Local mode, known outage, or demo shifts never touch Supabase; use the on-device store.
   if (isLocalMode() || isKnownOffline() || shiftId.startsWith("demo-shift-")) {
     return getDemoShiftSummary(shiftId)
   }
@@ -67,6 +68,7 @@ export async function getShiftSummary(shiftId: string): Promise<ShiftSummary | n
 
     for (const order of orders) {
       let orderTotal = order.total != null ? Number(order.total) : null
+      // No stored total (older orders): rebuild it from line items, preferring sale-time prices.
       if (orderTotal == null) {
         orderTotal = order.order_items.reduce(
           (sum, item) =>

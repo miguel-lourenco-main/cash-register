@@ -128,6 +128,7 @@ export async function listActiveOperators(): Promise<OperatorListResult> {
     return { operators: listDemoOperators() }
   }
 
+  // RPC not deployed yet: fall back to reading the public table directly.
   if (isMissingRpc(error)) {
     return listOperatorsFromTable()
   }
@@ -204,6 +205,7 @@ export async function startShift(
 }
 
 export async function endShift(shiftId: string): Promise<boolean> {
+  // Demo and offline shifts only exist on this device, so there is nothing to close remotely.
   if (isLocalMode() || isKnownOffline() || shiftId.startsWith("demo-shift-")) return true
 
   const { data, error } = await supabase.rpc("end_shift", {
@@ -276,6 +278,7 @@ export async function loginWithPin(
     shiftStartedAt: new Date().toISOString(),
   }
 
+  // Persist locally so the register survives page reloads within the shift.
   writeOperatorSession(session)
   return { success: true, session }
 }

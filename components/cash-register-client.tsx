@@ -10,6 +10,7 @@ export default function CashRegisterClient() {
   const [products, setProducts] = useState<AppProduct[]>([])
   const [loading, setLoading] = useState(true)
 
+  // Load the catalogue once on mount; getProducts handles the local/shared/offline fallback.
   useEffect(() => {
     const fetchProducts = async () => {
       try {

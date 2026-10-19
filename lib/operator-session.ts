@@ -8,6 +8,7 @@ export interface OperatorSession {
   shiftStartedAt: string
 }
 
+/** Returns null on the server, when nothing is stored, or when the stored JSON is corrupt. */
 export function readOperatorSession(): OperatorSession | null {
   if (typeof window === "undefined") return null
   try {
